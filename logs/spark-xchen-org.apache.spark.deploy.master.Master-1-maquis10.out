@@ -1,0 +1,38 @@
+Spark Command: /mnt/xin/jdk1.7.0_79/bin/java -cp /mnt/xin/spark-1.5.0/sbin/../conf/:/mnt/xin/spark-1.5.0/assembly/target/scala-2.10/spark-assembly-1.5.0-hadoop2.2.0.jar:/mnt/xin/spark-1.5.0/lib_managed/jars/datanucleus-api-jdo-3.2.6.jar:/mnt/xin/spark-1.5.0/lib_managed/jars/datanucleus-core-3.2.10.jar:/mnt/xin/spark-1.5.0/lib_managed/jars/datanucleus-rdbms-3.2.9.jar -Xms1g -Xmx1g -XX:MaxPermSize=256m org.apache.spark.deploy.master.Master --ip 130.207.110.170 --port 7077 --webui-port 8080
+========================================
+16/07/19 16:21:08 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+16/07/19 16:21:09 INFO Slf4jLogger: Slf4jLogger started
+16/07/19 16:21:09 INFO Remoting: Starting remoting
+16/07/19 16:21:09 INFO Remoting: Remoting started; listening on addresses :[akka.tcp://sparkMaster@130.207.110.170:7077]
+16/07/19 16:25:14 WARN ReliableDeliverySupervisor: Association with remote system [akka.tcp://sparkDriver@130.207.110.170:44588] has failed, address is now gated for [5000] ms. Reason: [Disassociated] 
+16/07/19 16:25:14 WARN Master: Application VwapBenchmark is still in progress, it may be terminated abnormally.
+16/07/19 16:25:20 WARN Master: Got status update for unknown executor app-20160719162359-0000/4
+16/07/19 16:25:20 WARN Master: Got status update for unknown executor app-20160719162359-0000/2
+16/07/19 16:25:20 WARN Master: Got status update for unknown executor app-20160719162359-0000/5
+16/07/19 16:25:20 WARN Master: Got status update for unknown executor app-20160719162359-0000/3
+16/07/19 16:25:20 WARN Master: Got status update for unknown executor app-20160719162359-0000/1
+16/07/19 16:25:20 WARN Master: Got status update for unknown executor app-20160719162359-0000/0
+16/07/19 16:31:48 WARN ReliableDeliverySupervisor: Association with remote system [akka.tcp://sparkDriver@130.207.110.170:40709] has failed, address is now gated for [5000] ms. Reason: [Disassociated] 
+16/07/19 16:31:48 WARN Master: Application VwapBenchmark is still in progress, it may be terminated abnormally.
+16/07/19 16:31:54 WARN Master: Got status update for unknown executor app-20160719162837-0001/0
+16/07/19 16:31:54 WARN Master: Got status update for unknown executor app-20160719162837-0001/5
+16/07/19 16:31:54 WARN Master: Got status update for unknown executor app-20160719162837-0001/1
+16/07/19 16:31:54 WARN Master: Got status update for unknown executor app-20160719162837-0001/4
+16/07/19 16:31:54 WARN Master: Got status update for unknown executor app-20160719162837-0001/2
+16/07/19 16:31:54 WARN Master: Got status update for unknown executor app-20160719162837-0001/3
+16/07/19 16:39:22 WARN Master: Application VwapBenchmark is still in progress, it may be terminated abnormally.
+16/07/19 16:39:22 WARN ReliableDeliverySupervisor: Association with remote system [akka.tcp://sparkDriver@130.207.110.170:33326] has failed, address is now gated for [5000] ms. Reason: [Disassociated] 
+16/07/19 16:39:24 WARN Master: Got status update for unknown executor app-20160719163808-0002/5
+16/07/19 16:39:24 WARN Master: Got status update for unknown executor app-20160719163808-0002/0
+16/07/19 16:39:24 WARN Master: Got status update for unknown executor app-20160719163808-0002/1
+16/07/19 16:39:24 WARN Master: Got status update for unknown executor app-20160719163808-0002/4
+16/07/19 16:39:24 WARN Master: Got status update for unknown executor app-20160719163808-0002/2
+16/07/19 16:39:24 WARN Master: Got status update for unknown executor app-20160719163808-0002/3
+16/07/19 16:49:50 WARN ReliableDeliverySupervisor: Association with remote system [akka.tcp://sparkDriver@130.207.110.170:38339] has failed, address is now gated for [5000] ms. Reason: [Disassociated] 
+16/07/19 16:49:50 WARN Master: Application VwapBenchmark is still in progress, it may be terminated abnormally.
+16/07/19 16:49:59 WARN Master: Got status update for unknown executor app-20160719164328-0003/5
+16/07/19 16:49:59 WARN Master: Got status update for unknown executor app-20160719164328-0003/0
+16/07/19 16:49:59 WARN Master: Got status update for unknown executor app-20160719164328-0003/2
+16/07/19 16:49:59 WARN Master: Got status update for unknown executor app-20160719164328-0003/1
+16/07/19 16:49:59 WARN Master: Got status update for unknown executor app-20160719164328-0003/4
+16/07/19 16:49:59 WARN Master: Got status update for unknown executor app-20160719164328-0003/3
