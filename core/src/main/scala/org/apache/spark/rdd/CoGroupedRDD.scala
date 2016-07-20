@@ -129,6 +129,8 @@ class CoGroupedRDD[K](@transient var rdds: Seq[RDD[_ <: Product2[K, _]]], part: 
     val externalSorting = sparkConf.getBoolean("spark.shuffle.spill", true)
     val split = s.asInstanceOf[CoGroupPartition]
     val numRdds = dependencies.length
+            val t1 = System.currentTimeMillis()
+	    var shuffleT:Long = 0
 
     // A list of (rdd iterator, dependency number) pairs
     val rddIterators = new ArrayBuffer[(Iterator[Product2[K, Any]], Int)]
@@ -138,14 +140,18 @@ class CoGroupedRDD[K](@transient var rdds: Seq[RDD[_ <: Product2[K, _]]], part: 
         // Read them from the parent
         val it = oneToOneDependency.rdd.iterator(dependencyPartition, context)
         rddIterators += ((it, depNum))
+            //logWarning("xin, !!!!!!!  cogroup one dependency time: " + (System.currentTimeMillis()-t1))
 
       case shuffleDependency: ShuffleDependency[_, _, _] =>
         // Read map outputs of shuffle
+            val xxx = System.currentTimeMillis()
         val it = SparkEnv.get.shuffleManager
           .getReader(shuffleDependency.shuffleHandle, split.index, split.index + 1, context)
           .read()
         rddIterators += ((it, depNum))
+	    shuffleT = shuffleT + (System.currentTimeMillis()-xxx)
     }
+            logWarning("xin, !!!!! " + context.stageId() + " taskId: " + context.taskAttemptId() + " cogroup shuffle read time: " + shuffleT)
 
     if (!externalSorting) {
       val map = new AppendOnlyMap[K, CoGroupCombiner]
@@ -161,8 +167,12 @@ class CoGroupedRDD[K](@transient var rdds: Seq[RDD[_ <: Product2[K, _]]], part: 
           getCombiner(kv._1)(depNum) += kv._2
         }
       }
-      new InterruptibleIterator(context,
+      val res = new InterruptibleIterator(context,
         map.iterator.asInstanceOf[Iterator[(K, Array[Iterable[_]])]])
+
+            val t2 = System.currentTimeMillis()
+            logWarning("xin, !!!! " + context.stageId() + " taskId: " + context.taskAttemptId() + "  cogroup 1 inMem time: " + (t2-t1))
+      res
     } else {
       val map = createExternalMap(numRdds)
       for ((it, depNum) <- rddIterators) {
@@ -172,8 +182,14 @@ class CoGroupedRDD[K](@transient var rdds: Seq[RDD[_ <: Product2[K, _]]], part: 
       context.taskMetrics().incDiskBytesSpilled(map.diskBytesSpilled)
       context.internalMetricsToAccumulators(
         InternalAccumulator.PEAK_EXECUTION_MEMORY).add(map.peakMemoryUsedBytes)
-      new InterruptibleIterator(context,
+      val res = new InterruptibleIterator(context,
         map.iterator.asInstanceOf[Iterator[(K, Array[Iterable[_]])]])
+
+            val t2 = System.currentTimeMillis()
+            logWarning("xin, !!! " + context.stageId() + " taskId: " + context.taskAttemptId() + 
+                       " cogroup 1 external time: " + (t2-t1) +
+                       " diskBytesSpilled " + map.diskBytesSpilled)
+      res
     }
   }
 

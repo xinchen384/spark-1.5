@@ -343,6 +343,7 @@ private[spark] class TaskSchedulerImpl(
               taskIdToExecutorId.remove(tid)
             }
             if (state == TaskState.FINISHED) {
+     //xinLogInfo("xin, in TaskSchedulerImpl, going to resultGetter: " + tid + " timestamp: " + System.currentTimeMillis() )
               taskSet.removeRunningTask(tid)
               taskResultGetter.enqueueSuccessfulTask(taskSet, tid, serializedData)
             } else if (Set(TaskState.FAILED, TaskState.KILLED, TaskState.LOST).contains(state)) {

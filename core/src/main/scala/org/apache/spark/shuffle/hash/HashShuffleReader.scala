@@ -40,6 +40,7 @@ private[spark] class HashShuffleReader[K, C](
 
   /** Read the combined key-values for this reduce task */
   override def read(): Iterator[Product2[K, C]] = {
+    val t0 = System.currentTimeMillis()
     val blockFetcherItr = new ShuffleBlockFetcherIterator(
       context,
       blockManager.shuffleClient,
@@ -48,6 +49,7 @@ private[spark] class HashShuffleReader[K, C](
       // Note: we use getSizeAsMb when no suffix is provided for backwards compatibility
       SparkEnv.get.conf.getSizeAsMb("spark.reducer.maxSizeInFlight", "48m") * 1024 * 1024)
 
+    val t1 = System.currentTimeMillis()
     // Wrap the streams for compression based on configuration
     val wrappedStreams = blockFetcherItr.map { case (blockId, inputStream) =>
       blockManager.wrapForCompression(blockId, inputStream)
@@ -64,6 +66,7 @@ private[spark] class HashShuffleReader[K, C](
       serializerInstance.deserializeStream(wrappedStream).asKeyValueIterator
     }
 
+    val t2 = System.currentTimeMillis()
     // Update the context task metrics for each record read.
     val readMetrics = context.taskMetrics.createShuffleReadMetricsForDependency()
     val metricIter = CompletionIterator[(Any, Any), Iterator[(Any, Any)]](
@@ -76,6 +79,7 @@ private[spark] class HashShuffleReader[K, C](
     // An interruptible iterator must be used here in order to support task cancellation
     val interruptibleIter = new InterruptibleIterator[(Any, Any)](context, metricIter)
 
+    val t3 = System.currentTimeMillis()
     val aggregatedIter: Iterator[Product2[K, C]] = if (dep.aggregator.isDefined) {
       if (dep.mapSideCombine) {
         // We are reading values that are already combined
@@ -93,6 +97,7 @@ private[spark] class HashShuffleReader[K, C](
       interruptibleIter.asInstanceOf[Iterator[Product2[K, C]]]
     }
 
+    val t4 = System.currentTimeMillis()
     // Sort the output if there is a sort ordering defined.
     dep.keyOrdering match {
       case Some(keyOrd: Ordering[K]) =>
@@ -104,8 +109,14 @@ private[spark] class HashShuffleReader[K, C](
         context.taskMetrics().incDiskBytesSpilled(sorter.diskBytesSpilled)
         context.internalMetricsToAccumulators(
           InternalAccumulator.PEAK_EXECUTION_MEMORY).add(sorter.peakMemoryUsedBytes)
+        //logWarning("xin, !!!! " + context.stageId() + " taskId: " + context.taskAttemptId() + " ReadBlock: " + (t1-t0) +
+        //       " DesRead " + (t2-t1) + " metric " + (t3-t2) +
+        //       " aggregation " + (t4-t3) + " sort " + (System.currentTimeMillis()-t4) )
         sorter.iterator
       case None =>
+        //logWarning("xin, !!!! " + context.stageId() + " taskId: " + context.taskAttemptId() + " ReadBlock: " + (t1-t0) +
+        //       " DesRead " + (t2-t1) + " metric " + (t3-t2) +
+        //       " aggregation " + (t4-t3) + " sort " + (System.currentTimeMillis()-t4) )
         aggregatedIter
     }
   }

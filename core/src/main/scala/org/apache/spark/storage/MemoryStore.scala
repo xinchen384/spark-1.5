@@ -274,6 +274,7 @@ private[spark] class MemoryStore(blockManager: BlockManager, maxMemory: Long)
 
     // Unroll this block safely, checking whether we have exceeded our threshold periodically
     try {
+	    //val t1 = System.currentTimeMillis()
       while (values.hasNext && keepUnrolling) {
         vector += values.next()
         if (elementsUnrolled % memoryCheckPeriod == 0) {
@@ -301,6 +302,7 @@ private[spark] class MemoryStore(blockManager: BlockManager, maxMemory: Long)
         }
         elementsUnrolled += 1
       }
+            //logWarning("xin, !!! unroll time for the while loop: " + (t2-t1))
 
       if (keepUnrolling) {
         // We successfully unrolled the entirety of this block

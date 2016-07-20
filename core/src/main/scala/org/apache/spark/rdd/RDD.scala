@@ -258,11 +258,15 @@ abstract class RDD[T: ClassTag](
    * subclasses of RDD.
    */
   final def iterator(split: Partition, context: TaskContext): Iterator[T] = {
+	//val s = System.currentTimeMillis()
+	var res: Iterator[T] = null
     if (storageLevel != StorageLevel.NONE) {
-      SparkEnv.get.cacheManager.getOrCompute(this, split, context, storageLevel)
+      res = SparkEnv.get.cacheManager.getOrCompute(this, split, context, storageLevel)
     } else {
-      computeOrReadCheckpoint(split, context)
+      res = computeOrReadCheckpoint(split, context)
     }
+	//logWarning(" xin !!! rdd name: " + this.name + " return iterating 3 time: " + (System.currentTimeMillis() - s))
+      res
   }
 
   /**
@@ -294,7 +298,12 @@ abstract class RDD[T: ClassTag](
    */
   private[spark] def computeOrReadCheckpoint(split: Partition, context: TaskContext): Iterator[T] =
   {
-    if (isCheckpointed) firstParent[T].iterator(split, context) else compute(split, context)
+    if (isCheckpointed) firstParent[T].iterator(split, context) else {
+	//val s = System.currentTimeMillis()
+	val res = compute(split, context)
+	//logWarning(" xin !!! rdd name: " + this.name + " computing 2 time: " + (System.currentTimeMillis() - s))
+	res
+	}
   }
 
   /**

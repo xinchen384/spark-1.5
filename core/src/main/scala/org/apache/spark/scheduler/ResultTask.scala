@@ -25,6 +25,8 @@ import org.apache.spark._
 import org.apache.spark.broadcast.Broadcast
 import org.apache.spark.rdd.RDD
 
+//import org.apache.spark.Logging
+
 /**
  * A task that sends back the output to the driver application.
  *
@@ -48,7 +50,8 @@ private[spark] class ResultTask[T, U](
     val outputId: Int,
     internalAccumulators: Seq[Accumulator[Long]])
   extends Task[U](stageId, stageAttemptId, partition.index, internalAccumulators)
-  with Serializable {
+  with Serializable 
+  with Logging {
 
   @transient private[this] val preferredLocs: Seq[TaskLocation] = {
     if (locs == null) Nil else locs.toSet.toSeq
@@ -62,8 +65,17 @@ private[spark] class ResultTask[T, U](
       ByteBuffer.wrap(taskBinary.value), Thread.currentThread.getContextClassLoader)
     _executorDeserializeTime = System.currentTimeMillis() - deserializeStartTime
 
+	    val t1 = System.currentTimeMillis()
+
     metrics = Some(context.taskMetrics)
-    func(context, rdd.iterator(partition, context))
+	    val iterator = rdd.iterator(partition, context)
+	    val t2 = System.currentTimeMillis()
+            val res_U = func(context, iterator)
+    //val res_U = func(context, rdd.iterator(partition, context))
+
+	    val t3 = System.currentTimeMillis()
+            logWarning("xin resultTask stageId: " + stageId + " taskId: " + context.taskAttemptId() + " deserialization time: " + _executorDeserializeTime + " doing iterating time : " + (t2-t1) + "  func time: " + (t3-t2))
+    res_U
   }
 
   // This is only callable on the driver side.

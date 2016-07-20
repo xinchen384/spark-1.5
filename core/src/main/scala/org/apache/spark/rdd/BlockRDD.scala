@@ -42,14 +42,18 @@ class BlockRDD[T: ClassTag](@transient sc: SparkContext, @transient val blockIds
   }
 
   override def compute(split: Partition, context: TaskContext): Iterator[T] = {
+	val t1 = System.currentTimeMillis()
     assertValid()
     val blockManager = SparkEnv.get.blockManager
     val blockId = split.asInstanceOf[BlockRDDPartition].blockId
-    blockManager.get(blockId) match {
+    val res = blockManager.get(blockId) match {
       case Some(block) => block.data.asInstanceOf[Iterator[T]]
       case None =>
         throw new Exception("Could not compute split, block " + blockId + " not found")
     }
+	val t2 = System.currentTimeMillis()
+            logWarning("xin, !!! computing Block RDD 1 time " + (t2-t1))
+    res
   }
 
   override def getPreferredLocations(split: Partition): Seq[String] = {

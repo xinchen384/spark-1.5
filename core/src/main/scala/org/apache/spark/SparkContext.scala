@@ -1801,10 +1801,12 @@ class SparkContext(config: SparkConf) extends Logging with ExecutorAllocationCli
       func: (TaskContext, Iterator[T]) => U,
       partitions: Seq[Int],
       resultHandler: (Int, U) => Unit): Unit = {
+	val t1 = System.currentTimeMillis()
     if (stopped.get()) {
       throw new IllegalStateException("SparkContext has been shutdown")
     }
     val callSite = getCallSite
+            //xinLogInfo("xin, starting job: " + callSite.shortForm + "  starting timestamp: " + t1 )
     val cleanedFunc = clean(func)
     logInfo("Starting job: " + callSite.shortForm)
     if (conf.getBoolean("spark.logLineage", false)) {
@@ -1812,7 +1814,12 @@ class SparkContext(config: SparkConf) extends Logging with ExecutorAllocationCli
     }
     dagScheduler.runJob(rdd, cleanedFunc, partitions, callSite, resultHandler, localProperties.get)
     progressBar.foreach(_.finishAll())
-    rdd.doCheckpoint()
+	val t2 = System.currentTimeMillis()
+    val res = rdd.doCheckpoint()
+	val t3 = System.currentTimeMillis()
+    //logWarning("xin, !!! running job time " + (t2-t1) + " doing checkpoint time: " + (t3-t2) + "  starting timestamp: " + t1 + " ending: " + t3)
+    //xinLogInfo("xin, !!! running job time " + (t2-t1) + " doing checkpoint time: " + (t3-t2) + "  starting timestamp: " + t1 + " ending: " + t3)
+    res
   }
 
   /**

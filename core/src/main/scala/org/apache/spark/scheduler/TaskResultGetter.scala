@@ -46,14 +46,19 @@ private[spark] class TaskResultGetter(sparkEnv: SparkEnv, scheduler: TaskSchedul
 
   def enqueueSuccessfulTask(
     taskSetManager: TaskSetManager, tid: Long, serializedData: ByteBuffer) {
+    val ttt = System.currentTimeMillis() 
     getTaskResultExecutor.execute(new Runnable {
       override def run(): Unit = Utils.logUncaughtExceptions {
         try {
+          val t0 = System.currentTimeMillis() 
+          var tDirect : Long = 0
+          var tIndirect : Long = 0
           val (result, size) = serializer.get().deserialize[TaskResult[_]](serializedData) match {
             case directResult: DirectTaskResult[_] =>
               if (!taskSetManager.canFetchMoreResults(serializedData.limit())) {
                 return
               }
+              tDirect = System.currentTimeMillis()
               // deserialize "value" without holding any lock so that it won't block other threads.
               // We should call it here, so that when it's called again in
               // "TaskSetManager.handleSuccessfulTask", it does not need to deserialize the value.
@@ -66,6 +71,7 @@ private[spark] class TaskResultGetter(sparkEnv: SparkEnv, scheduler: TaskSchedul
                 return
               }
               logDebug("Fetching indirect task result for TID %s".format(tid))
+              tIndirect = System.currentTimeMillis()
               scheduler.handleTaskGettingResult(taskSetManager, tid)
               val serializedTaskResult = sparkEnv.blockManager.getRemoteBytes(blockId)
               if (!serializedTaskResult.isDefined) {
@@ -84,6 +90,11 @@ private[spark] class TaskResultGetter(sparkEnv: SparkEnv, scheduler: TaskSchedul
 
           result.metrics.setResultSize(size)
           scheduler.handleSuccessfulTask(taskSetManager, tid, result)
+          val t1 = System.currentTimeMillis() 
+          //if ( tIndirect != 0 )
+          //xinLogInfo("TaskResultGetter, xin task " + tid + " entering: " + t0 + " leaving: " + t1 + " Duration: " + (t1-ttt) + " inDirectResult start " + tIndirect + " executorStart " + ttt)
+          //if ( tDirect != 0 ) 
+          //xinLogInfo("TaskResultGetter, xin task " + tid + " entering: " + t0 + " leaving: " + t1 + " Duration: " + (t1-ttt) + " DirectResult starting: " + tDirect + " executorStart " + ttt)
         } catch {
           case cnf: ClassNotFoundException =>
             val loader = Thread.currentThread.getContextClassLoader

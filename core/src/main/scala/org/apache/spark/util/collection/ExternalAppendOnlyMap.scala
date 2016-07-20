@@ -128,7 +128,9 @@ class ExternalAppendOnlyMap[K, V, C](
     val update: (Boolean, C) => C = (hadVal, oldVal) => {
       if (hadVal) mergeValue(oldVal, curEntry._2) else createCombiner(curEntry._2)
     }
-
+    
+    val t0 = System.currentTimeMillis()
+    var count = 0
     while (entries.hasNext) {
       curEntry = entries.next()
       val estimatedSize = currentMap.estimateSize()
@@ -140,7 +142,10 @@ class ExternalAppendOnlyMap[K, V, C](
       }
       currentMap.changeValue(curEntry._1, update)
       addElementsRead()
+      count += 1
     }
+    val t1 = System.currentTimeMillis()
+    //logWarning("xin taskid " + TaskContext.get().taskAttemptId() + " length: " + entries.length + " time: " + (t1-t0) + " mycount: " + count)
   }
 
   /**

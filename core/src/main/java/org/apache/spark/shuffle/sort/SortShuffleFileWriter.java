@@ -48,6 +48,6 @@ public interface SortShuffleFileWriter<K, V> {
       BlockId blockId,
       TaskContext context,
       File outputFile) throws IOException;
-
+  //long diskBytesSpilled();
   void stop() throws IOException;
 }

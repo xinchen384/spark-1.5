@@ -53,6 +53,20 @@ trait Logging {
     }
     log_
   }
+  
+  //xin
+  @transient private var xinlog_ : Logger = null
+  protected def xinlog: Logger = {
+    if (xinlog_ == null) {
+      initializeIfNecessary()
+      xinlog_ = LoggerFactory.getLogger("AppLogging")
+    }
+    xinlog_
+  }
+  protected def xinLogInfo(msg: => String) {
+    if (xinlog.isInfoEnabled) xinlog.info(msg)
+  }
+  //xin end
 
   // Log methods that take only a String
   protected def logInfo(msg: => String) {
@@ -149,6 +163,7 @@ trait Logging {
 
     // Force a call into slf4j to initialize it. Avoids this happening from multiple threads
     // and triggering this: http://mailman.qos.ch/pipermail/slf4j-dev/2010-April/002956.html
+    xinlog
     log
   }
 }

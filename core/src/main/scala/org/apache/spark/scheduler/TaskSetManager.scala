@@ -461,6 +461,7 @@ private[spark] class TaskSetManager(
             currentLocalityIndex = getLocalityIndex(taskLocality)
             lastLaunchTime = curTime
           }
+           //xinLogInfo("xin, !!! running task " + taskId + " starting timestamp: " + curTime )
           // Serialize and return the task
           val startTime = clock.getTimeMillis()
           val serializedTask: ByteBuffer = try {
@@ -482,6 +483,8 @@ private[spark] class TaskSetManager(
               s"${TaskSetManager.TASK_SIZE_TO_WARN_KB} KB.")
           }
           addRunningTask(taskId)
+         
+          //xinLogInfo("xin, !!! running task " + taskId + " after serialize with dependency in TaskSetManager timestamp: " + clock.getTimeMillis() )
 
           // We used to log the time it takes to serialize the task, but task size is already
           // a good proxy to task serialization time.

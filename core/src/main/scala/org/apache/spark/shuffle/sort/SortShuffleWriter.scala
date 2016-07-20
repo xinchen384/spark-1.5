@@ -50,6 +50,7 @@ private[spark] class SortShuffleWriter[K, V, C](
 
   /** Write a bunch of records to this task's output */
   override def write(records: Iterator[Product2[K, V]]): Unit = {
+    val t0 = System.currentTimeMillis()
     sorter = if (dep.mapSideCombine) {
       require(dep.aggregator.isDefined, "Map-side combine without Aggregator specified!")
       new ExternalSorter[K, V, C](
@@ -70,6 +71,7 @@ private[spark] class SortShuffleWriter[K, V, C](
       new ExternalSorter[K, V, V](
         aggregator = None, Some(dep.partitioner), ordering = None, dep.serializer)
     }
+    val t1 = System.currentTimeMillis()
     sorter.insertAll(records)
 
     // Don't bother including the time to open the merged output file in the shuffle write time,
@@ -77,8 +79,13 @@ private[spark] class SortShuffleWriter[K, V, C](
     // (see SPARK-3570).
     val outputFile = shuffleBlockResolver.getDataFile(dep.shuffleId, mapId)
     val blockId = ShuffleBlockId(dep.shuffleId, mapId, IndexShuffleBlockResolver.NOOP_REDUCE_ID)
+    val t2 = System.currentTimeMillis()
     val partitionLengths = sorter.writePartitionedFile(blockId, context, outputFile)
+    val t3 = System.currentTimeMillis()
     shuffleBlockResolver.writeIndexFile(dep.shuffleId, mapId, partitionLengths)
+    //logWarning("xin, !!!! " + context.stageId() + " taskId: " + context.taskAttemptId() + " createExternal time: " + (t1-t0) +
+    //           " insertAll time " + (t2-t1) + " writePartitionFile " + (t3-t2) +
+    //           " writeIndexFile " + (System.currentTimeMillis()-t3) )
 
     mapStatus = MapStatus(blockManager.shuffleServerId, partitionLengths)
   }

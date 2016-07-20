@@ -184,6 +184,7 @@ private[spark] class Executor(
       Thread.currentThread.setContextClassLoader(replClassLoader)
       val ser = env.closureSerializer.newInstance()
       logInfo(s"Running $taskName (TID $taskId)")
+//xinLogInfo("xin, !!! running task " + taskId + " in Executor TaskRunner timestamp: " + System.currentTimeMillis() )
       execBackend.statusUpdate(taskId, TaskState.RUNNING, EMPTY_BYTE_BUFFER)
       var taskStart: Long = 0
       startGCTime = computeTotalGcTime()
@@ -240,6 +241,7 @@ private[spark] class Executor(
         val valueBytes = resultSer.serialize(value)
         val afterSerialization = System.currentTimeMillis()
 
+        val endGCTime = computeTotalGcTime()      
         for (m <- task.metrics) {
           // Deserialization happens in two parts: first, we deserialize a Task object, which
           // includes the Partition. Second, Task.run() deserializes the RDD and function to be run.
@@ -247,7 +249,7 @@ private[spark] class Executor(
             (taskStart - deserializeStartTime) + task.executorDeserializeTime)
           // We need to subtract Task.run()'s deserialization time to avoid double-counting
           m.setExecutorRunTime((taskFinish - taskStart) - task.executorDeserializeTime)
-          m.setJvmGCTime(computeTotalGcTime() - startGCTime)
+          m.setJvmGCTime(endGCTime - startGCTime)
           m.setResultSerializationTime(afterSerialization - beforeSerialization)
           m.updateAccumulators()
         }
@@ -275,6 +277,17 @@ private[spark] class Executor(
             serializedDirectResult
           }
         }
+
+	logWarning("xin, !!! a general task's executor, task id: " + taskId +
+		" deserialization of A TaskObject: " + task.executorDeserializeTime + 
+		" deserialize RDD and func time: " + (taskStart - deserializeStartTime) + 
+		" run time : " + ((taskFinish - taskStart) - task.executorDeserializeTime) + 
+		" serialize result time: " + (afterSerialization - beforeSerialization) + 
+		" serialize direct result time: " + (System.currentTimeMillis() - beforeSerialization) + 
+		" GC time: " + (endGCTime - startGCTime) +
+        " TaskRunner finishing Timestamp: " + System.currentTimeMillis() +
+        " starting: " + deserializeStartTime +  
+        " serializedTask size: " + serializedTask.limit) 
 
         execBackend.statusUpdate(taskId, TaskState.FINISHED, serializedResult)
 

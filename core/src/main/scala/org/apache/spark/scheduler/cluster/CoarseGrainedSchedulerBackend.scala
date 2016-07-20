@@ -100,6 +100,9 @@ class CoarseGrainedSchedulerBackend(scheduler: TaskSchedulerImpl, val rpcEnv: Rp
 
     override def receive: PartialFunction[Any, Unit] = {
       case StatusUpdate(executorId, taskId, state, data) =>
+        //if (TaskState.isFinished(state))
+        //  xinLogInfo("SchedulerBackend xin, task: " + taskId + " size: " + data.value.limit + " timestamp: " + System.currentTimeMillis() )
+
         scheduler.statusUpdate(taskId, state, data.value)
         if (TaskState.isFinished(state)) {
           executorDataMap.get(executorId) match {
@@ -221,6 +224,7 @@ class CoarseGrainedSchedulerBackend(scheduler: TaskSchedulerImpl, val rpcEnv: Rp
         else {
           val executorData = executorDataMap(task.executorId)
           executorData.freeCores -= scheduler.CPUS_PER_TASK
+          //xinLogInfo("SchedulerBackend xin, startup to send task: " + task.taskId + " task size: " + serializedTask.limit + " timestamp: " + System.currentTimeMillis() )
           executorData.executorEndpoint.send(LaunchTask(new SerializableBuffer(serializedTask)))
         }
       }

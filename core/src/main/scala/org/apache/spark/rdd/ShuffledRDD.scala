@@ -85,10 +85,13 @@ class ShuffledRDD[K, V, C](
   }
 
   override def compute(split: Partition, context: TaskContext): Iterator[(K, C)] = {
+            val t1 = System.currentTimeMillis()
     val dep = dependencies.head.asInstanceOf[ShuffleDependency[K, V, C]]
-    SparkEnv.get.shuffleManager.getReader(dep.shuffleHandle, split.index, split.index + 1, context)
+    val res = SparkEnv.get.shuffleManager.getReader(dep.shuffleHandle, split.index, split.index + 1, context)
       .read()
       .asInstanceOf[Iterator[(K, C)]]
+            //logWarning("xin, !!!! " + context.stageId() + " taskId: " + context.taskAttemptId() + " Shuffle read time: " + (System.currentTimeMillis()-t1))
+    res
   }
 
   override def clearDependencies() {

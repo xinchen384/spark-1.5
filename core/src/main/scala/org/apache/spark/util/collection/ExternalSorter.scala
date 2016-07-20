@@ -200,12 +200,17 @@ private[spark] class ExternalSorter[K, V, C](
       val update = (hadValue: Boolean, oldValue: C) => {
         if (hadValue) mergeValue(oldValue, kv._2) else createCombiner(kv._2)
       }
+      val t0 = System.currentTimeMillis()
+      var count = 0
       while (records.hasNext) {
         addElementsRead()
         kv = records.next()
         map.changeValue((getPartition(kv._1), kv._1), update)
         maybeSpillCollection(usingMap = true)
+        count += 1
       }
+      val t1 = System.currentTimeMillis()
+      //logWarning("xin no taskId iterationSize " + records.length + " time: " + (t1-t0) + " mycount: " + count)
     } else {
       // Stick values into our buffer
       while (records.hasNext) {
@@ -698,7 +703,8 @@ private[spark] class ExternalSorter[K, V, C](
     context.taskMetrics().incDiskBytesSpilled(diskBytesSpilled)
     context.internalMetricsToAccumulators(
       InternalAccumulator.PEAK_EXECUTION_MEMORY).add(peakMemoryUsedBytes)
-
+    //logWarning("xin, !!!! " + context.stageId() + " taskId: " + context.taskAttemptId() + 
+    //           " diskSpilled " + diskBytesSpilled)
     lengths
   }
 
