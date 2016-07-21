@@ -143,8 +143,8 @@ abstract class ReceiverInputDStream[T: ClassTag](@transient ssc_ : StreamingCont
    */
   private[streaming] class ReceiverRateController(id: Int, estimator: RateEstimator)
       extends RateController(id, estimator) {
-    override def publish(rate: Long): Unit =
-      ssc.scheduler.receiverTracker.sendRateUpdate(id, rate)
+    override def publish(time: Long, rate: Long, num: Long): Unit =
+      ssc.scheduler.receiverTracker.sendRateUpdate(id, time, rate, num)
   }
 }
 

@@ -30,6 +30,7 @@ import org.apache.spark.streaming.{Duration, Time}
 import org.apache.spark.streaming.StreamingContext.rddToFileName
 import org.apache.spark.util.{SerializableConfiguration, SerializableJobConf}
 
+
 /**
  * Extra functions available on DStream of (key, value) pairs through an implicit conversion.
  */
@@ -465,8 +466,11 @@ class PairDStreamFunctions[K, V](self: DStream[(K, V)])
       rememberPartitioner: Boolean,
       initialRDD: RDD[(K, S)]
     ): DStream[(K, S)] = ssc.withScope {
-     new StateDStream(self, ssc.sc.clean(updateFunc), partitioner,
+    	    //val t1 = System.currentTimeMillis()
+     val stateStream = new StateDStream(self, ssc.sc.clean(updateFunc), partitioner,
        rememberPartitioner, Some(initialRDD))
+    	    //val t2 = System.currentTimeMillis()
+	stateStream
   }
 
   /**

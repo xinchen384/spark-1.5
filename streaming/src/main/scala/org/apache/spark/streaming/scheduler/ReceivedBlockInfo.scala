@@ -42,6 +42,12 @@ private[streaming] case class ReceivedBlockInfo(
     }
   }
 
+  //xin
+  var _batchTime: Long = -1
+  def getBatchTime(): Long = _batchTime
+  def setBatchTime(time: Long): Unit = {
+    _batchTime = time
+  } 
   /** Is the block ID valid, that is, is the block present in the Spark executors. */
   def isBlockIdValid(): Boolean = _isBlockIdValid
 

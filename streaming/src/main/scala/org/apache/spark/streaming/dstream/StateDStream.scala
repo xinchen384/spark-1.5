@@ -58,11 +58,13 @@ class StateDStream[K: ClassTag, V: ClassTag, S: ClassTag](
     }
     val cogroupedRDD = parentRDD.cogroup(prevStateRDD, partitioner)
     val stateRDD = cogroupedRDD.mapPartitions(finalFunc, preservePartitioning)
+    //val t3 = System.currentTimeMillis()
     Some(stateRDD)
   }
 
   override def compute(validTime: Time): Option[RDD[(K, S)]] = {
 
+    val t1 = System.currentTimeMillis()
     // Try to get the previous state RDD
     getOrCompute(validTime - slideDuration) match {
 
@@ -71,7 +73,10 @@ class StateDStream[K: ClassTag, V: ClassTag, S: ClassTag](
         // Try to get the parent RDD
         parent.getOrCompute(validTime) match {
           case Some(parentRDD) => {   // If parent RDD exists, then compute as usual
-            computeUsingPreviousRDD (parentRDD, prevStateRDD)
+            val stateRdd = computeUsingPreviousRDD (parentRDD, prevStateRDD)
+            val t2 = System.currentTimeMillis()
+            //logWarning("xin, master !!! compute state Dstream : " + (t2-t1))
+	    stateRdd
           }
           case None => {    // If parent RDD does not exist
 
@@ -82,6 +87,8 @@ class StateDStream[K: ClassTag, V: ClassTag, S: ClassTag](
               updateFuncLocal(i)
             }
             val stateRDD = prevStateRDD.mapPartitions(finalFunc, preservePartitioning)
+            val t2 = System.currentTimeMillis()
+            logWarning("xin, master !!! compute state Dstream with no previous RDD: " + (t2-t1))
             Some(stateRDD)
           }
         }

@@ -36,7 +36,7 @@ private[streaming] abstract class RateController(val streamUID: Int, rateEstimat
 
   init()
 
-  protected def publish(rate: Long): Unit
+  protected def publish(time: Long, rate: Long, num: Long): Unit
 
   @transient
   implicit private var executionContext: ExecutionContext = _
@@ -61,12 +61,13 @@ private[streaming] abstract class RateController(val streamUID: Int, rateEstimat
   /**
    * Compute the new rate limit and publish it asynchronously.
    */
-  private def computeAndPublish(time: Long, elems: Long, workDelay: Long, waitDelay: Long): Unit =
+  private def computeAndPublish(time: Long, elems: Long, workDelay: Long, waitDelay: Long, num:Int, totalEle: Long, cpId: Long): Unit =
     Future[Unit] {
-      val newRate = rateEstimator.compute(time, elems, workDelay, waitDelay)
-      newRate.foreach { s =>
+      //xin
+      val newRate = rateEstimator.compute(time, elems, workDelay, waitDelay, num, totalEle, cpId)
+      newRate.foreach { case (time, s, num) =>
         rateLimit.set(s.toLong)
-        publish(getLatestRate())
+        publish(time, getLatestRate(), num)
       }
     }
 
@@ -74,13 +75,14 @@ private[streaming] abstract class RateController(val streamUID: Int, rateEstimat
 
   override def onBatchCompleted(batchCompleted: StreamingListenerBatchCompleted) {
     val elements = batchCompleted.batchInfo.streamIdToInputInfo
-
+    val totalEle = batchCompleted.batchInfo.numRecords 
+    
     for {
       processingEnd <- batchCompleted.batchInfo.processingEndTime
       workDelay <- batchCompleted.batchInfo.processingDelay
       waitDelay <- batchCompleted.batchInfo.schedulingDelay
       elems <- elements.get(streamUID).map(_.numRecords)
-    } computeAndPublish(processingEnd, elems, workDelay, waitDelay)
+    } computeAndPublish(processingEnd, elems, workDelay, waitDelay, elements.size, totalEle, batchCompleted.batchInfo.checkpointId)
   }
 }
 

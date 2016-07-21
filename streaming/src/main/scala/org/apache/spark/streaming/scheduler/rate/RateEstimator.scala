@@ -25,6 +25,12 @@ import org.apache.spark.streaming.Duration
  * elements, based on updates at every batch completion.
  */
 private[streaming] trait RateEstimator extends Serializable {
+  def compute(
+      time: Long,
+      elements: Long,
+      processingDelay: Long,
+      schedulingDelay: Long
+      ): Option[(Long, Double, Long)]
 
   /**
    * Computes the number of elements the stream attached to this `RateEstimator`
@@ -40,7 +46,10 @@ private[streaming] trait RateEstimator extends Serializable {
       time: Long,
       elements: Long,
       processingDelay: Long,
-      schedulingDelay: Long): Option[Double]
+      schedulingDelay: Long,
+      num: Int,
+      totalEle: Long,
+      checkpointId: Long): Option[(Long, Double, Long)]
 }
 
 object RateEstimator {

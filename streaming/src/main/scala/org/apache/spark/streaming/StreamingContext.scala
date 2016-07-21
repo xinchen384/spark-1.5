@@ -176,6 +176,7 @@ class StreamingContext private[streaming] (
     }
   }
 
+  var rawCheckpointDuration: Duration = null
   private[streaming] val checkpointDuration: Duration = {
     if (isCheckpointPresent) cp_.checkpointDuration else graph.batchDuration
   }

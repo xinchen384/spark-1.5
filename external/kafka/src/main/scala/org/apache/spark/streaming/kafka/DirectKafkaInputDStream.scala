@@ -209,6 +209,7 @@ class DirectKafkaInputDStream[
    */
   private[streaming] class DirectKafkaRateController(id: Int, estimator: RateEstimator)
     extends RateController(id, estimator) {
-    override def publish(rate: Long): Unit = ()
+    //override def publish(rate: Long): Unit = ()
+    override def publish(time: Long, rate: Long, num: Long): Unit = ()
   }
 }

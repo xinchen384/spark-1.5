@@ -177,6 +177,7 @@ abstract class DStream[T: ClassTag] (
     }
     persist()
     checkpointDuration = interval
+    ssc.rawCheckpointDuration = interval
     this
   }
 
@@ -412,6 +413,7 @@ abstract class DStream[T: ClassTag] (
    * to generate their own jobs.
    */
   private[streaming] def generateJob(time: Time): Option[Job] = {
+    
     getOrCompute(time) match {
       case Some(rdd) => {
         val jobFunc = () => {

@@ -39,6 +39,18 @@ case class BatchInfo(
     processingEndTime: Option[Long]
   ) {
 
+  //xin
+  var checkpointId = -1L 
+  def this(batchTime: Time,
+    streamIdToInputInfo: Map[Int, StreamInputInfo],
+    submissionTime: Long,
+    processingStartTime: Option[Long],
+    processingEndTime: Option[Long],
+    Id: Long){
+    this(batchTime, streamIdToInputInfo, submissionTime, processingStartTime, processingEndTime);
+    checkpointId = Id
+  }
+
   @deprecated("Use streamIdToInputInfo instead", "1.5.0")
   def streamIdToNumRecords: Map[Int, Long] = streamIdToInputInfo.mapValues(_.numRecords)
 

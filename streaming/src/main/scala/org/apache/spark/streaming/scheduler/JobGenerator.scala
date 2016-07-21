@@ -242,12 +242,14 @@ class JobGenerator(jobScheduler: JobScheduler) extends Logging {
     // Example: BlockRDDs are created in this thread, and it needs to access BlockManager
     // Update: This is probably redundant after threadlocal stuff in SparkEnv has been removed.
     SparkEnv.set(ssc.env)
+    //xinLogInfo( "JobGenerator xin for the time" + time + " the real timestamps: " + System.currentTimeMillis())
     Try {
       jobScheduler.receiverTracker.allocateBlocksToBatch(time) // allocate received blocks to batch
       graph.generateJobs(time) // generate jobs using allocated block
     } match {
       case Success(jobs) =>
         val streamIdToInputInfos = jobScheduler.inputInfoTracker.getInfo(time)
+        //xinLogInfo( "JobGenerator xin starts submit job of time" + time + " at timestamp: " + System.currentTimeMillis())
         jobScheduler.submitJobSet(JobSet(time, jobs, streamIdToInputInfos))
       case Failure(e) =>
         jobScheduler.reportError("Error generating jobs for time " + time, e)

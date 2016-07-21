@@ -34,6 +34,7 @@ case class JobSet(
   private val submissionTime = System.currentTimeMillis() // when this jobset was submitted
   private var processingStartTime = -1L // when the first job of this jobset started processing
   private var processingEndTime = -1L // when the last job of this jobset finished processing
+  private var checkpointId = -1L 
 
   jobs.zipWithIndex.foreach { case (job, i) => job.setOutputOpId(i) }
   incompleteJobs ++= jobs
@@ -42,6 +43,11 @@ case class JobSet(
     if (processingStartTime < 0) processingStartTime = System.currentTimeMillis()
   }
 
+  //xin
+  def handleJobStart(job: Job, id: Long) {
+    if (processingStartTime < 0) processingStartTime = System.currentTimeMillis()
+    checkpointId = id
+  }
   def handleJobCompletion(job: Job) {
     incompleteJobs -= job
     if (hasCompleted) processingEndTime = System.currentTimeMillis()
@@ -67,7 +73,8 @@ case class JobSet(
       streamIdToInputInfo,
       submissionTime,
       if (processingStartTime >= 0 ) Some(processingStartTime) else None,
-      if (processingEndTime >= 0 ) Some(processingEndTime) else None
+      if (processingEndTime >= 0 ) Some(processingEndTime) else None,
+      checkpointId
     )
   }
 }

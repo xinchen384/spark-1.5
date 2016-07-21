@@ -147,9 +147,9 @@ class PIDRateEstimatorSuite extends SparkFunSuite with Matchers {
     res.head should equal(None)
     forAll(List.range(1, 50)) { (n) =>
       res(n) should not be None
-      if (res(n).get > 0 && sched(n) > 0) {
-        res(n).get should be < speeds(n)
-        res(n).get should be >= minRate
+      if (res(n).get._2 > 0 && sched(n) > 0) {
+        res(n).get._2 should be < speeds(n)
+        res(n).get._2 should be >= minRate
       }
     }
   }

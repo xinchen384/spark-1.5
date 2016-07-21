@@ -48,7 +48,7 @@ class ReceiverTrackerSuite extends TestSuiteBase {
 
         // Verify that the rate of the block generator in the receiver get updated
         val activeReceiver = RateTestReceiver.getActive().get
-        tracker.sendRateUpdate(inputDStream.id, newRateLimit)
+        tracker.sendRateUpdate(inputDStream.id, -1, newRateLimit, newRateLimit)
         eventually(timeout(5 seconds)) {
           assert(activeReceiver.getDefaultBlockGeneratorRateLimit() === newRateLimit,
             "default block generator did not receive rate update")
@@ -93,7 +93,7 @@ private[streaming] class RateTestInputDStream(@transient ssc_ : StreamingContext
 
   override val rateController: Option[RateController] = {
     Some(new RateController(id, new ConstantEstimator(100)) {
-      override def publish(rate: Long): Unit = {
+      override def publish(time: Long, rate: Long, num: Long): Unit = {
         publishedRates += 1
       }
     })
@@ -107,6 +107,7 @@ private[streaming] class RateTestReceiver(receiverId: Int, host: Option[String] 
   private lazy val customBlockGenerator = supervisor.createBlockGenerator(
     new BlockGeneratorListener {
       override def onPushBlock(blockId: StreamBlockId, arrayBuffer: ArrayBuffer[_]): Unit = {}
+      override def onPushTimeBlock(blockId: StreamBlockId, arrayBuffer: ArrayBuffer[_], time: Long) {}
       override def onError(message: String, throwable: Throwable): Unit = {}
       override def onGenerateBlock(blockId: StreamBlockId): Unit = {}
       override def onAddData(data: Any, metadata: Any): Unit = {}

@@ -80,10 +80,10 @@ private[streaming] class ReceiverSupervisorImpl(
         case CleanupOldBlocks(threshTime) =>
           logDebug("Received delete old batch signal")
           cleanupOldBlocks(threshTime)
-        case UpdateRateLimit(eps) =>
+        case UpdateRateLimit(time, eps, num) =>
           logInfo(s"Received a new rate limit: $eps.")
           registeredBlockGenerators.foreach { bg =>
-            bg.updateRate(eps)
+            bg.updateRate(time, eps, num)
           }
       }
     })
@@ -103,7 +103,10 @@ private[streaming] class ReceiverSupervisorImpl(
     def onError(message: String, throwable: Throwable) {
       reportError(message, throwable)
     }
-
+    //xin
+    def onPushTimeBlock(blockId: StreamBlockId, arrayBuffer: ArrayBuffer[_], time: Long) {
+      pushArrayBuffer(arrayBuffer, Some(time), Some(blockId))
+    }
     def onPushBlock(blockId: StreamBlockId, arrayBuffer: ArrayBuffer[_]) {
       pushArrayBuffer(arrayBuffer, None, Some(blockId))
     }
@@ -157,6 +160,10 @@ private[streaming] class ReceiverSupervisorImpl(
     logDebug(s"Pushed block $blockId in ${(System.currentTimeMillis - time)} ms")
     val numRecords = blockStoreResult.numRecords
     val blockInfo = ReceivedBlockInfo(streamId, numRecords, metadataOption, blockStoreResult)
+    //xin
+    if (metadataOption != None){
+      blockInfo.setBatchTime(metadataOption.get.asInstanceOf[Number].longValue)
+    }
     trackerEndpoint.askWithRetry[Boolean](AddBlock(blockInfo))
     logDebug(s"Reported block $blockId")
   }

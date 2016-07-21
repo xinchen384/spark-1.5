@@ -116,9 +116,13 @@ final private[streaming] class DStreamGraph extends Serializable with Logging {
 
   def generateJobs(time: Time): Seq[Job] = {
     logDebug("Generating jobs for time " + time)
+    //xinLogInfo( "DStreamGraph xin start generating for time: " + time + " starting on: " + System.currentTimeMillis())
     val jobs = this.synchronized {
       outputStreams.flatMap(outputStream => outputStream.generateJob(time))
     }
+    //var mystr:String = "generated Job ids: "
+    //jobs.foreach { (job) => mystr += (job.id + ",") }
+    //xinLogInfo( "DStreamGraph xin finish generating jobs length:" + jobs.length + " for the time: " + time + " the real timestamps: " + System.currentTimeMillis())
     logDebug("Generated " + jobs.length + " jobs for time " + time)
     jobs
   }

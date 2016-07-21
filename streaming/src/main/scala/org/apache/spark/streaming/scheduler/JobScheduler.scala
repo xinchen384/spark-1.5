@@ -152,31 +152,48 @@ class JobScheduler(val ssc: StreamingContext) extends Logging {
     }
   }
 
+    var cpId: Long = -1 
   private def handleJobStart(job: Job) {
     val jobSet = jobSets.get(job.time)
     val isFirstJobOfJobSet = !jobSet.hasStarted
-    jobSet.handleJobStart(job)
+    //xin
+    val jobId = (job.time.milliseconds-ssc.graph.zeroTime.milliseconds)/1000
+    // plus 2: 1 is for the next job, another is for the rate delay
+    cpId = (jobId+5) % (ssc.rawCheckpointDuration.milliseconds/1000)
+    
+    jobSet.handleJobStart(job, cpId)
     if (isFirstJobOfJobSet) {
       // "StreamingListenerBatchStarted" should be posted after calling "handleJobStart" to get the
       // correct "jobSet.processingStartTime".
       listenerBus.post(StreamingListenerBatchStarted(jobSet.toBatchInfo))
     }
+    //xinLogInfo( "JobScheduler xin starting job: " + job.id + " from jobSet time " + jobSet.time + " MyTimestamp: " + System.currentTimeMillis())
     logInfo("Starting job " + job.id + " from job set of time " + jobSet.time)
   }
 
   private def handleJobCompletion(job: Job) {
     job.result match {
       case Success(_) =>
+        //xin
+        val t1 = System.currentTimeMillis()
         val jobSet = jobSets.get(job.time)
         jobSet.handleJobCompletion(job)
         logInfo("Finished job " + job.id + " from job set of time " + jobSet.time)
+        //xinLogInfo( "JobScheduler xin finished job: " + job.id + " from jobSet time " + jobSet.time + " MyTimestamp: " + System.currentTimeMillis())
         if (jobSet.hasCompleted) {
           jobSets.remove(jobSet.time)
+          val t2 = System.currentTimeMillis()
           jobGenerator.onBatchCompletion(jobSet.time)
+          //xinLogInfo("JobScheduler Total %.3f s for time %s (execution: %.3f s) (TS: %d before onBatchCompletion %d, it %d)".format(
+          //  jobSet.totalDelay / 1000.0, jobSet.time.toString,
+          //  jobSet.processingDelay / 1000.0, t1, (t2-t1), (System.currentTimeMillis()-t2) ))
           logInfo("Total delay: %.3f s for time %s (execution: %.3f s)".format(
             jobSet.totalDelay / 1000.0, jobSet.time.toString,
             jobSet.processingDelay / 1000.0
           ))
+          val mybatch = jobSet.toBatchInfo
+          //xinLogInfo( "JobScheduler batchInfo, starts " + mybatch.processingStartTime + " ends " + mybatch.processingEndTime + " workdelay " + mybatch.processingDelay + " schedulerDelay " + mybatch.schedulingDelay + " itself time " + jobSet.time.toString)
+          
           listenerBus.post(StreamingListenerBatchCompleted(jobSet.toBatchInfo))
         }
       case Failure(e) =>

@@ -199,6 +199,7 @@ class BlockGeneratorSuite extends SparkFunSuite with BeforeAndAfter {
           blockId: StreamBlockId, arrayBuffer: mutable.ArrayBuffer[_]): Unit = {
         throw new SparkException("test")
       }
+      override def onPushTimeBlock(blockId: StreamBlockId, arrayBuffer: mutable.ArrayBuffer[_], time: Long) {}
       override def onError(message: String, throwable: Throwable): Unit = {
         errorReported = true
       }
@@ -236,6 +237,7 @@ class BlockGeneratorSuite extends SparkFunSuite with BeforeAndAfter {
     @volatile var onAddDataCalled = false
     @volatile var onPushBlockCalled = false
 
+    override def onPushTimeBlock(blockId: StreamBlockId, arrayBuffer: mutable.ArrayBuffer[_], time: Long) {}
     override def onPushBlock(blockId: StreamBlockId, arrayBuffer: mutable.ArrayBuffer[_]): Unit = {
       pushedData ++= arrayBuffer
       onPushBlockCalled = true

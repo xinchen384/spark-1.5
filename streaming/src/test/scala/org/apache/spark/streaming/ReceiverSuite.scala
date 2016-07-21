@@ -340,6 +340,7 @@ class ReceiverSuite extends TestSuiteBase with Timeouts with Serializable {
     def onAddData(data: Any, metadata: Any) { }
 
     def onGenerateBlock(blockId: StreamBlockId) { }
+    def onPushTimeBlock(blockId: StreamBlockId, arrayBuffer: ArrayBuffer[_], time: Long) {}
 
     def onPushBlock(blockId: StreamBlockId, arrayBuffer: ArrayBuffer[_]) {
       val bufferOfInts = arrayBuffer.map(_.asInstanceOf[Int])

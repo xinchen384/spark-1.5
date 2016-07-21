@@ -55,6 +55,7 @@ private[streaming] trait BlockGeneratorListener {
    * blocking operation in this callback.
    */
   def onPushBlock(blockId: StreamBlockId, arrayBuffer: ArrayBuffer[_])
+  def onPushTimeBlock(blockId: StreamBlockId, arrayBuffer: ArrayBuffer[_], jobTime: Long)
 
   /**
    * Called when an error has occurred in the BlockGenerator. Can be called form many places
@@ -80,7 +81,7 @@ private[streaming] class BlockGenerator(
     clock: Clock = new SystemClock()
   ) extends RateLimiter(conf) with Logging {
 
-  private case class Block(id: StreamBlockId, buffer: ArrayBuffer[Any])
+  private case class Block(id: StreamBlockId, buffer: ArrayBuffer[Any], time: Long)
 
   /**
    * The BlockGenerator can be in 5 possible states, in the order as follows.
@@ -109,7 +110,32 @@ private[streaming] class BlockGenerator(
 
   @volatile private var currentBuffer = new ArrayBuffer[Any]
   @volatile private var state = Initialized
-
+  //xin
+  private var currentRate: BatchNum = null
+  def getNextBlockNum(): Option[BatchNum] = {
+    if (currentRate == null && rateQueue.isEmpty){
+      None
+    } else if (currentRate == null){
+      val jobNum = rateQueue.dequeue
+      //assuming interval is 1000 ms
+      val oneNum = jobNum.numRecords / (1000/blockIntervalMs)
+      currentRate = jobNum.copy(blockNum = oneNum )
+      Some( currentRate )
+    } else{
+      Some( currentRate )
+    } 
+  }
+  def deductOneRate(): Unit= {
+    if (currentRate != null){
+      val oneNum = currentRate.blockNum
+      if (currentRate.numRecords <= oneNum){
+        currentRate = null
+      } else {
+        currentRate.numRecords = currentRate.numRecords-oneNum
+      }
+    }
+  }
+  
   /** Start block generating and pushing threads. */
   def start(): Unit = synchronized {
     if (state == Initialized) {
@@ -232,11 +258,49 @@ private[streaming] class BlockGenerator(
       var newBlock: Block = null
       synchronized {
         if (currentBuffer.nonEmpty) {
-          val newBlockBuffer = currentBuffer
-          currentBuffer = new ArrayBuffer[Any]
-          val blockId = StreamBlockId(receiverId, time - blockIntervalMs)
-          listener.onGenerateBlock(blockId)
-          newBlock = new Block(blockId, newBlockBuffer)
+          //xin
+          val blockNum = getNextBlockNum()
+          var dequeueSign = false
+          if (blockNum != None){
+            val blockLen = blockNum.get.blockNum.min(blockNum.get.numRecords).toInt
+            val blockTime = blockNum.get.jobTime 
+            if ( (time+1000)/1000 == (blockTime/1000) && currentBuffer.length >= blockLen ){
+              val newBlockBuffer = currentBuffer.take(blockNum.get.blockNum.toInt)
+              currentBuffer.remove(0, blockNum.get.blockNum.toInt)
+              val blockId = StreamBlockId(receiverId, time - blockIntervalMs)
+              listener.onGenerateBlock(blockId)
+              newBlock = new Block(blockId, newBlockBuffer, blockTime)
+              deductOneRate() 
+            } else{
+              dequeueSign = true
+              if ( time >= blockTime ){
+                currentRate = null 
+                xinLogInfo(s"xin BlockGenerator updateBuffer for time $time specifiedTime $blockTime")
+              }
+            } 
+          }
+          if (blockNum == None || dequeueSign == true){ 
+            if ( maxNumBlock > 0 && currentBuffer.length > maxNumBlock ){
+              val newBlockBuffer = currentBuffer.take(maxNumBlock.toInt)
+              currentBuffer.remove(0, maxNumBlock.toInt)
+              val blockId = StreamBlockId(receiverId, time - blockIntervalMs)
+              listener.onGenerateBlock(blockId)
+              newBlock = new Block(blockId, newBlockBuffer, -1)
+            val current = System.currentTimeMillis()
+            val blocksize = currentBuffer.length
+            xinLogInfo(s"xin BlockGenerator updateBuffer for time $time currentTime $current leftsize $blocksize $maxNumBlock")
+            } else {
+              val newBlockBuffer = currentBuffer
+              currentBuffer = new ArrayBuffer[Any]
+              val blockId = StreamBlockId(receiverId, time - blockIntervalMs)
+              listener.onGenerateBlock(blockId)
+              newBlock = new Block(blockId, newBlockBuffer, -1)
+            } 
+          } else {
+            
+          }
+            val newSize = newBlock.buffer.length
+            xinLogInfo(s"xin BlockGenerator updateBuffer for time $time new Block size $newSize threshold: $maxNumBlock")
         }
       }
 
@@ -291,7 +355,7 @@ private[streaming] class BlockGenerator(
   }
 
   private def pushBlock(block: Block) {
-    listener.onPushBlock(block.id, block.buffer)
+    listener.onPushTimeBlock(block.id, block.buffer, block.time)
     logInfo("Pushed block " + block.id)
   }
 }

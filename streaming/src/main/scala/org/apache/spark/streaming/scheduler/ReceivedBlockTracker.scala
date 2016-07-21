@@ -72,8 +72,17 @@ private[streaming] class ReceivedBlockTracker(
   private val streamIdToUnallocatedBlockQueues = new mutable.HashMap[Int, ReceivedBlockQueue]
   private val timeToAllocatedBlocks = new mutable.HashMap[Time, AllocatedBlocks]
   private val writeAheadLogOption = createWriteAheadLog()
-
   private var lastAllocatedBatchTime: Time = null
+
+  //xin the number of records per second
+  val emptyJobTimestamp = new mutable.ArrayBuffer[Long]()
+  val streamIdToRates = new mutable.HashMap[Int, Long]
+  private case class BatchNum(jobTime: Long, numRecords: Long)
+  private type TimeBlocksHashMap = mutable.HashMap[Long, ReceivedBlockQueue]
+  private type RateQueue = mutable.Queue[BatchNum]
+  private val streamIdTimeBlockQueues = new mutable.HashMap[Int, TimeBlocksHashMap]
+  // memorize the rate for each job, just to check
+  private val streamIdRateQueues = new mutable.HashMap[Int, RateQueue]
 
   // Recover block information from write ahead logs
   if (recoverFromWriteAheadLog) {
@@ -84,7 +93,15 @@ private[streaming] class ReceivedBlockTracker(
   def addBlock(receivedBlockInfo: ReceivedBlockInfo): Boolean = synchronized {
     try {
       writeToLog(BlockAdditionEvent(receivedBlockInfo))
-      getReceivedBlockQueue(receivedBlockInfo.streamId) += receivedBlockInfo
+      //xin
+      val batchTime = receivedBlockInfo.getBatchTime
+      if ( batchTime != -1 ){
+        //streamIdTimeBlockQueues(receivedBlockInfo.streamId)(batchTime) += receivedBlockInfo
+        getIdTimeQueue(receivedBlockInfo.streamId, batchTime) += receivedBlockInfo 
+      } else {
+        getReceivedBlockQueue(receivedBlockInfo.streamId) += receivedBlockInfo
+      }
+      
       logDebug(s"Stream ${receivedBlockInfo.streamId} received " +
         s"block ${receivedBlockInfo.blockStoreResult.blockId}")
       true
@@ -95,6 +112,84 @@ private[streaming] class ReceivedBlockTracker(
     }
   }
 
+  //xin
+  private def getRateQueue(streamId: Int): RateQueue = {
+    streamIdRateQueues.getOrElseUpdate(streamId, new RateQueue)
+  }
+  private def getIdTimeHashMap(streamId: Int): TimeBlocksHashMap = {
+    streamIdTimeBlockQueues.getOrElseUpdate(streamId, new TimeBlocksHashMap)
+  } 
+  private def getIdTimeQueue(streamId: Int, time: Long): ReceivedBlockQueue = {
+    getIdTimeHashMap(streamId).getOrElseUpdate(time, new ReceivedBlockQueue) 
+  } 
+  def updateJobRate(streamId: Int, jobTime: Long, num: Long): Unit = {
+    // assuming the jobtime comes in order
+    val batchNum = new BatchNum( jobTime, num )
+    //getRateQueue(streamId).enqueue( batchNum )
+    getRateQueue(streamId) += batchNum 
+  }
+  def getBatchTimeBlocks(streamId: Int, batchTime: Long): Seq[ReceivedBlockInfo] = {
+    if (emptyJobTimestamp.contains(batchTime)){
+      emptyJobTimestamp.remove(emptyJobTimestamp.indexOf(batchTime))
+      val buffer = mutable.ArrayBuffer[ReceivedBlockInfo]()
+      val mylen = emptyJobTimestamp.length
+      xinLogInfo(s"xin ReceivedBlockTracker zero element length: $mylen for time $batchTime")
+      return buffer.toSeq 
+    }
+    val timeQueue = getIdTimeHashMap(streamId)
+    if ( timeQueue.keySet.contains(batchTime ) ){
+      //xin
+      val qlen = timeQueue(batchTime).length
+      val queueNum: Long = timeQueue(batchTime).map(_.numRecords.get).sum
+      xinLogInfo(s"xin ReceivedBlockTracker myTimeQueue, Time: $batchTime NumBlocks: $qlen totalSize $queueNum")
+      timeQueue(batchTime).dequeueAll(x => true)
+    } else {
+      //val blockStr = getReceivedBlockQueue(streamId).map(_.numRecords.get).mkString(" ")
+      //val current = System.currentTimeMillis() 
+      //xinLogInfo(s"xin ReceivedBlockTracker allocate for batchTime $batchTime currentTime $current BlockLen $blockStr")
+      //getReceivedBlockQueue(streamId).dequeueAll(x => true)
+      takeFirstN(getReceivedBlockQueue(streamId), 5)
+    }
+  }
+  def takeFirstN(myqueue: mutable.Queue[ReceivedBlockInfo], n: Int): Seq[ReceivedBlockInfo] ={
+    if (n < 0 || myqueue.isEmpty)
+      return myqueue.dequeueAll(x => true)
+    var buffer = mutable.ArrayBuffer[ReceivedBlockInfo]()
+    var myCount = 0
+    while (!myqueue.isEmpty && myCount < n){
+      val blockInfo = myqueue.dequeue()
+      buffer += blockInfo 
+      myCount += 1 
+    }
+    //xinLogInfo(s"xin ReceivedBlockTracker queue size: $queueNum, myCount $myCount specifiedRate $n qlength $qlen")
+    return buffer.toSeq
+  }
+  def getElements(myqueue: mutable.Queue[ReceivedBlockInfo], n: Long): Seq[ReceivedBlockInfo] ={
+    val qlen = myqueue.length
+    val queueNum: Long = myqueue.map(_.numRecords.get).sum
+    xinLogInfo(s"xin ReceivedBlockTracker queue size: $queueNum, qlength $qlen, specifiedRate $n")
+    return myqueue.dequeueAll(x => true)
+
+    if (n < 0 || myqueue.isEmpty)
+      return myqueue.dequeueAll(x => true)
+    var buffer = mutable.ArrayBuffer[ReceivedBlockInfo]()
+    //add the first block, this job needs to have data 
+    var myCount: Long = myqueue.front.numRecords.get 
+    buffer += myqueue.dequeue()
+
+    if (!myqueue.isEmpty)
+      myCount += myqueue.front.numRecords.get
+    while (!myqueue.isEmpty && myCount < n){
+      val blockInfo = myqueue.dequeue()
+      buffer += blockInfo 
+      if (!myqueue.isEmpty) 
+        myCount += myqueue.front.numRecords.get
+      //myCount += blockInfo.numRecords.get
+    }
+    xinLogInfo(s"xin ReceivedBlockTracker queue size: $queueNum, myCount $myCount specifiedRate $n qlength $qlen")
+    return buffer.toSeq
+  }
+    
   /**
    * Allocate all unallocated blocks to the given batch.
    * This event will get written to the write ahead log (if enabled).
@@ -102,7 +197,9 @@ private[streaming] class ReceivedBlockTracker(
   def allocateBlocksToBatch(batchTime: Time): Unit = synchronized {
     if (lastAllocatedBatchTime == null || batchTime > lastAllocatedBatchTime) {
       val streamIdToBlocks = streamIds.map { streamId =>
-          (streamId, getReceivedBlockQueue(streamId).dequeueAll(x => true))
+          //(streamId, getReceivedBlockQueue(streamId).dequeueAll(x => true))
+          //(streamId, getElements(getReceivedBlockQueue(streamId), streamIdToRates.getOrElseUpdate(streamId, -1)))
+          (streamId, getBatchTimeBlocks(streamId, batchTime.milliseconds))
       }.toMap
       val allocatedBlocks = AllocatedBlocks(streamIdToBlocks)
       writeToLog(BatchAllocationEvent(batchTime, allocatedBlocks))
@@ -154,6 +251,8 @@ private[streaming] class ReceivedBlockTracker(
    */
   def cleanupOldBatches(cleanupThreshTime: Time, waitForCompletion: Boolean): Unit = synchronized {
     require(cleanupThreshTime.milliseconds < clock.getTimeMillis())
+    //xin
+    streamIdTimeBlockQueues.foreach{ case (id, timeHashMap) => timeHashMap.keys.filter{_ < cleanupThreshTime.milliseconds} }
     val timesToCleanup = timeToAllocatedBlocks.keys.filter { _ < cleanupThreshTime }.toSeq
     logInfo("Deleting batches " + timesToCleanup)
     writeToLog(BatchCleanupEvent(timesToCleanup))

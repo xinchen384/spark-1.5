@@ -34,7 +34,7 @@ import org.apache.spark.{Logging, SparkEnv}
 import org.apache.spark.storage.{StorageLevel, StreamBlockId}
 import org.apache.spark.streaming.receiver.{BlockGenerator, BlockGeneratorListener, Receiver}
 import org.apache.spark.util.ThreadUtils
-
+import scala.collection.mutable.ArrayBuffer
 /**
  * ReliableKafkaReceiver offers the ability to reliably store data into BlockManager without loss.
  * It is turned off by default and will be enabled when
@@ -283,7 +283,7 @@ class ReliableKafkaReceiver[
         updateOffset(topicAndPartition, offset)
       }
     }
-
+    def onPushTimeBlock(blockId: StreamBlockId, arrayBuffer: ArrayBuffer[_], jobTime: Long): Unit = {}
     def onGenerateBlock(blockId: StreamBlockId): Unit = {
       // Remember the offsets of topics/partitions when a block has been generated
       rememberBlockOffsets(blockId)

@@ -31,6 +31,7 @@ class Job(val time: Time, func: () => _) {
   private var _result: Try[_] = null
 
   def run() {
+    //xinLogInfo( "Job xin starts running job: " + _id + " at timestamp: " + System.currentTimeMillis())
     _result = Try(func())
   }
 
