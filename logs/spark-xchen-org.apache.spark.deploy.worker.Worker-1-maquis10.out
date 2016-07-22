@@ -1,10 +1,55 @@
 Spark Command: /usr/lib/jvm/java-1.7.0-openjdk-1.7.0.19.x86_64/jre/bin/java -cp /mnt/xin/spark-1.5.0/sbin/../conf/:/mnt/xin/spark-1.5.0/assembly/target/scala-2.10/spark-assembly-1.5.0-hadoop2.2.0.jar:/mnt/xin/spark-1.5.0/lib_managed/jars/datanucleus-api-jdo-3.2.6.jar:/mnt/xin/spark-1.5.0/lib_managed/jars/datanucleus-core-3.2.10.jar:/mnt/xin/spark-1.5.0/lib_managed/jars/datanucleus-rdbms-3.2.9.jar -Xms1g -Xmx1g -XX:MaxPermSize=256m org.apache.spark.deploy.worker.Worker --webui-port 8081 spark://130.207.110.170:7077
 ========================================
-16/07/19 16:21:12 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
-16/07/19 16:21:13 INFO Slf4jLogger: Slf4jLogger started
-16/07/19 16:21:13 INFO Remoting: Starting remoting
-16/07/19 16:21:14 INFO Remoting: Remoting started; listening on addresses :[akka.tcp://sparkWorker@130.207.110.170:50880]
-16/07/19 16:25:14 WARN ReliableDeliverySupervisor: Association with remote system [akka.tcp://sparkExecutor@130.207.110.170:44975] has failed, address is now gated for [5000] ms. Reason: [Disassociated] 
-16/07/19 16:31:49 WARN ReliableDeliverySupervisor: Association with remote system [akka.tcp://sparkExecutor@130.207.110.170:48050] has failed, address is now gated for [5000] ms. Reason: [Disassociated] 
-16/07/19 16:39:23 WARN ReliableDeliverySupervisor: Association with remote system [akka.tcp://sparkExecutor@130.207.110.170:46445] has failed, address is now gated for [5000] ms. Reason: [Disassociated] 
-16/07/19 16:49:51 WARN ReliableDeliverySupervisor: Association with remote system [akka.tcp://sparkExecutor@130.207.110.170:36832] has failed, address is now gated for [5000] ms. Reason: [Disassociated] 
+16/07/22 15:57:25 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+16/07/22 15:57:26 INFO Slf4jLogger: Slf4jLogger started
+16/07/22 15:57:26 INFO Remoting: Starting remoting
+16/07/22 15:57:27 INFO Remoting: Remoting started; listening on addresses :[akka.tcp://sparkWorker@130.207.110.170:40700]
+16/07/22 15:58:22 ERROR Utils: Failed to create local root dir in /tmp/myspark. Ignoring this directory.
+16/07/22 15:58:24 ERROR FileAppender: Error writing stream to file /dev/shm/testlog/work-maquis10/app-20160722155822-0000/2/stderr
+java.io.IOException: Stream closed
+	at java.io.BufferedInputStream.getBufIfOpen(BufferedInputStream.java:162)
+	at java.io.BufferedInputStream.read1(BufferedInputStream.java:272)
+	at java.io.BufferedInputStream.read(BufferedInputStream.java:334)
+	at java.io.FilterInputStream.read(FilterInputStream.java:107)
+	at org.apache.spark.util.logging.FileAppender.appendStreamToFile(FileAppender.scala:70)
+	at org.apache.spark.util.logging.FileAppender$$anon$1$$anonfun$run$1.apply$mcV$sp(FileAppender.scala:39)
+	at org.apache.spark.util.logging.FileAppender$$anon$1$$anonfun$run$1.apply(FileAppender.scala:39)
+	at org.apache.spark.util.logging.FileAppender$$anon$1$$anonfun$run$1.apply(FileAppender.scala:39)
+	at org.apache.spark.util.Utils$.logUncaughtExceptions(Utils.scala:1699)
+	at org.apache.spark.util.logging.FileAppender$$anon$1.run(FileAppender.scala:38)
+16/07/22 15:58:24 ERROR FileAppender: Error writing stream to file /dev/shm/testlog/work-maquis10/app-20160722155822-0000/2/stdout
+java.io.IOException: Stream closed
+	at java.io.BufferedInputStream.getBufIfOpen(BufferedInputStream.java:162)
+	at java.io.BufferedInputStream.read1(BufferedInputStream.java:272)
+	at java.io.BufferedInputStream.read(BufferedInputStream.java:334)
+	at java.io.FilterInputStream.read(FilterInputStream.java:107)
+	at org.apache.spark.util.logging.FileAppender.appendStreamToFile(FileAppender.scala:70)
+	at org.apache.spark.util.logging.FileAppender$$anon$1$$anonfun$run$1.apply$mcV$sp(FileAppender.scala:39)
+	at org.apache.spark.util.logging.FileAppender$$anon$1$$anonfun$run$1.apply(FileAppender.scala:39)
+	at org.apache.spark.util.logging.FileAppender$$anon$1$$anonfun$run$1.apply(FileAppender.scala:39)
+	at org.apache.spark.util.Utils$.logUncaughtExceptions(Utils.scala:1699)
+	at org.apache.spark.util.logging.FileAppender$$anon$1.run(FileAppender.scala:38)
+16/07/22 16:02:56 ERROR FileAppender: Error writing stream to file /dev/shm/testlog/work-maquis10/app-20160722160254-0001/2/stderr
+java.io.IOException: Stream closed
+	at java.io.BufferedInputStream.getBufIfOpen(BufferedInputStream.java:162)
+	at java.io.BufferedInputStream.read1(BufferedInputStream.java:272)
+	at java.io.BufferedInputStream.read(BufferedInputStream.java:334)
+	at java.io.FilterInputStream.read(FilterInputStream.java:107)
+	at org.apache.spark.util.logging.FileAppender.appendStreamToFile(FileAppender.scala:70)
+	at org.apache.spark.util.logging.FileAppender$$anon$1$$anonfun$run$1.apply$mcV$sp(FileAppender.scala:39)
+	at org.apache.spark.util.logging.FileAppender$$anon$1$$anonfun$run$1.apply(FileAppender.scala:39)
+	at org.apache.spark.util.logging.FileAppender$$anon$1$$anonfun$run$1.apply(FileAppender.scala:39)
+	at org.apache.spark.util.Utils$.logUncaughtExceptions(Utils.scala:1699)
+	at org.apache.spark.util.logging.FileAppender$$anon$1.run(FileAppender.scala:38)
+16/07/22 16:02:56 ERROR FileAppender: Error writing stream to file /dev/shm/testlog/work-maquis10/app-20160722160254-0001/2/stdout
+java.io.IOException: Stream closed
+	at java.io.BufferedInputStream.getBufIfOpen(BufferedInputStream.java:162)
+	at java.io.BufferedInputStream.read1(BufferedInputStream.java:272)
+	at java.io.BufferedInputStream.read(BufferedInputStream.java:334)
+	at java.io.FilterInputStream.read(FilterInputStream.java:107)
+	at org.apache.spark.util.logging.FileAppender.appendStreamToFile(FileAppender.scala:70)
+	at org.apache.spark.util.logging.FileAppender$$anon$1$$anonfun$run$1.apply$mcV$sp(FileAppender.scala:39)
+	at org.apache.spark.util.logging.FileAppender$$anon$1$$anonfun$run$1.apply(FileAppender.scala:39)
+	at org.apache.spark.util.logging.FileAppender$$anon$1$$anonfun$run$1.apply(FileAppender.scala:39)
+	at org.apache.spark.util.Utils$.logUncaughtExceptions(Utils.scala:1699)
+	at org.apache.spark.util.logging.FileAppender$$anon$1.run(FileAppender.scala:38)

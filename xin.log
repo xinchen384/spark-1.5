@@ -48,6 +48,7 @@
 [INFO] Executing tasks
 
 main:
+    [mkdir] Created dir: /mnt/xin/spark-1.5.0/target/tmp
 [INFO] Executed tasks
 [INFO] 
 [INFO] --- scala-maven-plugin:3.2.2:testCompile (scala-test-compile-first) @ spark-parent_2.10 ---
@@ -59,6 +60,7 @@ main:
 [INFO] Tests are skipped.
 [INFO] 
 [INFO] --- maven-jar-plugin:2.6:test-jar (prepare-test-jar) @ spark-parent_2.10 ---
+[INFO] Building jar: /mnt/xin/spark-1.5.0/target/spark-parent_2.10-1.5.0-tests.jar
 [INFO] 
 [INFO] --- maven-site-plugin:3.3:attach-descriptor (attach-descriptor) @ spark-parent_2.10 ---
 [INFO] 
@@ -90,7 +92,7 @@ main:
 [INFO] --- scala-maven-plugin:3.2.2:compile (scala-compile-first) @ spark-launcher_2.10 ---
 [INFO] Using zinc server for incremental compilation
 [0m[[0minfo[0m] [0mCompiling 8 Java sources to /mnt/xin/spark-1.5.0/launcher/target/scala-2.10/classes...[0m
-[0m[[0minfo[0m] [0mCompile success at Jul 20, 2016 12:03:51 AM [1.824s][0m
+[0m[[0minfo[0m] [0mCompile success at Jul 20, 2016 9:42:27 PM [3.577s][0m
 [INFO] 
 [INFO] --- maven-compiler-plugin:3.3:compile (default-compile) @ spark-launcher_2.10 ---
 [INFO] Changes detected - recompiling the module!
@@ -100,6 +102,7 @@ main:
 [INFO] Executing tasks
 
 main:
+    [mkdir] Created dir: /mnt/xin/spark-1.5.0/launcher/target/tmp
 [INFO] Executed tasks
 [INFO] 
 [INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ spark-launcher_2.10 ---
@@ -109,10 +112,12 @@ main:
 [INFO] 
 [INFO] --- scala-maven-plugin:3.2.2:testCompile (scala-test-compile-first) @ spark-launcher_2.10 ---
 [INFO] Using zinc server for incremental compilation
-[0m[[0minfo[0m] [0mCompile success at Jul 20, 2016 12:03:55 AM [0.148s][0m
+[0m[[0minfo[0m] [0mCompiling 4 Java sources to /mnt/xin/spark-1.5.0/launcher/target/scala-2.10/test-classes...[0m
+[0m[[0minfo[0m] [0mCompile success at Jul 20, 2016 9:42:34 PM [2.770s][0m
 [INFO] 
 [INFO] --- maven-compiler-plugin:3.3:testCompile (default-testCompile) @ spark-launcher_2.10 ---
-[INFO] Nothing to compile - all classes are up to date
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 4 source files to /mnt/xin/spark-1.5.0/launcher/target/scala-2.10/test-classes
 [INFO] 
 [INFO] --- maven-dependency-plugin:2.10:build-classpath (default) @ spark-launcher_2.10 ---
 [INFO] 
@@ -201,15 +206,18 @@ main:
 [INFO] 
 [INFO] --- scala-maven-plugin:3.2.2:compile (scala-compile-first) @ spark-network-common_2.10 ---
 [INFO] Using zinc server for incremental compilation
-[0m[[0minfo[0m] [0mCompile success at Jul 20, 2016 12:03:57 AM [0.119s][0m
+[0m[[0minfo[0m] [0mCompiling 56 Java sources to /mnt/xin/spark-1.5.0/network/common/target/scala-2.10/classes...[0m
+[0m[[0minfo[0m] [0mCompile success at Jul 20, 2016 9:42:41 PM [3.876s][0m
 [INFO] 
 [INFO] --- maven-compiler-plugin:3.3:compile (default-compile) @ spark-network-common_2.10 ---
-[INFO] Nothing to compile - all classes are up to date
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 56 source files to /mnt/xin/spark-1.5.0/network/common/target/scala-2.10/classes
 [INFO] 
 [INFO] --- maven-antrun-plugin:1.8:run (create-tmp-dir) @ spark-network-common_2.10 ---
 [INFO] Executing tasks
 
 main:
+    [mkdir] Created dir: /mnt/xin/spark-1.5.0/network/common/target/tmp
 [INFO] Executed tasks
 [INFO] 
 [INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ spark-network-common_2.10 ---
@@ -219,10 +227,12 @@ main:
 [INFO] 
 [INFO] --- scala-maven-plugin:3.2.2:testCompile (scala-test-compile-first) @ spark-network-common_2.10 ---
 [INFO] Using zinc server for incremental compilation
-[0m[[0minfo[0m] [0mCompile success at Jul 20, 2016 12:03:57 AM [0.126s][0m
+[0m[[0minfo[0m] [0mCompiling 10 Java sources to /mnt/xin/spark-1.5.0/network/common/target/scala-2.10/test-classes...[0m
+[0m[[0minfo[0m] [0mCompile success at Jul 20, 2016 9:42:46 PM [2.463s][0m
 [INFO] 
 [INFO] --- maven-compiler-plugin:3.3:testCompile (default-testCompile) @ spark-network-common_2.10 ---
-[INFO] Nothing to compile - all classes are up to date
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 10 source files to /mnt/xin/spark-1.5.0/network/common/target/scala-2.10/test-classes
 [INFO] 
 [INFO] --- maven-dependency-plugin:2.10:build-classpath (default) @ spark-network-common_2.10 ---
 [INFO] 
@@ -277,15 +287,18 @@ main:
 [INFO] 
 [INFO] --- scala-maven-plugin:3.2.2:compile (scala-compile-first) @ spark-network-shuffle_2.10 ---
 [INFO] Using zinc server for incremental compilation
-[0m[[0minfo[0m] [0mCompile success at Jul 20, 2016 12:04:02 AM [0.072s][0m
+[0m[[0minfo[0m] [0mCompiling 16 Java sources to /mnt/xin/spark-1.5.0/network/shuffle/target/scala-2.10/classes...[0m
+[0m[[0minfo[0m] [0mCompile success at Jul 20, 2016 9:43:01 PM [2.101s][0m
 [INFO] 
 [INFO] --- maven-compiler-plugin:3.3:compile (default-compile) @ spark-network-shuffle_2.10 ---
-[INFO] Nothing to compile - all classes are up to date
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 16 source files to /mnt/xin/spark-1.5.0/network/shuffle/target/scala-2.10/classes
 [INFO] 
 [INFO] --- maven-antrun-plugin:1.8:run (create-tmp-dir) @ spark-network-shuffle_2.10 ---
 [INFO] Executing tasks
 
 main:
+    [mkdir] Created dir: /mnt/xin/spark-1.5.0/network/shuffle/target/tmp
 [INFO] Executed tasks
 [INFO] 
 [INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ spark-network-shuffle_2.10 ---
@@ -295,10 +308,12 @@ main:
 [INFO] 
 [INFO] --- scala-maven-plugin:3.2.2:testCompile (scala-test-compile-first) @ spark-network-shuffle_2.10 ---
 [INFO] Using zinc server for incremental compilation
-[0m[[0minfo[0m] [0mCompile success at Jul 20, 2016 12:04:03 AM [0.095s][0m
+[0m[[0minfo[0m] [0mCompiling 10 Java sources to /mnt/xin/spark-1.5.0/network/shuffle/target/scala-2.10/test-classes...[0m
+[0m[[0minfo[0m] [0mCompile success at Jul 20, 2016 9:43:05 PM [2.407s][0m
 [INFO] 
 [INFO] --- maven-compiler-plugin:3.3:testCompile (default-testCompile) @ spark-network-shuffle_2.10 ---
-[INFO] Nothing to compile - all classes are up to date
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 10 source files to /mnt/xin/spark-1.5.0/network/shuffle/target/scala-2.10/test-classes
 [INFO] 
 [INFO] --- maven-dependency-plugin:2.10:build-classpath (default) @ spark-network-shuffle_2.10 ---
 [INFO] 
@@ -351,15 +366,18 @@ main:
 [INFO] 
 [INFO] --- scala-maven-plugin:3.2.2:compile (scala-compile-first) @ spark-unsafe_2.10 ---
 [INFO] Using zinc server for incremental compilation
-[0m[[0minfo[0m] [0mCompile success at Jul 20, 2016 12:04:03 AM [0.071s][0m
+[0m[[0minfo[0m] [0mCompiling 17 Java sources to /mnt/xin/spark-1.5.0/unsafe/target/scala-2.10/classes...[0m
+[0m[[0minfo[0m] [0mCompile success at Jul 20, 2016 9:43:09 PM [2.131s][0m
 [INFO] 
 [INFO] --- maven-compiler-plugin:3.3:compile (default-compile) @ spark-unsafe_2.10 ---
-[INFO] Nothing to compile - all classes are up to date
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 17 source files to /mnt/xin/spark-1.5.0/unsafe/target/scala-2.10/classes
 [INFO] 
 [INFO] --- maven-antrun-plugin:1.8:run (create-tmp-dir) @ spark-unsafe_2.10 ---
 [INFO] Executing tasks
 
 main:
+    [mkdir] Created dir: /mnt/xin/spark-1.5.0/unsafe/target/tmp
 [INFO] Executed tasks
 [INFO] 
 [INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ spark-unsafe_2.10 ---
@@ -369,10 +387,12 @@ main:
 [INFO] 
 [INFO] --- scala-maven-plugin:3.2.2:testCompile (scala-test-compile-first) @ spark-unsafe_2.10 ---
 [INFO] Using zinc server for incremental compilation
-[0m[[0minfo[0m] [0mCompile success at Jul 20, 2016 12:04:03 AM [0.092s][0m
+[0m[[0minfo[0m] [0mCompiling 1 Scala source and 6 Java sources to /mnt/xin/spark-1.5.0/unsafe/target/scala-2.10/test-classes...[0m
+[0m[[0minfo[0m] [0mCompile success at Jul 20, 2016 9:43:30 PM [18.247s][0m
 [INFO] 
 [INFO] --- maven-compiler-plugin:3.3:testCompile (default-testCompile) @ spark-unsafe_2.10 ---
-[INFO] Nothing to compile - all classes are up to date
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 6 source files to /mnt/xin/spark-1.5.0/unsafe/target/scala-2.10/test-classes
 [INFO] 
 [INFO] --- maven-dependency-plugin:2.10:build-classpath (default) @ spark-unsafe_2.10 ---
 [INFO] 
@@ -424,12 +444,79 @@ main:
 [INFO] 
 [INFO] --- scala-maven-plugin:3.2.2:compile (scala-compile-first) @ spark-core_2.10 ---
 [INFO] Using zinc server for incremental compilation
-[0m[[0minfo[0m] [0mCompiling 51 Java sources to /mnt/xin/spark-1.5.0/core/target/scala-2.10/classes...[0m
+[0m[[0minfo[0m] [0mCompiling 481 Scala sources and 63 Java sources to /mnt/xin/spark-1.5.0/core/target/scala-2.10/classes...[0m
+[0m[[33mwarn[0m] [0m/mnt/xin/spark-1.5.0/core/src/main/scala/org/apache/spark/SparkContext.scala:857: constructor Job in class Job is deprecated: see corresponding Javadoc for more information.[0m
+[0m[[33mwarn[0m] [0m    val job = new NewHadoopJob(hadoopConfiguration)[0m
+[0m[[33mwarn[0m] [0m              ^[0m
+[0m[[33mwarn[0m] [0m/mnt/xin/spark-1.5.0/core/src/main/scala/org/apache/spark/SparkContext.scala:909: constructor Job in class Job is deprecated: see corresponding Javadoc for more information.[0m
+[0m[[33mwarn[0m] [0m    val job = new NewHadoopJob(hadoopConfiguration)[0m
+[0m[[33mwarn[0m] [0m              ^[0m
+[0m[[33mwarn[0m] [0m/mnt/xin/spark-1.5.0/core/src/main/scala/org/apache/spark/SparkContext.scala:1091: constructor Job in class Job is deprecated: see corresponding Javadoc for more information.[0m
+[0m[[33mwarn[0m] [0m    val job = new NewHadoopJob(conf)[0m
+[0m[[33mwarn[0m] [0m              ^[0m
+[0m[[33mwarn[0m] [0m/mnt/xin/spark-1.5.0/core/src/main/scala/org/apache/spark/SparkContext.scala:1358: method isDir in class FileStatus is deprecated: see corresponding Javadoc for more information.[0m
+[0m[[33mwarn[0m] [0m      val isDir = fs.getFileStatus(hadoopPath).isDir[0m
+[0m[[33mwarn[0m] [0m                                               ^[0m
+[0m[[33mwarn[0m] [0m/mnt/xin/spark-1.5.0/core/src/main/scala/org/apache/spark/SparkHadoopWriter.scala:154: constructor TaskID in class TaskID is deprecated: see corresponding Javadoc for more information.[0m
+[0m[[33mwarn[0m] [0m        new TaskAttemptID(new TaskID(jID.value, true, splitID), attemptID))[0m
+[0m[[33mwarn[0m] [0m                          ^[0m
+[0m[[33mwarn[0m] [0m/mnt/xin/spark-1.5.0/core/src/main/scala/org/apache/spark/SparkHadoopWriter.scala:175: method makeQualified in class Path is deprecated: see corresponding Javadoc for more information.[0m
+[0m[[33mwarn[0m] [0m    outputPath.makeQualified(fs)[0m
+[0m[[33mwarn[0m] [0m               ^[0m
+[0m[[33mwarn[0m] [0m/mnt/xin/spark-1.5.0/core/src/main/scala/org/apache/spark/deploy/SparkHadoopUtil.scala:227: method isDir in class FileStatus is deprecated: see corresponding Javadoc for more information.[0m
+[0m[[33mwarn[0m] [0m      val (directories, leaves) = fs.listStatus(status.getPath).partition(_.isDir)[0m
+[0m[[33mwarn[0m] [0m                                                                            ^[0m
+[0m[[33mwarn[0m] [0m/mnt/xin/spark-1.5.0/core/src/main/scala/org/apache/spark/deploy/SparkHadoopUtil.scala:231: method isDir in class FileStatus is deprecated: see corresponding Javadoc for more information.[0m
+[0m[[33mwarn[0m] [0m    if (baseStatus.isDir) recurse(baseStatus) else Seq(baseStatus)[0m
+[0m[[33mwarn[0m] [0m                   ^[0m
+[0m[[33mwarn[0m] [0m/mnt/xin/spark-1.5.0/core/src/main/scala/org/apache/spark/deploy/SparkHadoopUtil.scala:240: method isDir in class FileStatus is deprecated: see corresponding Javadoc for more information.[0m
+[0m[[33mwarn[0m] [0m      val (directories, files) = fs.listStatus(status.getPath).partition(_.isDir)[0m
+[0m[[33mwarn[0m] [0m                                                                           ^[0m
+[0m[[33mwarn[0m] [0m/mnt/xin/spark-1.5.0/core/src/main/scala/org/apache/spark/deploy/SparkHadoopUtil.scala:245: method isDir in class FileStatus is deprecated: see corresponding Javadoc for more information.[0m
+[0m[[33mwarn[0m] [0m    assert(baseStatus.isDir)[0m
+[0m[[33mwarn[0m] [0m                      ^[0m
+[0m[[33mwarn[0m] [0m/mnt/xin/spark-1.5.0/core/src/main/scala/org/apache/spark/deploy/history/FsHistoryProvider.scala:121: method isDir in class FileStatus is deprecated: see corresponding Javadoc for more information.[0m
+[0m[[33mwarn[0m] [0m    if (!fs.getFileStatus(path).isDir) {[0m
+[0m[[33mwarn[0m] [0m                                ^[0m
+[0m[[33mwarn[0m] [0m/mnt/xin/spark-1.5.0/core/src/main/scala/org/apache/spark/deploy/history/FsHistoryProvider.scala:510: method isDir in class FileStatus is deprecated: see corresponding Javadoc for more information.[0m
+[0m[[33mwarn[0m] [0m  private def isLegacyLogDirectory(entry: FileStatus): Boolean = entry.isDir()[0m
+[0m[[33mwarn[0m] [0m                                                                       ^[0m
+[0m[[33mwarn[0m] [0m/mnt/xin/spark-1.5.0/core/src/main/scala/org/apache/spark/input/PortableDataStream.scala:49: method isDir in class FileStatus is deprecated: see corresponding Javadoc for more information.[0m
+[0m[[33mwarn[0m] [0m      if (file.isDir) 0L else file.getLen[0m
+[0m[[33mwarn[0m] [0m               ^[0m
+[0m[[33mwarn[0m] [0m/mnt/xin/spark-1.5.0/core/src/main/scala/org/apache/spark/input/WholeTextFileInputFormat.scala:57: method isDir in class FileStatus is deprecated: see corresponding Javadoc for more information.[0m
+[0m[[33mwarn[0m] [0m      if (file.isDir) 0L else file.getLen[0m
+[0m[[33mwarn[0m] [0m               ^[0m
+[0m[[33mwarn[0m] [0m/mnt/xin/spark-1.5.0/core/src/main/scala/org/apache/spark/mapred/SparkHadoopMapRedUtil.scala:64: constructor TaskAttemptID in class TaskAttemptID is deprecated: see corresponding Javadoc for more information.[0m
+[0m[[33mwarn[0m] [0m    new TaskAttemptID(jtIdentifier, jobId, isMap, taskId, attemptId)[0m
+[0m[[33mwarn[0m] [0m    ^[0m
+[0m[[33mwarn[0m] [0m/mnt/xin/spark-1.5.0/core/src/main/scala/org/apache/spark/rdd/HadoopRDD.scala:354: constructor TaskID in class TaskID is deprecated: see corresponding Javadoc for more information.[0m
+[0m[[33mwarn[0m] [0m    val taId = new TaskAttemptID(new TaskID(jobID, true, splitId), attemptId)[0m
+[0m[[33mwarn[0m] [0m                                 ^[0m
+[0m[[33mwarn[0m] [0m/mnt/xin/spark-1.5.0/core/src/main/scala/org/apache/spark/rdd/PairRDDFunctions.scala:933: constructor Job in class Job is deprecated: see corresponding Javadoc for more information.[0m
+[0m[[33mwarn[0m] [0m    val job = new NewAPIHadoopJob(hadoopConf)[0m
+[0m[[33mwarn[0m] [0m              ^[0m
+[0m[[33mwarn[0m] [0m/mnt/xin/spark-1.5.0/core/src/main/scala/org/apache/spark/rdd/PairRDDFunctions.scala:1001: constructor Job in class Job is deprecated: see corresponding Javadoc for more information.[0m
+[0m[[33mwarn[0m] [0m    val job = new NewAPIHadoopJob(hadoopConf)[0m
+[0m[[33mwarn[0m] [0m              ^[0m
+[0m[[33mwarn[0m] [0m/mnt/xin/spark-1.5.0/core/src/main/scala/org/apache/spark/rdd/ReliableCheckpointRDD.scala:128: method getDefaultReplication in class FileSystem is deprecated: see corresponding Javadoc for more information.[0m
+[0m[[33mwarn[0m] [0m      fs.create(tempOutputPath, false, bufferSize, fs.getDefaultReplication, blockSize)[0m
+[0m[[33mwarn[0m] [0m                                                      ^[0m
+[0m[[33mwarn[0m] [0m/mnt/xin/spark-1.5.0/core/src/main/scala/org/apache/spark/rdd/SqlNewHadoopRDD.scala:79: constructor Job in class Job is deprecated: see corresponding Javadoc for more information.[0m
+[0m[[33mwarn[0m] [0m    val newJob = new Job(conf)[0m
+[0m[[33mwarn[0m] [0m                 ^[0m
+[0m[[33mwarn[0m] [0m/mnt/xin/spark-1.5.0/core/src/main/scala/org/apache/spark/scheduler/EventLoggingListener.scala:100: method isDir in class FileStatus is deprecated: see corresponding Javadoc for more information.[0m
+[0m[[33mwarn[0m] [0m    if (!fileSystem.getFileStatus(new Path(logBaseDir)).isDir) {[0m
+[0m[[33mwarn[0m] [0m                                                        ^[0m
+[0m[[33mwarn[0m] [0m/mnt/xin/spark-1.5.0/core/src/main/scala/org/apache/spark/scheduler/InputFormatInfo.scala:106: constructor Job in class Job is deprecated: see corresponding Javadoc for more information.[0m
+[0m[[33mwarn[0m] [0m    val job = new Job(conf)[0m
+[0m[[33mwarn[0m] [0m              ^[0m
+[0m[[33mwarn[0m] [0m22 warnings found[0m
 [0m[[33mwarn[0m] [0m/mnt/xin/spark-1.5.0/core/src/main/java/org/apache/spark/util/collection/unsafe/sort/UnsafeExternalSorter.java:147: warning: [deprecation] addOnCompleteCallback(Function0<BoxedUnit>) in TaskContext has been deprecated[0m
 [0m[[33mwarn[0m] [0m    taskContext.addOnCompleteCallback(new AbstractFunction0<BoxedUnit>() {[0m
 [0m[[33mwarn[0m] [0m               ^[0m
 [0m[[33mwarn[0m] [0m1 warning[0m
-[0m[[0minfo[0m] [0mCompile success at Jul 20, 2016 12:04:17 AM [6.672s][0m
+[0m[[0minfo[0m] [0mCompile success at Jul 20, 2016 9:46:01 PM [2:21.945s][0m
 [INFO] 
 [INFO] --- maven-compiler-plugin:3.3:compile (default-compile) @ spark-core_2.10 ---
 [INFO] Changes detected - recompiling the module!
@@ -440,6 +527,7 @@ main:
 [INFO] Executing tasks
 
 main:
+    [mkdir] Created dir: /mnt/xin/spark-1.5.0/core/target/tmp
 [INFO] Executed tasks
 [INFO] 
 [INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ spark-core_2.10 ---
@@ -449,10 +537,65 @@ main:
 [INFO] 
 [INFO] --- scala-maven-plugin:3.2.2:testCompile (scala-test-compile-first) @ spark-core_2.10 ---
 [INFO] Using zinc server for incremental compilation
-[0m[[0minfo[0m] [0mCompile success at Jul 20, 2016 12:04:24 AM [1.784s][0m
+[0m[[0minfo[0m] [0mCompiling 182 Scala sources and 14 Java sources to /mnt/xin/spark-1.5.0/core/target/scala-2.10/test-classes...[0m
+[0m[[33mwarn[0m] [0m/mnt/xin/spark-1.5.0/core/src/test/scala/org/apache/spark/FileSuite.scala:505: constructor Job in class Job is deprecated: see corresponding Javadoc for more information.[0m
+[0m[[33mwarn[0m] [0m    val job = new Job(sc.hadoopConfiguration)[0m
+[0m[[33mwarn[0m] [0m              ^[0m
+[0m[[33mwarn[0m] [0m/mnt/xin/spark-1.5.0/core/src/test/scala/org/apache/spark/scheduler/EventLoggingListenerSuite.scala:70: method isDir in class FileStatus is deprecated: see corresponding Javadoc for more information.[0m
+[0m[[33mwarn[0m] [0m    assert(!logStatus.isDir)[0m
+[0m[[33mwarn[0m] [0m                      ^[0m
+[0m[[33mwarn[0m] [0m/mnt/xin/spark-1.5.0/core/src/test/scala/org/apache/spark/scheduler/EventLoggingListenerSuite.scala:74: method isDir in class FileStatus is deprecated: see corresponding Javadoc for more information.[0m
+[0m[[33mwarn[0m] [0m    assert(!fileSystem.getFileStatus(new Path(eventLogger.logPath)).isDir)[0m
+[0m[[33mwarn[0m] [0m                                                                    ^[0m
+[0m[[33mwarn[0m] [0m/mnt/xin/spark-1.5.0/core/src/test/scala/org/apache/spark/scheduler/ReplayListenerSuite.scala:118: method isDir in class FileStatus is deprecated: see corresponding Javadoc for more information.[0m
+[0m[[33mwarn[0m] [0m    assert(!eventLog.isDir)[0m
+[0m[[33mwarn[0m] [0m                     ^[0m
+[0m[[33mwarn[0m] [0m/mnt/xin/spark-1.5.0/core/src/test/scala/org/apache/spark/scheduler/SparkListenerSuite.scala:278: value actorSystem in class SparkEnv is deprecated: Actor system is no longer supported as of 1.4.0[0m
+[0m[[33mwarn[0m] [0m      sc.env.actorSystem.settings.config.getBytes("akka.remote.netty.tcp.maximum-frame-size").toInt[0m
+[0m[[33mwarn[0m] [0m             ^[0m
+[0m[[33mwarn[0m] [0m/mnt/xin/spark-1.5.0/core/src/test/scala/org/apache/spark/scheduler/TaskContextSuite.scala:105: method attemptId in class TaskContext is deprecated: use attemptNumber[0m
+[0m[[33mwarn[0m] [0m      Seq(TaskContext.get().attemptId).iterator[0m
+[0m[[33mwarn[0m] [0m                            ^[0m
+[0m[[33mwarn[0m] [0m/mnt/xin/spark-1.5.0/core/src/test/scala/org/apache/spark/scheduler/TaskResultGetterSuite.scala:89: value actorSystem in class SparkEnv is deprecated: Actor system is no longer supported as of 1.4.0[0m
+[0m[[33mwarn[0m] [0m      sc.env.actorSystem.settings.config.getBytes("akka.remote.netty.tcp.maximum-frame-size").toInt[0m
+[0m[[33mwarn[0m] [0m             ^[0m
+[0m[[33mwarn[0m] [0m/mnt/xin/spark-1.5.0/core/src/test/scala/org/apache/spark/scheduler/TaskResultGetterSuite.scala:114: value actorSystem in class SparkEnv is deprecated: Actor system is no longer supported as of 1.4.0[0m
+[0m[[33mwarn[0m] [0m      sc.env.actorSystem.settings.config.getBytes("akka.remote.netty.tcp.maximum-frame-size").toInt[0m
+[0m[[33mwarn[0m] [0m             ^[0m
+[0m[[33mwarn[0m] [0m/mnt/xin/spark-1.5.0/core/src/test/scala/org/apache/spark/util/ClosureCleanerSuite.scala:273: method flatMapWith in class RDD is deprecated: use mapPartitionsWithIndex and flatMap[0m
+[0m[[33mwarn[0m] [0m    rdd.flatMapWith ((index: Int) => new Random(index + 42)){ (_, it) => return; Seq() }.count()[0m
+[0m[[33mwarn[0m] [0m        ^[0m
+[0m[[33mwarn[0m] [0m/mnt/xin/spark-1.5.0/core/src/test/scala/org/apache/spark/util/ClosureCleanerSuite.scala:276: method mapWith in class RDD is deprecated: use mapPartitionsWithIndex[0m
+[0m[[33mwarn[0m] [0m    rdd.mapWith ((index: Int) => new Random(index + 42)){ (_, it) => return; 0 }.count()[0m
+[0m[[33mwarn[0m] [0m        ^[0m
+[0m[[33mwarn[0m] [0m/mnt/xin/spark-1.5.0/core/src/test/scala/org/apache/spark/util/ClosureCleanerSuite.scala:279: method filterWith in class RDD is deprecated: use mapPartitionsWithIndex and filter[0m
+[0m[[33mwarn[0m] [0m    rdd.filterWith ((index: Int) => new Random(index + 42)){ (_, it) => return; true }.count()[0m
+[0m[[33mwarn[0m] [0m        ^[0m
+[0m[[33mwarn[0m] [0m/mnt/xin/spark-1.5.0/core/src/test/scala/org/apache/spark/util/ClosureCleanerSuite.scala:282: method foreachWith in class RDD is deprecated: use mapPartitionsWithIndex and foreach[0m
+[0m[[33mwarn[0m] [0m    rdd.foreachWith ((index: Int) => new Random(index + 42)){ (_, it) => return }[0m
+[0m[[33mwarn[0m] [0m        ^[0m
+[0m[[33mwarn[0m] [0m/mnt/xin/spark-1.5.0/core/src/test/scala/org/apache/spark/util/ClosureCleanerSuite.scala:285: method mapPartitionsWithContext in class RDD is deprecated: use TaskContext.get[0m
+[0m[[33mwarn[0m] [0m    rdd.mapPartitionsWithContext { (_, it) => return; it }.count()[0m
+[0m[[33mwarn[0m] [0m        ^[0m
+[0m[[33mwarn[0m] [0m13 warnings found[0m
+[0m[[33mwarn[0m] [0m/mnt/xin/spark-1.5.0/core/src/test/java/org/apache/spark/JavaAPISuite.java:684: warning: [deprecation] toArray() in AbstractJavaRDDLike has been deprecated[0m
+[0m[[33mwarn[0m] [0m    List<Integer> list = rdd.toArray();[0m
+[0m[[33mwarn[0m] [0m                            ^[0m
+[0m[[33mwarn[0m] [0m  where T is a type-variable:[0m
+[0m[[33mwarn[0m] [0m    T extends Object declared in class AbstractJavaRDDLike[0m
+[0m[[33mwarn[0m] [0m/mnt/xin/spark-1.5.0/core/src/test/java/org/apache/spark/JavaAPISuite.java:1228: warning: [deprecation] Job() in Job has been deprecated[0m
+[0m[[33mwarn[0m] [0m      Text.class, new Job().getConfiguration());[0m
+[0m[[33mwarn[0m] [0m                  ^[0m
+[0m[[33mwarn[0m] [0m2 warnings[0m
+[0m[[0minfo[0m] [0mCompile success at Jul 20, 2016 9:47:57 PM [1:49.154s][0m
 [INFO] 
 [INFO] --- maven-compiler-plugin:3.3:testCompile (default-testCompile) @ spark-core_2.10 ---
-[INFO] Nothing to compile - all classes are up to date
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 14 source files to /mnt/xin/spark-1.5.0/core/target/scala-2.10/test-classes
+[WARNING] /mnt/xin/spark-1.5.0/core/src/test/java/org/apache/spark/JavaAPISuite.java:[684,28] [deprecation] toArray() in AbstractJavaRDDLike has been deprecated
+[WARNING]   where T is a type-variable:
+    T extends Object declared in class AbstractJavaRDDLike
+/mnt/xin/spark-1.5.0/core/src/test/java/org/apache/spark/JavaAPISuite.java:[1228,18] [deprecation] Job() in Job has been deprecated
 [INFO] 
 [INFO] --- maven-dependency-plugin:2.10:build-classpath (default) @ spark-core_2.10 ---
 [INFO] 
@@ -643,7 +786,8 @@ main:
 [INFO] 
 [INFO] --- scala-maven-plugin:3.2.2:compile (scala-compile-first) @ spark-bagel_2.10 ---
 [INFO] Using zinc server for incremental compilation
-[0m[[0minfo[0m] [0mCompile success at Jul 20, 2016 12:04:49 AM [0.154s][0m
+[0m[[0minfo[0m] [0mCompiling 2 Scala sources and 1 Java source to /mnt/xin/spark-1.5.0/bagel/target/scala-2.10/classes...[0m
+[0m[[0minfo[0m] [0mCompile success at Jul 20, 2016 9:48:31 PM [4.027s][0m
 [INFO] 
 [INFO] --- maven-compiler-plugin:3.3:compile (default-compile) @ spark-bagel_2.10 ---
 [INFO] Changes detected - recompiling the module!
@@ -653,6 +797,7 @@ main:
 [INFO] Executing tasks
 
 main:
+    [mkdir] Created dir: /mnt/xin/spark-1.5.0/bagel/target/tmp
 [INFO] Executed tasks
 [INFO] 
 [INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ spark-bagel_2.10 ---
@@ -662,7 +807,8 @@ main:
 [INFO] 
 [INFO] --- scala-maven-plugin:3.2.2:testCompile (scala-test-compile-first) @ spark-bagel_2.10 ---
 [INFO] Using zinc server for incremental compilation
-[0m[[0minfo[0m] [0mCompile success at Jul 20, 2016 12:04:51 AM [0.083s][0m
+[0m[[0minfo[0m] [0mCompiling 1 Scala source to /mnt/xin/spark-1.5.0/bagel/target/scala-2.10/test-classes...[0m
+[0m[[0minfo[0m] [0mCompile success at Jul 20, 2016 9:48:35 PM [2.475s][0m
 [INFO] 
 [INFO] --- maven-compiler-plugin:3.3:testCompile (default-testCompile) @ spark-bagel_2.10 ---
 [INFO] Nothing to compile - all classes are up to date
@@ -842,8 +988,15 @@ main:
 [INFO] 
 [INFO] --- scala-maven-plugin:3.2.2:compile (scala-compile-first) @ spark-graphx_2.10 ---
 [INFO] Using zinc server for incremental compilation
-[0m[[0minfo[0m] [0mCompiling 2 Java sources to /mnt/xin/spark-1.5.0/graphx/target/scala-2.10/classes...[0m
-[0m[[0minfo[0m] [0mCompile success at Jul 20, 2016 12:04:54 AM [1.963s][0m
+[0m[[0minfo[0m] [0mCompiling 38 Scala sources and 5 Java sources to /mnt/xin/spark-1.5.0/graphx/target/scala-2.10/classes...[0m
+[0m[[33mwarn[0m] [0m/mnt/xin/spark-1.5.0/graphx/src/main/scala/org/apache/spark/graphx/Pregel.scala:124: method mapReduceTriplets in class Graph is deprecated: use aggregateMessages[0m
+[0m[[33mwarn[0m] [0m    var messages = g.mapReduceTriplets(sendMsg, mergeMsg)[0m
+[0m[[33mwarn[0m] [0m                     ^[0m
+[0m[[33mwarn[0m] [0m/mnt/xin/spark-1.5.0/graphx/src/main/scala/org/apache/spark/graphx/Pregel.scala:138: method mapReduceTriplets in class Graph is deprecated: use aggregateMessages[0m
+[0m[[33mwarn[0m] [0m      messages = g.mapReduceTriplets([0m
+[0m[[33mwarn[0m] [0m                   ^[0m
+[0m[[33mwarn[0m] [0mtwo warnings found[0m
+[0m[[0minfo[0m] [0mCompile success at Jul 20, 2016 9:48:49 PM [12.507s][0m
 [INFO] 
 [INFO] --- maven-compiler-plugin:3.3:compile (default-compile) @ spark-graphx_2.10 ---
 [INFO] Changes detected - recompiling the module!
@@ -853,6 +1006,7 @@ main:
 [INFO] Executing tasks
 
 main:
+    [mkdir] Created dir: /mnt/xin/spark-1.5.0/graphx/target/tmp
 [INFO] Executed tasks
 [INFO] 
 [INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ spark-graphx_2.10 ---
@@ -862,7 +1016,27 @@ main:
 [INFO] 
 [INFO] --- scala-maven-plugin:3.2.2:testCompile (scala-test-compile-first) @ spark-graphx_2.10 ---
 [INFO] Using zinc server for incremental compilation
-[0m[[0minfo[0m] [0mCompile success at Jul 20, 2016 12:04:56 AM [0.204s][0m
+[0m[[0minfo[0m] [0mCompiling 18 Scala sources to /mnt/xin/spark-1.5.0/graphx/target/scala-2.10/test-classes...[0m
+[0m[[33mwarn[0m] [0m/mnt/xin/spark-1.5.0/graphx/src/test/scala/org/apache/spark/graphx/GraphSuite.scala:224: method mapReduceTriplets in class Graph is deprecated: use aggregateMessages[0m
+[0m[[33mwarn[0m] [0m      val result = graph.mapReduceTriplets[Int](et => Iterator((et.dstId, et.srcAttr)), _ + _)[0m
+[0m[[33mwarn[0m] [0m                         ^[0m
+[0m[[33mwarn[0m] [0m/mnt/xin/spark-1.5.0/graphx/src/test/scala/org/apache/spark/graphx/GraphSuite.scala:289: method mapReduceTriplets in class Graph is deprecated: use aggregateMessages[0m
+[0m[[33mwarn[0m] [0m      val neighborDegreeSums = starDeg.mapReduceTriplets([0m
+[0m[[33mwarn[0m] [0m                                       ^[0m
+[0m[[33mwarn[0m] [0m/mnt/xin/spark-1.5.0/graphx/src/test/scala/org/apache/spark/graphx/GraphSuite.scala:299: method mapReduceTriplets in class Graph is deprecated: use aggregateMessages[0m
+[0m[[33mwarn[0m] [0m      val numEvenNeighbors = vids.mapReduceTriplets(et => {[0m
+[0m[[33mwarn[0m] [0m                                  ^[0m
+[0m[[33mwarn[0m] [0m/mnt/xin/spark-1.5.0/graphx/src/test/scala/org/apache/spark/graphx/GraphSuite.scala:315: method mapReduceTriplets in class Graph is deprecated: use aggregateMessages[0m
+[0m[[33mwarn[0m] [0m      val numOddNeighbors = changedGraph.mapReduceTriplets(et => {[0m
+[0m[[33mwarn[0m] [0m                                         ^[0m
+[0m[[33mwarn[0m] [0m/mnt/xin/spark-1.5.0/graphx/src/test/scala/org/apache/spark/graphx/GraphSuite.scala:350: method mapReduceTriplets in class Graph is deprecated: use aggregateMessages[0m
+[0m[[33mwarn[0m] [0m      val neighborDegreeSums = reverseStarDegrees.mapReduceTriplets([0m
+[0m[[33mwarn[0m] [0m                                                  ^[0m
+[0m[[33mwarn[0m] [0m/mnt/xin/spark-1.5.0/graphx/src/test/scala/org/apache/spark/graphx/GraphSuite.scala:423: method mapReduceTriplets in class Graph is deprecated: use aggregateMessages[0m
+[0m[[33mwarn[0m] [0m      val neighborAttrSums = graph.mapReduceTriplets[Int]([0m
+[0m[[33mwarn[0m] [0m                                   ^[0m
+[0m[[33mwarn[0m] [0m6 warnings found[0m
+[0m[[0minfo[0m] [0mCompile success at Jul 20, 2016 9:49:02 PM [10.870s][0m
 [INFO] 
 [INFO] --- maven-compiler-plugin:3.3:testCompile (default-testCompile) @ spark-graphx_2.10 ---
 [INFO] Nothing to compile - all classes are up to date
@@ -1044,8 +1218,15 @@ main:
 [INFO] 
 [INFO] --- scala-maven-plugin:3.2.2:compile (scala-compile-first) @ spark-streaming_2.10 ---
 [INFO] Using zinc server for incremental compilation
-[0m[[0minfo[0m] [0mCompiling 3 Java sources to /mnt/xin/spark-1.5.0/streaming/target/scala-2.10/classes...[0m
-[0m[[0minfo[0m] [0mCompile success at Jul 20, 2016 12:05:02 AM [2.320s][0m
+[0m[[0minfo[0m] [0mCompiling 90 Scala sources and 5 Java sources to /mnt/xin/spark-1.5.0/streaming/target/scala-2.10/classes...[0m
+[0m[[33mwarn[0m] [0m/mnt/xin/spark-1.5.0/streaming/src/main/scala/org/apache/spark/streaming/receiver/ActorReceiver.scala:147: value actorSystem in class SparkEnv is deprecated: Actor system is no longer supported as of 1.4.0[0m
+[0m[[33mwarn[0m] [0m  protected lazy val actorSupervisor = SparkEnv.get.actorSystem.actorOf(Props(new Supervisor),[0m
+[0m[[33mwarn[0m] [0m                                                    ^[0m
+[0m[[33mwarn[0m] [0m/mnt/xin/spark-1.5.0/streaming/src/main/scala/org/apache/spark/streaming/util/FileBasedWriteAheadLog.scala:205: method isDir in class FileStatus is deprecated: see corresponding Javadoc for more information.[0m
+[0m[[33mwarn[0m] [0m    if (fileSystem.exists(logDirectoryPath) && fileSystem.getFileStatus(logDirectoryPath).isDir) {[0m
+[0m[[33mwarn[0m] [0m                                                                                          ^[0m
+[0m[[33mwarn[0m] [0mtwo warnings found[0m
+[0m[[0minfo[0m] [0mCompile success at Jul 20, 2016 9:49:30 PM [23.982s][0m
 [INFO] 
 [INFO] --- maven-compiler-plugin:3.3:compile (default-compile) @ spark-streaming_2.10 ---
 [INFO] Changes detected - recompiling the module!
@@ -1055,6 +1236,7 @@ main:
 [INFO] Executing tasks
 
 main:
+    [mkdir] Created dir: /mnt/xin/spark-1.5.0/streaming/target/tmp
 [INFO] Executed tasks
 [INFO] 
 [INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ spark-streaming_2.10 ---
@@ -1064,10 +1246,34 @@ main:
 [INFO] 
 [INFO] --- scala-maven-plugin:3.2.2:testCompile (scala-test-compile-first) @ spark-streaming_2.10 ---
 [INFO] Using zinc server for incremental compilation
-[0m[[0minfo[0m] [0mCompile success at Jul 20, 2016 12:05:05 AM [0.552s][0m
+[0m[[0minfo[0m] [0mCompiling 33 Scala sources and 6 Java sources to /mnt/xin/spark-1.5.0/streaming/target/scala-2.10/test-classes...[0m
+[0m[[33mwarn[0m] [0m/mnt/xin/spark-1.5.0/streaming/src/test/scala/org/apache/spark/streaming/receiver/BlockGeneratorSuite.scala:209: reflective access of structural type member method errorReported should be enabled[0m
+[0m[[33mwarn[0m] [0mby making the implicit value scala.language.reflectiveCalls visible.[0m
+[0m[[33mwarn[0m] [0mThis can be achieved by adding the import clause 'import scala.language.reflectiveCalls'[0m
+[0m[[33mwarn[0m] [0mor by setting the compiler option -language:reflectiveCalls.[0m
+[0m[[33mwarn[0m] [0mSee the Scala docs for value scala.language.reflectiveCalls for a discussion[0m
+[0m[[33mwarn[0m] [0mwhy the feature should be explicitly enabled.[0m
+[0m[[33mwarn[0m] [0m    assert(listener.errorReported === false)[0m
+[0m[[33mwarn[0m] [0m                    ^[0m
+[0m[[33mwarn[0m] [0m/mnt/xin/spark-1.5.0/streaming/src/test/scala/org/apache/spark/streaming/receiver/BlockGeneratorSuite.scala:212: reflective access of structural type member method errorReported should be enabled[0m
+[0m[[33mwarn[0m] [0mby making the implicit value scala.language.reflectiveCalls visible.[0m
+[0m[[33mwarn[0m] [0m      assert(listener.errorReported === true)[0m
+[0m[[33mwarn[0m] [0m                      ^[0m
+[0m[[33mwarn[0m] [0m/mnt/xin/spark-1.5.0/streaming/src/test/scala/org/apache/spark/streaming/DStreamClosureSuite.scala:107: method foreach in class DStream is deprecated: use foreachRDD[0m
+[0m[[33mwarn[0m] [0m    expectCorrectException { ds.foreach(foreachF1) }[0m
+[0m[[33mwarn[0m] [0m                                ^[0m
+[0m[[33mwarn[0m] [0m/mnt/xin/spark-1.5.0/streaming/src/test/scala/org/apache/spark/streaming/DStreamClosureSuite.scala:108: method foreach in class DStream is deprecated: use foreachRDD[0m
+[0m[[33mwarn[0m] [0m    expectCorrectException { ds.foreach(foreachF2) }[0m
+[0m[[33mwarn[0m] [0m                                ^[0m
+[0m[[33mwarn[0m] [0m/mnt/xin/spark-1.5.0/streaming/src/test/scala/org/apache/spark/streaming/util/WriteAheadLogSuite.scala:432: method isDir in class FileStatus is deprecated: see corresponding Javadoc for more information.[0m
+[0m[[33mwarn[0m] [0m    if (fileSystem.exists(logDirectoryPath) && fileSystem.getFileStatus(logDirectoryPath).isDir) {[0m
+[0m[[33mwarn[0m] [0m                                                                                          ^[0m
+[0m[[33mwarn[0m] [0m5 warnings found[0m
+[0m[[0minfo[0m] [0mCompile success at Jul 20, 2016 9:50:00 PM [27.787s][0m
 [INFO] 
 [INFO] --- maven-compiler-plugin:3.3:testCompile (default-testCompile) @ spark-streaming_2.10 ---
-[INFO] Nothing to compile - all classes are up to date
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 6 source files to /mnt/xin/spark-1.5.0/streaming/target/scala-2.10/test-classes
 [INFO] 
 [INFO] --- maven-dependency-plugin:2.10:build-classpath (default) @ spark-streaming_2.10 ---
 [INFO] 
@@ -1247,15 +1453,25 @@ main:
 [INFO] 
 [INFO] --- scala-maven-plugin:3.2.2:compile (scala-compile-first) @ spark-catalyst_2.10 ---
 [INFO] Using zinc server for incremental compilation
-[0m[[0minfo[0m] [0mCompile success at Jul 20, 2016 12:05:13 AM [0.614s][0m
+[0m[[0minfo[0m] [0mCompiling 132 Scala sources and 14 Java sources to /mnt/xin/spark-1.5.0/sql/catalyst/target/scala-2.10/classes...[0m
+[0m[[33mwarn[0m] [0m/mnt/xin/spark-1.5.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/expressions/misc.scala:127: method shaHex in object DigestUtils is deprecated: see corresponding Javadoc for more information.[0m
+[0m[[33mwarn[0m] [0m    UTF8String.fromString(DigestUtils.shaHex(input.asInstanceOf[Array[Byte]]))[0m
+[0m[[33mwarn[0m] [0m                                      ^[0m
+[0m[[33mwarn[0m] [0m/mnt/xin/spark-1.5.0/sql/catalyst/src/main/scala/org/apache/spark/sql/types/DataType.scala:93: method fromCaseClassString in object DataType is deprecated: Use DataType.fromJson instead[0m
+[0m[[33mwarn[0m] [0m    Try(DataType.fromJson(raw)).getOrElse(DataType.fromCaseClassString(raw))[0m
+[0m[[33mwarn[0m] [0m                                                   ^[0m
+[0m[[33mwarn[0m] [0mtwo warnings found[0m
+[0m[[0minfo[0m] [0mCompile success at Jul 20, 2016 9:51:01 PM [49.779s][0m
 [INFO] 
 [INFO] --- maven-compiler-plugin:3.3:compile (default-compile) @ spark-catalyst_2.10 ---
-[INFO] Nothing to compile - all classes are up to date
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 14 source files to /mnt/xin/spark-1.5.0/sql/catalyst/target/scala-2.10/classes
 [INFO] 
 [INFO] --- maven-antrun-plugin:1.8:run (create-tmp-dir) @ spark-catalyst_2.10 ---
 [INFO] Executing tasks
 
 main:
+    [mkdir] Created dir: /mnt/xin/spark-1.5.0/sql/catalyst/target/tmp
 [INFO] Executed tasks
 [INFO] 
 [INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ spark-catalyst_2.10 ---
@@ -1265,7 +1481,15 @@ main:
 [INFO] 
 [INFO] --- scala-maven-plugin:3.2.2:testCompile (scala-test-compile-first) @ spark-catalyst_2.10 ---
 [INFO] Using zinc server for incremental compilation
-[0m[[0minfo[0m] [0mCompile success at Jul 20, 2016 12:05:16 AM [2.511s][0m
+[0m[[0minfo[0m] [0mCompiling 69 Scala sources to /mnt/xin/spark-1.5.0/sql/catalyst/target/scala-2.10/test-classes...[0m
+[0m[[33mwarn[0m] [0m/mnt/xin/spark-1.5.0/sql/catalyst/src/test/scala/org/apache/spark/sql/catalyst/expressions/ExpressionEvalHelper.scala:61: non-variable type argument Double in type pattern org.scalactic.TripleEqualsSupport.Spread[Double] is unchecked since it is eliminated by erasure[0m
+[0m[[33mwarn[0m] [0m      case (result: Double, expected: Spread[Double]) =>[0m
+[0m[[33mwarn[0m] [0m                                      ^[0m
+[0m[[33mwarn[0m] [0m/mnt/xin/spark-1.5.0/sql/catalyst/src/test/scala/org/apache/spark/sql/catalyst/expressions/ExpressionEvalHelper.scala:315: non-variable type argument Double in type pattern org.scalactic.TripleEqualsSupport.Spread[Double] is unchecked since it is eliminated by erasure[0m
+[0m[[33mwarn[0m] [0m      case (result: Double, expected: Spread[Double]) =>[0m
+[0m[[33mwarn[0m] [0m                                      ^[0m
+[0m[[33mwarn[0m] [0mtwo warnings found[0m
+[0m[[0minfo[0m] [0mCompile success at Jul 20, 2016 9:51:36 PM [31.676s][0m
 [INFO] 
 [INFO] --- maven-compiler-plugin:3.3:testCompile (default-testCompile) @ spark-catalyst_2.10 ---
 [INFO] Nothing to compile - all classes are up to date
@@ -1452,8 +1676,54 @@ main:
 [INFO] 
 [INFO] --- scala-maven-plugin:3.2.2:compile (scala-compile-first) @ spark-sql_2.10 ---
 [INFO] Using zinc server for incremental compilation
-[0m[[0minfo[0m] [0mCompiling 25 Java sources to /mnt/xin/spark-1.5.0/sql/core/target/scala-2.10/classes...[0m
-[0m[[0minfo[0m] [0mCompile success at Jul 20, 2016 12:05:32 AM [3.812s][0m
+[0m[[0minfo[0m] [0mCompiling 126 Scala sources and 26 Java sources to /mnt/xin/spark-1.5.0/sql/core/target/scala-2.10/classes...[0m
+[0m[[33mwarn[0m] [0m/mnt/xin/spark-1.5.0/sql/core/src/main/scala/org/apache/spark/sql/execution/datasources/InsertIntoHadoopFsRelation.scala:96: constructor Job in class Job is deprecated: see corresponding Javadoc for more information.[0m
+[0m[[33mwarn[0m] [0m      val job = new Job(hadoopConf)[0m
+[0m[[33mwarn[0m] [0m                ^[0m
+[0m[[33mwarn[0m] [0m/mnt/xin/spark-1.5.0/sql/core/src/main/scala/org/apache/spark/sql/execution/datasources/WriterContainer.scala:184: constructor TaskID in class TaskID is deprecated: see corresponding Javadoc for more information.[0m
+[0m[[33mwarn[0m] [0m    this.taskId = new TaskID(this.jobId, true, splitId)[0m
+[0m[[33mwarn[0m] [0m                  ^[0m
+[0m[[33mwarn[0m] [0m/mnt/xin/spark-1.5.0/sql/core/src/main/scala/org/apache/spark/sql/execution/datasources/json/JSONRelation.scala:83: constructor Job in class Job is deprecated: see corresponding Javadoc for more information.[0m
+[0m[[33mwarn[0m] [0m    val job = new Job(sqlContext.sparkContext.hadoopConfiguration)[0m
+[0m[[33mwarn[0m] [0m              ^[0m
+[0m[[33mwarn[0m] [0m/mnt/xin/spark-1.5.0/sql/core/src/main/scala/org/apache/spark/sql/execution/datasources/parquet/ParquetRelation.scala:327: method isDir in class FileStatus is deprecated: see corresponding Javadoc for more information.[0m
+[0m[[33mwarn[0m] [0m            f.getLen, f.isDir, f.getReplication, f.getBlockSize, f.getModificationTime,[0m
+[0m[[33mwarn[0m] [0m                        ^[0m
+[0m[[33mwarn[0m] [0m/mnt/xin/spark-1.5.0/sql/core/src/main/scala/org/apache/spark/sql/execution/datasources/parquet/ParquetRelation.scala:609: method fromCaseClassString in object DataType is deprecated: Use DataType.fromJson instead[0m
+[0m[[33mwarn[0m] [0m            DataType.fromCaseClassString(serializedSchema.get)[0m
+[0m[[33mwarn[0m] [0m                     ^[0m
+[0m[[33mwarn[0m] [0m/mnt/xin/spark-1.5.0/sql/core/src/main/scala/org/apache/spark/sql/execution/datasources/parquet/ParquetRelation.scala:792: method fromCaseClassString in object DataType is deprecated: Use DataType.fromJson instead[0m
+[0m[[33mwarn[0m] [0m        DataType.fromCaseClassString(schemaString).asInstanceOf[StructType][0m
+[0m[[33mwarn[0m] [0m                 ^[0m
+[0m[[33mwarn[0m] [0m/mnt/xin/spark-1.5.0/sql/core/src/main/scala/org/apache/spark/sql/execution/datasources/parquet/ParquetTypesConverter.scala:62: method fromCaseClassString in object DataType is deprecated: Use DataType.fromJson instead[0m
+[0m[[33mwarn[0m] [0m    Try(DataType.fromJson(string)).getOrElse(DataType.fromCaseClassString(string)) match {[0m
+[0m[[33mwarn[0m] [0m                                                      ^[0m
+[0m[[33mwarn[0m] [0m/mnt/xin/spark-1.5.0/sql/core/src/main/scala/org/apache/spark/sql/execution/datasources/parquet/ParquetTypesConverter.scala:82: method makeQualified in class Path is deprecated: see corresponding Javadoc for more information.[0m
+[0m[[33mwarn[0m] [0m    val path = origPath.makeQualified(fs)[0m
+[0m[[33mwarn[0m] [0m                        ^[0m
+[0m[[33mwarn[0m] [0m/mnt/xin/spark-1.5.0/sql/core/src/main/scala/org/apache/spark/sql/execution/datasources/parquet/ParquetTypesConverter.scala:83: method isDir in class FileStatus is deprecated: see corresponding Javadoc for more information.[0m
+[0m[[33mwarn[0m] [0m    if (fs.exists(path) && !fs.getFileStatus(path).isDir) {[0m
+[0m[[33mwarn[0m] [0m                                                   ^[0m
+[0m[[33mwarn[0m] [0m/mnt/xin/spark-1.5.0/sql/core/src/main/scala/org/apache/spark/sql/execution/datasources/parquet/ParquetTypesConverter.scala:125: constructor Job in class Job is deprecated: see corresponding Javadoc for more information.[0m
+[0m[[33mwarn[0m] [0m    val job = new Job()[0m
+[0m[[33mwarn[0m] [0m              ^[0m
+[0m[[33mwarn[0m] [0m/mnt/xin/spark-1.5.0/sql/core/src/main/scala/org/apache/spark/sql/execution/datasources/parquet/ParquetTypesConverter.scala:131: method makeQualified in class Path is deprecated: see corresponding Javadoc for more information.[0m
+[0m[[33mwarn[0m] [0m    val path = origPath.makeQualified(fs)[0m
+[0m[[33mwarn[0m] [0m                        ^[0m
+[0m[[33mwarn[0m] [0m/mnt/xin/spark-1.5.0/sql/core/src/main/scala/org/apache/spark/sql/execution/datasources/parquet/ParquetTypesConverter.scala:136: method isDir in class FileStatus is deprecated: see corresponding Javadoc for more information.[0m
+[0m[[33mwarn[0m] [0m        .flatMap { status => if (status.isDir) fs.listStatus(status.getPath) else List(status) }[0m
+[0m[[33mwarn[0m] [0m                                        ^[0m
+[0m[[33mwarn[0m] [0m/mnt/xin/spark-1.5.0/sql/core/src/main/scala/org/apache/spark/sql/sources/interfaces.scala:442: method isDir in class FileStatus is deprecated: see corresponding Javadoc for more information.[0m
+[0m[[33mwarn[0m] [0m        val (dirs, files) = statuses.partition(_.isDir)[0m
+[0m[[33mwarn[0m] [0m                                                 ^[0m
+[0m[[33mwarn[0m] [0m/mnt/xin/spark-1.5.0/sql/core/src/main/scala/org/apache/spark/sql/sources/interfaces.scala:748: method isDir in class FileStatus is deprecated: see corresponding Javadoc for more information.[0m
+[0m[[33mwarn[0m] [0m      val (dirs, files) = fs.listStatus(status.getPath).partition(_.isDir)[0m
+[0m[[33mwarn[0m] [0m                                                                    ^[0m
+[0m[[33mwarn[0m] [0m/mnt/xin/spark-1.5.0/sql/core/src/main/scala/org/apache/spark/sql/sources/interfaces.scala:782: method isDir in class FileStatus is deprecated: see corresponding Javadoc for more information.[0m
+[0m[[33mwarn[0m] [0m        status.isDir,[0m
+[0m[[33mwarn[0m] [0m               ^[0m
+[0m[[33mwarn[0m] [0m15 warnings found[0m
+[0m[[0minfo[0m] [0mCompile success at Jul 20, 2016 9:52:30 PM [42.254s][0m
 [INFO] 
 [INFO] --- maven-compiler-plugin:3.3:compile (default-compile) @ spark-sql_2.10 ---
 [INFO] Changes detected - recompiling the module!
@@ -1466,6 +1736,7 @@ main:
 [INFO] Executing tasks
 
 main:
+    [mkdir] Created dir: /mnt/xin/spark-1.5.0/sql/core/target/tmp
 [INFO] Executed tasks
 [INFO] 
 [INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ spark-sql_2.10 ---
@@ -1475,10 +1746,89 @@ main:
 [INFO] 
 [INFO] --- scala-maven-plugin:3.2.2:testCompile (scala-test-compile-first) @ spark-sql_2.10 ---
 [INFO] Using zinc server for incremental compilation
-[0m[[0minfo[0m] [0mCompile success at Jul 20, 2016 12:05:36 AM [1.178s][0m
+[0m[[0minfo[0m] [0mCompiling 90 Scala sources and 15 Java sources to /mnt/xin/spark-1.5.0/sql/core/target/scala-2.10/test-classes...[0m
+[0m[[33mwarn[0m] [0m/mnt/xin/spark-1.5.0/sql/core/src/test/scala/org/apache/spark/sql/DataFrameSuite.scala:324: method callUdf in object functions is deprecated: Use callUDF[0m
+[0m[[33mwarn[0m] [0m      df.select($"id", callUdf("simpleUdf", $"value")),[0m
+[0m[[33mwarn[0m] [0m                       ^[0m
+[0m[[33mwarn[0m] [0mone warning found[0m
+[0m[[33mwarn[0m] [0m/mnt/xin/spark-1.5.0/sql/core/src/test/gen-java/org/apache/spark/sql/execution/datasources/parquet/test/avro/AvroArrayOfArray.java:135: warning: [unchecked] unchecked cast[0m
+[0m[[33mwarn[0m] [0m        record.int_arrays_column = fieldSetFlags()[0] ? this.int_arrays_column : (java.util.List<java.util.List<java.lang.Integer>>) defaultValue(fields()[0]);[0m
+[0m[[33mwarn[0m] [0m                                                                                                                                                 ^[0m
+[0m[[33mwarn[0m] [0m  required: List<List<Integer>>[0m
+[0m[[33mwarn[0m] [0m  found:    Object[0m
+[0m[[33mwarn[0m] [0m/mnt/xin/spark-1.5.0/sql/core/src/test/gen-java/org/apache/spark/sql/execution/datasources/parquet/test/avro/AvroMapOfArray.java:135: warning: [unchecked] unchecked cast[0m
+[0m[[33mwarn[0m] [0m        record.string_to_ints_column = fieldSetFlags()[0] ? this.string_to_ints_column : (java.util.Map<java.lang.String,java.util.List<java.lang.Integer>>) defaultValue(fields()[0]);[0m
+[0m[[33mwarn[0m] [0m                                                                                                                                                                         ^[0m
+[0m[[33mwarn[0m] [0m  required: Map<String,List<Integer>>[0m
+[0m[[33mwarn[0m] [0m  found:    Object[0m
+[0m[[33mwarn[0m] [0m/mnt/xin/spark-1.5.0/sql/core/src/test/gen-java/org/apache/spark/sql/execution/datasources/parquet/test/avro/AvroNonNullableArrays.java:188: warning: [unchecked] unchecked cast[0m
+[0m[[33mwarn[0m] [0m        record.strings_column = fieldSetFlags()[0] ? this.strings_column : (java.util.List<java.lang.String>) defaultValue(fields()[0]);[0m
+[0m[[33mwarn[0m] [0m                                                                                                                          ^[0m
+[0m[[33mwarn[0m] [0m  required: List<String>[0m
+[0m[[33mwarn[0m] [0m  found:    Object[0m
+[0m[[33mwarn[0m] [0m/mnt/xin/spark-1.5.0/sql/core/src/test/gen-java/org/apache/spark/sql/execution/datasources/parquet/test/avro/AvroNonNullableArrays.java:189: warning: [unchecked] unchecked cast[0m
+[0m[[33mwarn[0m] [0m        record.maybe_ints_column = fieldSetFlags()[1] ? this.maybe_ints_column : (java.util.List<java.lang.Integer>) defaultValue(fields()[1]);[0m
+[0m[[33mwarn[0m] [0m                                                                                                                                 ^[0m
+[0m[[33mwarn[0m] [0m  required: List<Integer>[0m
+[0m[[33mwarn[0m] [0m  found:    Object[0m
+[0m[[33mwarn[0m] [0m/mnt/xin/spark-1.5.0/sql/core/src/test/gen-java/org/apache/spark/sql/execution/datasources/parquet/test/avro/Nested.java:188: warning: [unchecked] unchecked cast[0m
+[0m[[33mwarn[0m] [0m        record.nested_ints_column = fieldSetFlags()[0] ? this.nested_ints_column : (java.util.List<java.lang.Integer>) defaultValue(fields()[0]);[0m
+[0m[[33mwarn[0m] [0m                                                                                                                                   ^[0m
+[0m[[33mwarn[0m] [0m  required: List<Integer>[0m
+[0m[[33mwarn[0m] [0m  found:    Object[0m
+[0m[[33mwarn[0m] [0m/mnt/xin/spark-1.5.0/sql/core/src/test/gen-java/org/apache/spark/sql/execution/datasources/parquet/test/avro/ParquetAvroCompat.java:241: warning: [unchecked] unchecked cast[0m
+[0m[[33mwarn[0m] [0m        record.strings_column = fieldSetFlags()[0] ? this.strings_column : (java.util.List<java.lang.String>) defaultValue(fields()[0]);[0m
+[0m[[33mwarn[0m] [0m                                                                                                                          ^[0m
+[0m[[33mwarn[0m] [0m  required: List<String>[0m
+[0m[[33mwarn[0m] [0m  found:    Object[0m
+[0m[[33mwarn[0m] [0m/mnt/xin/spark-1.5.0/sql/core/src/test/gen-java/org/apache/spark/sql/execution/datasources/parquet/test/avro/ParquetAvroCompat.java:242: warning: [unchecked] unchecked cast[0m
+[0m[[33mwarn[0m] [0m        record.string_to_int_column = fieldSetFlags()[1] ? this.string_to_int_column : (java.util.Map<java.lang.String,java.lang.Integer>) defaultValue(fields()[1]);[0m
+[0m[[33mwarn[0m] [0m                                                                                                                                                       ^[0m
+[0m[[33mwarn[0m] [0m  required: Map<String,Integer>[0m
+[0m[[33mwarn[0m] [0m  found:    Object[0m
+[0m[[33mwarn[0m] [0m/mnt/xin/spark-1.5.0/sql/core/src/test/gen-java/org/apache/spark/sql/execution/datasources/parquet/test/avro/ParquetAvroCompat.java:243: warning: [unchecked] unchecked cast[0m
+[0m[[33mwarn[0m] [0m        record.complex_column = fieldSetFlags()[2] ? this.complex_column : (java.util.Map<java.lang.String,java.util.List<org.apache.spark.sql.execution.datasources.parquet.test.avro.Nested>>) defaultValue(fields()[2]);[0m
+[0m[[33mwarn[0m] [0m                                                                                                                                                                                                             ^[0m
+[0m[[33mwarn[0m] [0m  required: Map<String,List<Nested>>[0m
+[0m[[33mwarn[0m] [0m  found:    Object[0m
+[0m[[33mwarn[0m] [0m/mnt/xin/spark-1.5.0/sql/core/src/test/java/test/org/apache/spark/sql/JavaApplySchemaSuite.java:108: warning: [deprecation] applySchema(JavaRDD<Row>,StructType) in SQLContext has been deprecated[0m
+[0m[[33mwarn[0m] [0m    DataFrame df = sqlContext.applySchema(rowRDD, schema);[0m
+[0m[[33mwarn[0m] [0m                             ^[0m
+[0m[[33mwarn[0m] [0m/mnt/xin/spark-1.5.0/sql/core/src/test/java/test/org/apache/spark/sql/JavaApplySchemaSuite.java:143: warning: [deprecation] applySchema(JavaRDD<Row>,StructType) in SQLContext has been deprecated[0m
+[0m[[33mwarn[0m] [0m    DataFrame df = sqlContext.applySchema(rowRDD, schema);[0m
+[0m[[33mwarn[0m] [0m                             ^[0m
+[0m[[33mwarn[0m] [0m10 warnings[0m
+[0m[[0minfo[0m] [0mCompile success at Jul 20, 2016 9:53:26 PM [52.385s][0m
 [INFO] 
 [INFO] --- maven-compiler-plugin:3.3:testCompile (default-testCompile) @ spark-sql_2.10 ---
-[INFO] Nothing to compile - all classes are up to date
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 15 source files to /mnt/xin/spark-1.5.0/sql/core/target/scala-2.10/test-classes
+[WARNING] /mnt/xin/spark-1.5.0/sql/core/src/test/gen-java/org/apache/spark/sql/execution/datasources/parquet/test/avro/ParquetAvroCompat.java:[241,122] [unchecked] unchecked cast
+[WARNING]   required: List<String>
+  found:    Object
+/mnt/xin/spark-1.5.0/sql/core/src/test/gen-java/org/apache/spark/sql/execution/datasources/parquet/test/avro/ParquetAvroCompat.java:[242,151] [unchecked] unchecked cast
+[WARNING]   required: Map<String,Integer>
+  found:    Object
+/mnt/xin/spark-1.5.0/sql/core/src/test/gen-java/org/apache/spark/sql/execution/datasources/parquet/test/avro/ParquetAvroCompat.java:[243,205] [unchecked] unchecked cast
+[WARNING]   required: Map<String,List<Nested>>
+  found:    Object
+/mnt/xin/spark-1.5.0/sql/core/src/test/gen-java/org/apache/spark/sql/execution/datasources/parquet/test/avro/Nested.java:[188,131] [unchecked] unchecked cast
+[WARNING]   required: List<Integer>
+  found:    Object
+/mnt/xin/spark-1.5.0/sql/core/src/test/gen-java/org/apache/spark/sql/execution/datasources/parquet/test/avro/AvroMapOfArray.java:[135,169] [unchecked] unchecked cast
+[WARNING]   required: Map<String,List<Integer>>
+  found:    Object
+/mnt/xin/spark-1.5.0/sql/core/src/test/gen-java/org/apache/spark/sql/execution/datasources/parquet/test/avro/AvroNonNullableArrays.java:[188,122] [unchecked] unchecked cast
+[WARNING]   required: List<String>
+  found:    Object
+/mnt/xin/spark-1.5.0/sql/core/src/test/gen-java/org/apache/spark/sql/execution/datasources/parquet/test/avro/AvroNonNullableArrays.java:[189,129] [unchecked] unchecked cast
+[WARNING]   required: List<Integer>
+  found:    Object
+/mnt/xin/spark-1.5.0/sql/core/src/test/gen-java/org/apache/spark/sql/execution/datasources/parquet/test/avro/AvroArrayOfArray.java:[135,145] [unchecked] unchecked cast
+[WARNING]   required: List<List<Integer>>
+  found:    Object
+/mnt/xin/spark-1.5.0/sql/core/src/test/java/test/org/apache/spark/sql/JavaApplySchemaSuite.java:[108,29] [deprecation] applySchema(JavaRDD<Row>,StructType) in SQLContext has been deprecated
+[WARNING] /mnt/xin/spark-1.5.0/sql/core/src/test/java/test/org/apache/spark/sql/JavaApplySchemaSuite.java:[143,29] [deprecation] applySchema(JavaRDD<Row>,StructType) in SQLContext has been deprecated
 [INFO] 
 [INFO] --- maven-dependency-plugin:2.10:build-classpath (default) @ spark-sql_2.10 ---
 [INFO] 
@@ -1665,8 +2015,12 @@ main:
 [INFO] 
 [INFO] --- scala-maven-plugin:3.2.2:compile (scala-compile-first) @ spark-mllib_2.10 ---
 [INFO] Using zinc server for incremental compilation
-[0m[[0minfo[0m] [0mCompiling 1 Java source to /mnt/xin/spark-1.5.0/mllib/target/scala-2.10/classes...[0m
-[0m[[0minfo[0m] [0mCompile success at Jul 20, 2016 12:05:48 AM [3.288s][0m
+[0m[[0minfo[0m] [0mCompiling 220 Scala sources and 3 Java sources to /mnt/xin/spark-1.5.0/mllib/target/scala-2.10/classes...[0m
+[0m[[33mwarn[0m] [0m/mnt/xin/spark-1.5.0/mllib/src/main/scala/org/apache/spark/ml/Transformer.scala:119: method callUDF in object functions is deprecated: Use udf[0m
+[0m[[33mwarn[0m] [0m      callUDF(this.createTransformFunc, outputDataType, dataset($(inputCol))))[0m
+[0m[[33mwarn[0m] [0m      ^[0m
+[0m[[33mwarn[0m] [0mone warning found[0m
+[0m[[0minfo[0m] [0mCompile success at Jul 20, 2016 9:54:36 PM [56.762s][0m
 [INFO] 
 [INFO] --- maven-compiler-plugin:3.3:compile (default-compile) @ spark-mllib_2.10 ---
 [INFO] Changes detected - recompiling the module!
@@ -1676,6 +2030,7 @@ main:
 [INFO] Executing tasks
 
 main:
+    [mkdir] Created dir: /mnt/xin/spark-1.5.0/mllib/target/tmp
 [INFO] Executed tasks
 [INFO] 
 [INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ spark-mllib_2.10 ---
@@ -1685,10 +2040,12 @@ main:
 [INFO] 
 [INFO] --- scala-maven-plugin:3.2.2:testCompile (scala-test-compile-first) @ spark-mllib_2.10 ---
 [INFO] Using zinc server for incremental compilation
-[0m[[0minfo[0m] [0mCompile success at Jul 20, 2016 12:05:52 AM [1.461s][0m
+[0m[[0minfo[0m] [0mCompiling 129 Scala sources and 57 Java sources to /mnt/xin/spark-1.5.0/mllib/target/scala-2.10/test-classes...[0m
+[0m[[0minfo[0m] [0mCompile success at Jul 20, 2016 9:55:36 PM [58.110s][0m
 [INFO] 
 [INFO] --- maven-compiler-plugin:3.3:testCompile (default-testCompile) @ spark-mllib_2.10 ---
-[INFO] Nothing to compile - all classes are up to date
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 57 source files to /mnt/xin/spark-1.5.0/mllib/target/scala-2.10/test-classes
 [INFO] 
 [INFO] --- maven-dependency-plugin:2.10:build-classpath (default) @ spark-mllib_2.10 ---
 [INFO] 
@@ -1890,7 +2247,8 @@ main:
 [INFO] 
 [INFO] --- scala-maven-plugin:3.2.2:compile (scala-compile-first) @ spark-tools_2.10 ---
 [INFO] Using zinc server for incremental compilation
-[0m[[0minfo[0m] [0mCompile success at Jul 20, 2016 12:06:01 AM [0.075s][0m
+[0m[[0minfo[0m] [0mCompiling 3 Scala sources to /mnt/xin/spark-1.5.0/tools/target/scala-2.10/classes...[0m
+[0m[[0minfo[0m] [0mCompile success at Jul 20, 2016 9:55:53 PM [2.783s][0m
 [INFO] 
 [INFO] --- maven-compiler-plugin:3.3:compile (default-compile) @ spark-tools_2.10 ---
 [INFO] Nothing to compile - all classes are up to date
@@ -1899,6 +2257,7 @@ main:
 [INFO] Executing tasks
 
 main:
+    [mkdir] Created dir: /mnt/xin/spark-1.5.0/tools/target/tmp
 [INFO] Executed tasks
 [INFO] 
 [INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ spark-tools_2.10 ---
@@ -2090,7 +2449,69 @@ main:
 [INFO] 
 [INFO] --- scala-maven-plugin:3.2.2:compile (scala-compile-first) @ spark-hive_2.10 ---
 [INFO] Using zinc server for incremental compilation
-[0m[[0minfo[0m] [0mCompile success at Jul 20, 2016 12:06:04 AM [0.182s][0m
+[0m[[0minfo[0m] [0mCompiling 27 Scala sources and 1 Java source to /mnt/xin/spark-1.5.0/sql/hive/target/scala-2.10/classes...[0m
+[0m[[33mwarn[0m] [0m/mnt/xin/spark-1.5.0/sql/hive/src/main/scala/org/apache/spark/sql/hive/HiveContext.scala:333: method isDir in class FileStatus is deprecated: see corresponding Javadoc for more information.[0m
+[0m[[33mwarn[0m] [0m          val size = if (fileStatus.isDir) {[0m
+[0m[[33mwarn[0m] [0m                                    ^[0m
+[0m[[33mwarn[0m] [0m/mnt/xin/spark-1.5.0/sql/hive/src/main/scala/org/apache/spark/sql/hive/TableReader.scala:81: trait Deserializer in package serde2 is deprecated: see corresponding Javadoc for more information.[0m
+[0m[[33mwarn[0m] [0m      Utils.classForName(relation.tableDesc.getSerdeClassName).asInstanceOf[Class[Deserializer]],[0m
+[0m[[33mwarn[0m] [0m                                                                            ^[0m
+[0m[[33mwarn[0m] [0m/mnt/xin/spark-1.5.0/sql/hive/src/main/scala/org/apache/spark/sql/hive/TableReader.scala:95: trait Deserializer in package serde2 is deprecated: see corresponding Javadoc for more information.[0m
+[0m[[33mwarn[0m] [0m      deserializerClass: Class[_ <: Deserializer],[0m
+[0m[[33mwarn[0m] [0m                         ^[0m
+[0m[[33mwarn[0m] [0m/mnt/xin/spark-1.5.0/sql/hive/src/main/scala/org/apache/spark/sql/hive/TableReader.scala:129: trait Deserializer in package serde2 is deprecated: see corresponding Javadoc for more information.[0m
+[0m[[33mwarn[0m] [0m      (part, part.getDeserializer.getClass.asInstanceOf[Class[Deserializer]])).toMap[0m
+[0m[[33mwarn[0m] [0m                                                        ^[0m
+[0m[[33mwarn[0m] [0m/mnt/xin/spark-1.5.0/sql/hive/src/main/scala/org/apache/spark/sql/hive/TableReader.scala:144: trait Deserializer in package serde2 is deprecated: see corresponding Javadoc for more information.[0m
+[0m[[33mwarn[0m] [0m      partitionToDeserializer: Map[HivePartition,[0m
+[0m[[33mwarn[0m] [0m                               ^[0m
+[0m[[33mwarn[0m] [0m/mnt/xin/spark-1.5.0/sql/hive/src/main/scala/org/apache/spark/sql/hive/TableReader.scala:150: trait Deserializer in package serde2 is deprecated: see corresponding Javadoc for more information.[0m
+[0m[[33mwarn[0m] [0m        partitionToDeserializer: Map[HivePartition, Class[_ <: Deserializer]]):[0m
+[0m[[33mwarn[0m] [0m                                 ^[0m
+[0m[[33mwarn[0m] [0m/mnt/xin/spark-1.5.0/sql/hive/src/main/scala/org/apache/spark/sql/hive/TableReader.scala:151: trait Deserializer in package serde2 is deprecated: see corresponding Javadoc for more information.[0m
+[0m[[33mwarn[0m] [0m        Map[HivePartition, Class[_ <: Deserializer]] = {[0m
+[0m[[33mwarn[0m] [0m        ^[0m
+[0m[[33mwarn[0m] [0m/mnt/xin/spark-1.5.0/sql/hive/src/main/scala/org/apache/spark/sql/hive/TableReader.scala:318: trait Deserializer in package serde2 is deprecated: see corresponding Javadoc for more information.[0m
+[0m[[33mwarn[0m] [0m      rawDeser: Deserializer,[0m
+[0m[[33mwarn[0m] [0m                ^[0m
+[0m[[33mwarn[0m] [0m/mnt/xin/spark-1.5.0/sql/hive/src/main/scala/org/apache/spark/sql/hive/TableReader.scala:321: trait Deserializer in package serde2 is deprecated: see corresponding Javadoc for more information.[0m
+[0m[[33mwarn[0m] [0m      tableDeser: Deserializer): Iterator[InternalRow] = {[0m
+[0m[[33mwarn[0m] [0m                  ^[0m
+[0m[[33mwarn[0m] [0m/mnt/xin/spark-1.5.0/sql/hive/src/main/scala/org/apache/spark/sql/hive/execution/InsertIntoHiveTable.scala:58: trait Serializer in package serde2 is deprecated: see corresponding Javadoc for more information.[0m
+[0m[[33mwarn[0m] [0m  private def newSerializer(tableDesc: TableDesc): Serializer = {[0m
+[0m[[33mwarn[0m] [0m                                                   ^[0m
+[0m[[33mwarn[0m] [0m/mnt/xin/spark-1.5.0/sql/hive/src/main/scala/org/apache/spark/sql/hive/execution/InsertIntoHiveTable.scala:59: trait Serializer in package serde2 is deprecated: see corresponding Javadoc for more information.[0m
+[0m[[33mwarn[0m] [0m    val serializer = tableDesc.getDeserializerClass.newInstance().asInstanceOf[Serializer][0m
+[0m[[33mwarn[0m] [0m                                                                               ^[0m
+[0m[[33mwarn[0m] [0m/mnt/xin/spark-1.5.0/sql/hive/src/main/scala/org/apache/spark/sql/hive/execution/ScriptTransformation.scala:346: method initialize in class AbstractSerDe is deprecated: see corresponding Javadoc for more information.[0m
+[0m[[33mwarn[0m] [0m    serde.initialize(null, properties)[0m
+[0m[[33mwarn[0m] [0m          ^[0m
+[0m[[33mwarn[0m] [0m/mnt/xin/spark-1.5.0/sql/hive/src/main/scala/org/apache/spark/sql/hive/hiveUDFs.scala:339: class UDAF in package exec is deprecated: see corresponding Javadoc for more information.[0m
+[0m[[33mwarn[0m] [0m      new GenericUDAFBridge(funcWrapper.createFunction[UDAF]())[0m
+[0m[[33mwarn[0m] [0m                                                       ^[0m
+[0m[[33mwarn[0m] [0m/mnt/xin/spark-1.5.0/sql/hive/src/main/scala/org/apache/spark/sql/hive/hiveUDFs.scala:380: trait AggregationBuffer in object GenericUDAFEvaluator is deprecated: see corresponding Javadoc for more information.[0m
+[0m[[33mwarn[0m] [0m  private var hiveEvaluatorBuffer: AggregationBuffer = _[0m
+[0m[[33mwarn[0m] [0m                                   ^[0m
+[0m[[33mwarn[0m] [0m/mnt/xin/spark-1.5.0/sql/hive/src/main/scala/org/apache/spark/sql/hive/hiveUDFs.scala:482: class UDAF in package exec is deprecated: see corresponding Javadoc for more information.[0m
+[0m[[33mwarn[0m] [0m  type UDFType = UDAF[0m
+[0m[[33mwarn[0m] [0m                 ^[0m
+[0m[[33mwarn[0m] [0m/mnt/xin/spark-1.5.0/sql/hive/src/main/scala/org/apache/spark/sql/hive/hiveUDFs.scala:536: method initialize in class GenericUDTF is deprecated: see corresponding Javadoc for more information.[0m
+[0m[[33mwarn[0m] [0m  protected lazy val outputInspector = function.initialize(inputInspectors.toArray)[0m
+[0m[[33mwarn[0m] [0m                                                ^[0m
+[0m[[33mwarn[0m] [0m/mnt/xin/spark-1.5.0/sql/hive/src/main/scala/org/apache/spark/sql/hive/hiveUDFs.scala:600: class UDAF in package exec is deprecated: see corresponding Javadoc for more information.[0m
+[0m[[33mwarn[0m] [0m      new GenericUDAFBridge(funcWrapper.createFunction[UDAF]())[0m
+[0m[[33mwarn[0m] [0m                                                       ^[0m
+[0m[[33mwarn[0m] [0m/mnt/xin/spark-1.5.0/sql/hive/src/main/scala/org/apache/spark/sql/hive/hiveWriterContainers.scala:135: constructor TaskID in class TaskID is deprecated: see corresponding Javadoc for more information.[0m
+[0m[[33mwarn[0m] [0m      new TaskAttemptID(new TaskID(jID.value, true, splitID), attemptID))[0m
+[0m[[33mwarn[0m] [0m                        ^[0m
+[0m[[33mwarn[0m] [0m/mnt/xin/spark-1.5.0/sql/hive/src/main/scala/org/apache/spark/sql/hive/orc/OrcFileOperator.scala:98: method isDir in class FileStatus is deprecated: see corresponding Javadoc for more information.[0m
+[0m[[33mwarn[0m] [0m      .filterNot(_.isDir)[0m
+[0m[[33mwarn[0m] [0m                   ^[0m
+[0m[[33mwarn[0m] [0m/mnt/xin/spark-1.5.0/sql/hive/src/main/scala/org/apache/spark/sql/hive/orc/OrcRelation.scala:286: constructor Job in class Job is deprecated: see corresponding Javadoc for more information.[0m
+[0m[[33mwarn[0m] [0m    val job = new Job(sqlContext.sparkContext.hadoopConfiguration)[0m
+[0m[[33mwarn[0m] [0m              ^[0m
+[0m[[33mwarn[0m] [0m20 warnings found[0m
+[0m[[0minfo[0m] [0mCompile success at Jul 20, 2016 9:56:31 PM [35.050s][0m
 [INFO] 
 [INFO] --- maven-compiler-plugin:3.3:compile (default-compile) @ spark-hive_2.10 ---
 [INFO] Changes detected - recompiling the module!
@@ -2100,6 +2521,7 @@ main:
 [INFO] Executing tasks
 
 main:
+    [mkdir] Created dir: /mnt/xin/spark-1.5.0/sql/hive/target/tmp
 [INFO] Executed tasks
 [INFO] 
 [INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ spark-hive_2.10 ---
@@ -2109,10 +2531,28 @@ main:
 [INFO] 
 [INFO] --- scala-maven-plugin:3.2.2:testCompile (scala-test-compile-first) @ spark-hive_2.10 ---
 [INFO] Using zinc server for incremental compilation
-[0m[[0minfo[0m] [0mCompile success at Jul 20, 2016 12:06:08 AM [0.379s][0m
+[0m[[0minfo[0m] [0mCompiling 51 Scala sources and 14 Java sources to /mnt/xin/spark-1.5.0/sql/hive/target/scala-2.10/test-classes...[0m
+[0m[[33mwarn[0m] [0m/mnt/xin/spark-1.5.0/sql/hive/src/test/java/org/apache/spark/sql/hive/test/Complex.java:53: warning: [rawtypes] found raw type: IScheme[0m
+[0m[[33mwarn[0m] [0m  private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();[0m
+[0m[[33mwarn[0m] [0m                                           ^[0m
+[0m[[33mwarn[0m] [0m  missing type arguments for generic class IScheme<T>[0m
+[0m[[33mwarn[0m] [0m  where T is a type-variable:[0m
+[0m[[33mwarn[0m] [0m    T extends TBase declared in interface IScheme[0m
+[0m[[33mwarn[0m] [0m/mnt/xin/spark-1.5.0/sql/hive/src/test/java/org/apache/spark/sql/hive/test/Complex.java:53: warning: [rawtypes] found raw type: IScheme[0m
+[0m[[33mwarn[0m] [0m  private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();[0m
+[0m[[33mwarn[0m] [0m                                                                                                          ^[0m
+[0m[[33mwarn[0m] [0m  missing type arguments for generic class IScheme<T>[0m
+[0m[[33mwarn[0m] [0m  where T is a type-variable:[0m
+[0m[[33mwarn[0m] [0m    T extends TBase declared in interface IScheme[0m
+[0m[[33mwarn[0m] [0m/mnt/xin/spark-1.5.0/sql/hive/src/test/java/org/apache/spark/sql/hive/test/Complex.java:655: warning: [cast] redundant cast to Complex[0m
+[0m[[33mwarn[0m] [0m    Complex typedOther = (Complex)other;[0m
+[0m[[33mwarn[0m] [0m                         ^[0m
+[0m[[33mwarn[0m] [0m3 warnings[0m
+[0m[[0minfo[0m] [0mCompile success at Jul 20, 2016 9:57:07 PM [30.043s][0m
 [INFO] 
 [INFO] --- maven-compiler-plugin:3.3:testCompile (default-testCompile) @ spark-hive_2.10 ---
-[INFO] Nothing to compile - all classes are up to date
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 14 source files to /mnt/xin/spark-1.5.0/sql/hive/target/scala-2.10/test-classes
 [INFO] 
 [INFO] --- maven-dependency-plugin:2.10:build-classpath (default) @ spark-hive_2.10 ---
 [INFO] 
@@ -2131,9 +2571,9 @@ main:
 [INFO] --- maven-site-plugin:3.3:attach-descriptor (attach-descriptor) @ spark-hive_2.10 ---
 [INFO] 
 [INFO] --- maven-dependency-plugin:2.10:copy-dependencies (copy-dependencies) @ spark-hive_2.10 ---
-[INFO] org.datanucleus:datanucleus-core:jar:3.2.10 already exists in destination.
-[INFO] org.datanucleus:datanucleus-rdbms:jar:3.2.9 already exists in destination.
-[INFO] org.datanucleus:datanucleus-api-jdo:jar:3.2.6 already exists in destination.
+[INFO] Copying datanucleus-core-3.2.10.jar to /mnt/xin/spark-1.5.0/sql/hive/../../lib_managed/jars/datanucleus-core-3.2.10.jar
+[INFO] Copying datanucleus-rdbms-3.2.9.jar to /mnt/xin/spark-1.5.0/sql/hive/../../lib_managed/jars/datanucleus-rdbms-3.2.9.jar
+[INFO] Copying datanucleus-api-jdo-3.2.6.jar to /mnt/xin/spark-1.5.0/sql/hive/../../lib_managed/jars/datanucleus-api-jdo-3.2.6.jar
 [INFO] 
 [INFO] --- maven-shade-plugin:2.4.1:shade (default) @ spark-hive_2.10 ---
 [INFO] Excluding com.twitter:parquet-hadoop-bundle:jar:1.6.0 from the shaded jar.
@@ -2343,7 +2783,8 @@ main:
 [INFO] 
 [INFO] --- scala-maven-plugin:3.2.2:compile (scala-compile-first) @ spark-repl_2.10 ---
 [INFO] Using zinc server for incremental compilation
-[0m[[0minfo[0m] [0mCompile success at Jul 20, 2016 12:06:20 AM [0.119s][0m
+[0m[[0minfo[0m] [0mCompiling 13 Scala sources to /mnt/xin/spark-1.5.0/repl/target/scala-2.10/classes...[0m
+[0m[[0minfo[0m] [0mCompile success at Jul 20, 2016 9:57:34 PM [11.103s][0m
 [INFO] 
 [INFO] --- maven-compiler-plugin:3.3:compile (default-compile) @ spark-repl_2.10 ---
 [INFO] Nothing to compile - all classes are up to date
@@ -2355,6 +2796,7 @@ main:
 [INFO] Executing tasks
 
 main:
+    [mkdir] Created dir: /mnt/xin/spark-1.5.0/repl/target/tmp
 [INFO] Executed tasks
 [INFO] 
 [INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ spark-repl_2.10 ---
@@ -2364,7 +2806,8 @@ main:
 [INFO] 
 [INFO] --- scala-maven-plugin:3.2.2:testCompile (scala-test-compile-first) @ spark-repl_2.10 ---
 [INFO] Using zinc server for incremental compilation
-[0m[[0minfo[0m] [0mCompile success at Jul 20, 2016 12:06:21 AM [0.380s][0m
+[0m[[0minfo[0m] [0mCompiling 2 Scala sources to /mnt/xin/spark-1.5.0/repl/target/scala-2.10/test-classes...[0m
+[0m[[0minfo[0m] [0mCompile success at Jul 20, 2016 9:57:37 PM [2.887s][0m
 [INFO] 
 [INFO] --- maven-compiler-plugin:3.3:testCompile (default-testCompile) @ spark-repl_2.10 ---
 [INFO] Nothing to compile - all classes are up to date
@@ -2574,6 +3017,7 @@ main:
 [INFO] Executing tasks
 
 main:
+    [mkdir] Created dir: /mnt/xin/spark-1.5.0/assembly/target/tmp
 [INFO] Executed tasks
 [INFO] 
 [INFO] --- scala-maven-plugin:3.2.2:testCompile (scala-test-compile-first) @ spark-assembly_2.10 ---
@@ -2585,6 +3029,7 @@ main:
 [INFO] Tests are skipped.
 [INFO] 
 [INFO] --- maven-jar-plugin:2.6:test-jar (prepare-test-jar) @ spark-assembly_2.10 ---
+[INFO] Building jar: /mnt/xin/spark-1.5.0/assembly/target/spark-assembly_2.10-1.5.0-tests.jar
 [INFO] 
 [INFO] --- maven-site-plugin:3.3:attach-descriptor (attach-descriptor) @ spark-assembly_2.10 ---
 [INFO] 
@@ -2863,7 +3308,8 @@ main:
 [INFO] 
 [INFO] --- scala-maven-plugin:3.2.2:compile (scala-compile-first) @ spark-streaming-twitter_2.10 ---
 [INFO] Using zinc server for incremental compilation
-[0m[[0minfo[0m] [0mCompile success at Jul 20, 2016 12:09:32 AM [0.069s][0m
+[0m[[0minfo[0m] [0mCompiling 3 Scala sources and 1 Java source to /mnt/xin/spark-1.5.0/external/twitter/target/scala-2.10/classes...[0m
+[0m[[0minfo[0m] [0mCompile success at Jul 20, 2016 10:00:55 PM [3.053s][0m
 [INFO] 
 [INFO] --- maven-compiler-plugin:3.3:compile (default-compile) @ spark-streaming-twitter_2.10 ---
 [INFO] Changes detected - recompiling the module!
@@ -2873,6 +3319,7 @@ main:
 [INFO] Executing tasks
 
 main:
+    [mkdir] Created dir: /mnt/xin/spark-1.5.0/external/twitter/target/tmp
 [INFO] Executed tasks
 [INFO] 
 [INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ spark-streaming-twitter_2.10 ---
@@ -2882,10 +3329,12 @@ main:
 [INFO] 
 [INFO] --- scala-maven-plugin:3.2.2:testCompile (scala-test-compile-first) @ spark-streaming-twitter_2.10 ---
 [INFO] Using zinc server for incremental compilation
-[0m[[0minfo[0m] [0mCompile success at Jul 20, 2016 12:09:34 AM [0.079s][0m
+[0m[[0minfo[0m] [0mCompiling 1 Scala source and 2 Java sources to /mnt/xin/spark-1.5.0/external/twitter/target/scala-2.10/test-classes...[0m
+[0m[[0minfo[0m] [0mCompile success at Jul 20, 2016 10:01:00 PM [3.583s][0m
 [INFO] 
 [INFO] --- maven-compiler-plugin:3.3:testCompile (default-testCompile) @ spark-streaming-twitter_2.10 ---
-[INFO] Nothing to compile - all classes are up to date
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 2 source files to /mnt/xin/spark-1.5.0/external/twitter/target/scala-2.10/test-classes
 [INFO] 
 [INFO] --- maven-dependency-plugin:2.10:build-classpath (default) @ spark-streaming-twitter_2.10 ---
 [INFO] 
@@ -3017,7 +3466,19 @@ main:
 [INFO] 
 [INFO] --- scala-maven-plugin:3.2.2:compile (scala-compile-first) @ spark-streaming-flume-sink_2.10 ---
 [INFO] Using zinc server for incremental compilation
-[0m[[0minfo[0m] [0mCompiling 3 Java sources to /mnt/xin/spark-1.5.0/external/flume-sink/target/scala-2.10/classes...[0m
+[0m[[0minfo[0m] [0mCompiling 6 Scala sources and 3 Java sources to /mnt/xin/spark-1.5.0/external/flume-sink/target/scala-2.10/classes...[0m
+[0m[[33mwarn[0m] [0mClass org.jboss.netty.channel.ChannelFactory not found - continuing with a stub.[0m
+[0m[[33mwarn[0m] [0mClass org.jboss.netty.channel.ChannelFactory not found - continuing with a stub.[0m
+[0m[[33mwarn[0m] [0mClass org.jboss.netty.channel.ChannelPipelineFactory not found - continuing with a stub.[0m
+[0m[[33mwarn[0m] [0mClass org.jboss.netty.handler.execution.ExecutionHandler not found - continuing with a stub.[0m
+[0m[[33mwarn[0m] [0mClass org.jboss.netty.channel.ChannelFactory not found - continuing with a stub.[0m
+[0m[[33mwarn[0m] [0mClass org.jboss.netty.handler.execution.ExecutionHandler not found - continuing with a stub.[0m
+[0m[[33mwarn[0m] [0mClass org.jboss.netty.channel.group.ChannelGroup not found - continuing with a stub.[0m
+[0m[[33mwarn[0m] [0mClass com.google.common.collect.ImmutableMap not found - continuing with a stub.[0m
+[0m[[33mwarn[0m] [0mClass com.google.common.collect.ImmutableMap not found - continuing with a stub.[0m
+[0m[[33mwarn[0m] [0mClass com.google.common.collect.ImmutableMap not found - continuing with a stub.[0m
+[0m[[33mwarn[0m] [0mClass com.google.common.collect.ImmutableMap not found - continuing with a stub.[0m
+[0m[[33mwarn[0m] [0m11 warnings found[0m
 [0m[[33mwarn[0m] [0m/mnt/xin/spark-1.5.0/external/flume-sink/target/scala-2.10/src_managed/main/compiled_avro/org/apache/spark/streaming/flume/sink/EventBatch.java:243: warning: [unchecked] unchecked cast[0m
 [0m[[33mwarn[0m] [0m        record.events = fieldSetFlags()[2] ? this.events : (java.util.List<org.apache.spark.streaming.flume.sink.SparkSinkEvent>) defaultValue(fields()[2]);[0m
 [0m[[33mwarn[0m] [0m                                                                                                                                              ^[0m
@@ -3029,15 +3490,21 @@ main:
 [0m[[33mwarn[0m] [0m  required: Map<CharSequence,CharSequence>[0m
 [0m[[33mwarn[0m] [0m  found:    Object[0m
 [0m[[33mwarn[0m] [0m2 warnings[0m
-[0m[[0minfo[0m] [0mCompile success at Jul 20, 2016 12:09:38 AM [1.512s][0m
+[0m[[0minfo[0m] [0mCompile success at Jul 20, 2016 10:01:08 PM [2.832s][0m
 [INFO] 
 [INFO] --- maven-compiler-plugin:3.3:compile (default-compile) @ spark-streaming-flume-sink_2.10 ---
-[INFO] Nothing to compile - all classes are up to date
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 3 source files to /mnt/xin/spark-1.5.0/external/flume-sink/target/scala-2.10/classes
+[WARNING] /mnt/xin/spark-1.5.0/external/flume-sink/target/scala-2.10/src_managed/main/compiled_avro/org/apache/spark/streaming/flume/sink/EventBatch.java:[243,142] [unchecked] unchecked cast
+[WARNING]   required: List<SparkSinkEvent>
+  found:    Object
+/mnt/xin/spark-1.5.0/external/flume-sink/target/scala-2.10/src_managed/main/compiled_avro/org/apache/spark/streaming/flume/sink/SparkSinkEvent.java:[188,136] [unchecked] unchecked cast
 [INFO] 
 [INFO] --- maven-antrun-plugin:1.8:run (create-tmp-dir) @ spark-streaming-flume-sink_2.10 ---
 [INFO] Executing tasks
 
 main:
+    [mkdir] Created dir: /mnt/xin/spark-1.5.0/external/flume-sink/target/tmp
 [INFO] Executed tasks
 [INFO] 
 [INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ spark-streaming-flume-sink_2.10 ---
@@ -3047,7 +3514,8 @@ main:
 [INFO] 
 [INFO] --- scala-maven-plugin:3.2.2:testCompile (scala-test-compile-first) @ spark-streaming-flume-sink_2.10 ---
 [INFO] Using zinc server for incremental compilation
-[0m[[0minfo[0m] [0mCompile success at Jul 20, 2016 12:09:38 AM [0.081s][0m
+[0m[[0minfo[0m] [0mCompiling 1 Scala source to /mnt/xin/spark-1.5.0/external/flume-sink/target/scala-2.10/test-classes...[0m
+[0m[[0minfo[0m] [0mCompile success at Jul 20, 2016 10:01:11 PM [1.528s][0m
 [INFO] 
 [INFO] --- maven-compiler-plugin:3.3:testCompile (default-testCompile) @ spark-streaming-flume-sink_2.10 ---
 [INFO] Nothing to compile - all classes are up to date
@@ -3124,7 +3592,8 @@ main:
 [INFO] 
 [INFO] --- scala-maven-plugin:3.2.2:compile (scala-compile-first) @ spark-streaming-flume_2.10 ---
 [INFO] Using zinc server for incremental compilation
-[0m[[0minfo[0m] [0mCompile success at Jul 20, 2016 12:09:40 AM [0.081s][0m
+[0m[[0minfo[0m] [0mCompiling 8 Scala sources and 1 Java source to /mnt/xin/spark-1.5.0/external/flume/target/scala-2.10/classes...[0m
+[0m[[0minfo[0m] [0mCompile success at Jul 20, 2016 10:01:17 PM [4.407s][0m
 [INFO] 
 [INFO] --- maven-compiler-plugin:3.3:compile (default-compile) @ spark-streaming-flume_2.10 ---
 [INFO] Changes detected - recompiling the module!
@@ -3134,6 +3603,7 @@ main:
 [INFO] Executing tasks
 
 main:
+    [mkdir] Created dir: /mnt/xin/spark-1.5.0/external/flume/target/tmp
 [INFO] Executed tasks
 [INFO] 
 [INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ spark-streaming-flume_2.10 ---
@@ -3143,10 +3613,12 @@ main:
 [INFO] 
 [INFO] --- scala-maven-plugin:3.2.2:testCompile (scala-test-compile-first) @ spark-streaming-flume_2.10 ---
 [INFO] Using zinc server for incremental compilation
-[0m[[0minfo[0m] [0mCompile success at Jul 20, 2016 12:09:42 AM [0.101s][0m
+[0m[[0minfo[0m] [0mCompiling 3 Scala sources and 3 Java sources to /mnt/xin/spark-1.5.0/external/flume/target/scala-2.10/test-classes...[0m
+[0m[[0minfo[0m] [0mCompile success at Jul 20, 2016 10:01:24 PM [5.302s][0m
 [INFO] 
 [INFO] --- maven-compiler-plugin:3.3:testCompile (default-testCompile) @ spark-streaming-flume_2.10 ---
-[INFO] Nothing to compile - all classes are up to date
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 3 source files to /mnt/xin/spark-1.5.0/external/flume/target/scala-2.10/test-classes
 [INFO] 
 [INFO] --- maven-dependency-plugin:2.10:build-classpath (default) @ spark-streaming-flume_2.10 ---
 [INFO] 
@@ -3288,6 +3760,7 @@ main:
 [INFO] Executing tasks
 
 main:
+    [mkdir] Created dir: /mnt/xin/spark-1.5.0/external/flume-assembly/target/tmp
 [INFO] Executed tasks
 [INFO] 
 [INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ spark-streaming-flume-assembly_2.10 ---
@@ -3370,7 +3843,8 @@ main:
 [INFO] 
 [INFO] --- scala-maven-plugin:3.2.2:compile (scala-compile-first) @ spark-streaming-mqtt_2.10 ---
 [INFO] Using zinc server for incremental compilation
-[0m[[0minfo[0m] [0mCompile success at Jul 20, 2016 12:09:51 AM [0.069s][0m
+[0m[[0minfo[0m] [0mCompiling 3 Scala sources and 1 Java source to /mnt/xin/spark-1.5.0/external/mqtt/target/scala-2.10/classes...[0m
+[0m[[0minfo[0m] [0mCompile success at Jul 20, 2016 10:01:37 PM [2.942s][0m
 [INFO] 
 [INFO] --- maven-compiler-plugin:3.3:compile (default-compile) @ spark-streaming-mqtt_2.10 ---
 [INFO] Changes detected - recompiling the module!
@@ -3380,6 +3854,7 @@ main:
 [INFO] Executing tasks
 
 main:
+    [mkdir] Created dir: /mnt/xin/spark-1.5.0/external/mqtt/target/tmp
 [INFO] Executed tasks
 [INFO] 
 [INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ spark-streaming-mqtt_2.10 ---
@@ -3389,10 +3864,12 @@ main:
 [INFO] 
 [INFO] --- scala-maven-plugin:3.2.2:testCompile (scala-test-compile-first) @ spark-streaming-mqtt_2.10 ---
 [INFO] Using zinc server for incremental compilation
-[0m[[0minfo[0m] [0mCompile success at Jul 20, 2016 12:09:53 AM [0.083s][0m
+[0m[[0minfo[0m] [0mCompiling 2 Scala sources and 2 Java sources to /mnt/xin/spark-1.5.0/external/mqtt/target/scala-2.10/test-classes...[0m
+[0m[[0minfo[0m] [0mCompile success at Jul 20, 2016 10:01:43 PM [4.403s][0m
 [INFO] 
 [INFO] --- maven-compiler-plugin:3.3:testCompile (default-testCompile) @ spark-streaming-mqtt_2.10 ---
-[INFO] Nothing to compile - all classes are up to date
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 2 source files to /mnt/xin/spark-1.5.0/external/mqtt/target/scala-2.10/test-classes
 [INFO] 
 [INFO] --- maven-dependency-plugin:2.10:build-classpath (default) @ spark-streaming-mqtt_2.10 ---
 [INFO] 
@@ -3534,6 +4011,7 @@ main:
 [INFO] Executing tasks
 
 main:
+    [mkdir] Created dir: /mnt/xin/spark-1.5.0/external/mqtt-assembly/target/tmp
 [INFO] Executed tasks
 [INFO] 
 [INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ spark-streaming-mqtt-assembly_2.10 ---
@@ -3657,7 +4135,8 @@ main:
 [INFO] 
 [INFO] --- scala-maven-plugin:3.2.2:compile (scala-compile-first) @ spark-streaming-zeromq_2.10 ---
 [INFO] Using zinc server for incremental compilation
-[0m[[0minfo[0m] [0mCompile success at Jul 20, 2016 12:10:26 AM [0.213s][0m
+[0m[[0minfo[0m] [0mCompiling 3 Scala sources and 1 Java source to /mnt/xin/spark-1.5.0/external/zeromq/target/scala-2.10/classes...[0m
+[0m[[0minfo[0m] [0mCompile success at Jul 20, 2016 10:02:25 PM [3.516s][0m
 [INFO] 
 [INFO] --- maven-compiler-plugin:3.3:compile (default-compile) @ spark-streaming-zeromq_2.10 ---
 [INFO] Changes detected - recompiling the module!
@@ -3667,6 +4146,7 @@ main:
 [INFO] Executing tasks
 
 main:
+    [mkdir] Created dir: /mnt/xin/spark-1.5.0/external/zeromq/target/tmp
 [INFO] Executed tasks
 [INFO] 
 [INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ spark-streaming-zeromq_2.10 ---
@@ -3676,10 +4156,12 @@ main:
 [INFO] 
 [INFO] --- scala-maven-plugin:3.2.2:testCompile (scala-test-compile-first) @ spark-streaming-zeromq_2.10 ---
 [INFO] Using zinc server for incremental compilation
-[0m[[0minfo[0m] [0mCompile success at Jul 20, 2016 12:10:27 AM [0.081s][0m
+[0m[[0minfo[0m] [0mCompiling 1 Scala source and 2 Java sources to /mnt/xin/spark-1.5.0/external/zeromq/target/scala-2.10/test-classes...[0m
+[0m[[0minfo[0m] [0mCompile success at Jul 20, 2016 10:02:30 PM [3.670s][0m
 [INFO] 
 [INFO] --- maven-compiler-plugin:3.3:testCompile (default-testCompile) @ spark-streaming-zeromq_2.10 ---
-[INFO] Nothing to compile - all classes are up to date
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 2 source files to /mnt/xin/spark-1.5.0/external/zeromq/target/scala-2.10/test-classes
 [INFO] 
 [INFO] --- maven-dependency-plugin:2.10:build-classpath (default) @ spark-streaming-zeromq_2.10 ---
 [INFO] 
@@ -3809,7 +4291,8 @@ main:
 [INFO] 
 [INFO] --- scala-maven-plugin:3.2.2:compile (scala-compile-first) @ spark-streaming-kafka_2.10 ---
 [INFO] Using zinc server for incremental compilation
-[0m[[0minfo[0m] [0mCompile success at Jul 20, 2016 12:10:28 AM [0.095s][0m
+[0m[[0minfo[0m] [0mCompiling 11 Scala sources and 1 Java source to /mnt/xin/spark-1.5.0/external/kafka/target/scala-2.10/classes...[0m
+[0m[[0minfo[0m] [0mCompile success at Jul 20, 2016 10:02:40 PM [7.179s][0m
 [INFO] 
 [INFO] --- maven-compiler-plugin:3.3:compile (default-compile) @ spark-streaming-kafka_2.10 ---
 [INFO] Changes detected - recompiling the module!
@@ -3819,6 +4302,7 @@ main:
 [INFO] Executing tasks
 
 main:
+    [mkdir] Created dir: /mnt/xin/spark-1.5.0/external/kafka/target/tmp
 [INFO] Executed tasks
 [INFO] 
 [INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ spark-streaming-kafka_2.10 ---
@@ -3829,7 +4313,7 @@ main:
 [INFO] --- scala-maven-plugin:3.2.2:testCompile (scala-test-compile-first) @ spark-streaming-kafka_2.10 ---
 [INFO] Using zinc server for incremental compilation
 [0m[[0minfo[0m] [0mCompiling 4 Scala sources and 3 Java sources to /mnt/xin/spark-1.5.0/external/kafka/target/scala-2.10/test-classes...[0m
-[0m[[0minfo[0m] [0mCompile success at Jul 20, 2016 12:10:37 AM [6.293s][0m
+[0m[[0minfo[0m] [0mCompile success at Jul 20, 2016 10:02:48 PM [6.064s][0m
 [INFO] 
 [INFO] --- maven-compiler-plugin:3.3:testCompile (default-testCompile) @ spark-streaming-kafka_2.10 ---
 [INFO] Changes detected - recompiling the module!
@@ -4043,7 +4527,7 @@ main:
 [0m[[33mwarn[0m] [0m    val sc = new SparkContext(sparkConf,[0m
 [0m[[33mwarn[0m] [0m             ^[0m
 [0m[[33mwarn[0m] [0m69 warnings found[0m
-[0m[[0minfo[0m] [0mCompile success at Jul 20, 2016 12:11:12 AM [24.370s][0m
+[0m[[0minfo[0m] [0mCompile success at Jul 20, 2016 10:03:24 PM [25.363s][0m
 [INFO] 
 [INFO] --- maven-compiler-plugin:3.3:compile (default-compile) @ spark-examples_2.10 ---
 [INFO] Changes detected - recompiling the module!
@@ -4543,36 +5027,36 @@ main:
 [INFO] ------------------------------------------------------------------------
 [INFO] Reactor Summary:
 [INFO] 
-[INFO] Spark Project Parent POM ........................... SUCCESS [  7.093 s]
-[INFO] Spark Project Launcher ............................. SUCCESS [ 13.065 s]
-[INFO] Spark Project Networking ........................... SUCCESS [  5.847 s]
-[INFO] Spark Project Shuffle Streaming Service ............ SUCCESS [  0.940 s]
-[INFO] Spark Project Unsafe ............................... SUCCESS [  0.815 s]
-[INFO] Spark Project Core ................................. SUCCESS [ 43.113 s]
-[INFO] Spark Project Bagel ................................ SUCCESS [  4.219 s]
-[INFO] Spark Project GraphX ............................... SUCCESS [  6.971 s]
-[INFO] Spark Project Streaming ............................ SUCCESS [ 13.505 s]
-[INFO] Spark Project Catalyst ............................. SUCCESS [ 14.740 s]
-[INFO] Spark Project SQL .................................. SUCCESS [ 16.950 s]
-[INFO] Spark Project ML Library ........................... SUCCESS [ 16.426 s]
-[INFO] Spark Project Tools ................................ SUCCESS [  1.723 s]
-[INFO] Spark Project Hive ................................. SUCCESS [ 16.972 s]
-[INFO] Spark Project REPL ................................. SUCCESS [  3.885 s]
-[INFO] Spark Project Assembly ............................. SUCCESS [03:06 min]
-[INFO] Spark Project External Twitter ..................... SUCCESS [  5.530 s]
-[INFO] Spark Project External Flume Sink .................. SUCCESS [  4.490 s]
-[INFO] Spark Project External Flume ....................... SUCCESS [  4.487 s]
-[INFO] Spark Project External Flume Assembly .............. SUCCESS [  7.274 s]
-[INFO] Spark Project External MQTT ........................ SUCCESS [ 17.264 s]
-[INFO] Spark Project External MQTT Assembly ............... SUCCESS [ 17.666 s]
-[INFO] Spark Project External ZeroMQ ...................... SUCCESS [  2.613 s]
-[INFO] Spark Project External Kafka ....................... SUCCESS [ 12.157 s]
-[INFO] Spark Project Examples ............................. SUCCESS [03:39 min]
-[INFO] Spark Project External Kafka Assembly .............. SUCCESS [ 19.534 s]
+[INFO] Spark Project Parent POM ........................... SUCCESS [  9.294 s]
+[INFO] Spark Project Launcher ............................. SUCCESS [ 20.097 s]
+[INFO] Spark Project Networking ........................... SUCCESS [ 21.327 s]
+[INFO] Spark Project Shuffle Streaming Service ............ SUCCESS [  8.804 s]
+[INFO] Spark Project Unsafe ............................... SUCCESS [ 24.959 s]
+[INFO] Spark Project Core ................................. SUCCESS [04:52 min]
+[INFO] Spark Project Bagel ................................ SUCCESS [ 10.804 s]
+[INFO] Spark Project GraphX ............................... SUCCESS [ 28.394 s]
+[INFO] Spark Project Streaming ............................ SUCCESS [01:06 min]
+[INFO] Spark Project Catalyst ............................. SUCCESS [01:36 min]
+[INFO] Spark Project SQL .................................. SUCCESS [01:51 min]
+[INFO] Spark Project ML Library ........................... SUCCESS [02:11 min]
+[INFO] Spark Project Tools ................................ SUCCESS [  4.612 s]
+[INFO] Spark Project Hive ................................. SUCCESS [01:27 min]
+[INFO] Spark Project REPL ................................. SUCCESS [ 17.595 s]
+[INFO] Spark Project Assembly ............................. SUCCESS [03:09 min]
+[INFO] Spark Project External Twitter ..................... SUCCESS [ 14.117 s]
+[INFO] Spark Project External Flume Sink .................. SUCCESS [  9.003 s]
+[INFO] Spark Project External Flume ....................... SUCCESS [ 15.514 s]
+[INFO] Spark Project External Flume Assembly .............. SUCCESS [  6.132 s]
+[INFO] Spark Project External MQTT ........................ SUCCESS [ 30.201 s]
+[INFO] Spark Project External MQTT Assembly ............... SUCCESS [ 17.907 s]
+[INFO] Spark Project External ZeroMQ ...................... SUCCESS [ 11.809 s]
+[INFO] Spark Project External Kafka ....................... SUCCESS [ 18.430 s]
+[INFO] Spark Project Examples ............................. SUCCESS [03:42 min]
+[INFO] Spark Project External Kafka Assembly .............. SUCCESS [ 19.522 s]
 [INFO] ------------------------------------------------------------------------
 [INFO] BUILD SUCCESS
 [INFO] ------------------------------------------------------------------------
-[INFO] Total time: 11:04 min
-[INFO] Finished at: 2016-07-20T00:14:39-04:00
-[INFO] Final Memory: 108M/2685M
+[INFO] Total time: 24:47 min
+[INFO] Finished at: 2016-07-20T22:06:53-04:00
+[INFO] Final Memory: 106M/2672M
 [INFO] ------------------------------------------------------------------------
