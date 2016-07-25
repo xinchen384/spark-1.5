@@ -39,7 +39,7 @@ private[spark] class CacheManager(blockManager: BlockManager) extends Logging {
       context: TaskContext,
       storageLevel: StorageLevel): Iterator[T] = {
 	
-	val t1 = System.currentTimeMillis()
+      //val t1 = System.currentTimeMillis()
 
     val key = RDDBlockId(rdd.id, partition.index)
     logDebug(s"Looking for partition $key")
@@ -57,8 +57,8 @@ private[spark] class CacheManager(blockManager: BlockManager) extends Logging {
             delegate.next()
           }
         }
-	val t2 = System.currentTimeMillis()
-            logWarning("xin, !!! " + context.stageId() + " taskId: " + context.taskAttemptId() + " cache manager directly returning time " + (t2-t1))
+	//val t2 = System.currentTimeMillis()
+        //logWarning("xin, !!! " + context.stageId() + " taskId: " + context.taskAttemptId() + " cache manager directly returning time " + (t2-t1))
 	res
       case None =>
         // Acquire a lock for loading this partition
@@ -71,9 +71,9 @@ private[spark] class CacheManager(blockManager: BlockManager) extends Logging {
         // Otherwise, we have to load the partition ourselves
         try {
           logInfo(s"Partition $key not found, computing it")
-	    val t3 = System.currentTimeMillis()
+	  //val t3 = System.currentTimeMillis()
           val computedValues = rdd.computeOrReadCheckpoint(partition, context)
-	    val t4 = System.currentTimeMillis()
+	  //val t4 = System.currentTimeMillis()
 
           // If the task is running locally, do not persist the result
           if (context.isRunningLocally) {
@@ -82,15 +82,15 @@ private[spark] class CacheManager(blockManager: BlockManager) extends Logging {
 
           // Otherwise, cache the values and keep track of any updates in block statuses
           val updatedBlocks = new ArrayBuffer[(BlockId, BlockStatus)]
-	    val t5 = System.currentTimeMillis()
+	  //val t5 = System.currentTimeMillis()
           val cachedValues = putInBlockManager(key, computedValues, storageLevel, updatedBlocks)
-	    val t6 = System.currentTimeMillis()
+	  //val t6 = System.currentTimeMillis()
           val metrics = context.taskMetrics
           val lastUpdatedBlocks = metrics.updatedBlocks.getOrElse(Seq[(BlockId, BlockStatus)]())
           metrics.updatedBlocks = Some(lastUpdatedBlocks ++ updatedBlocks.toSeq)
           val res = new InterruptibleIterator(context, cachedValues)
-	    val t7 = System.currentTimeMillis()
-            logWarning("xin, !!! " + context.stageId() + " taskId: " + context.taskAttemptId() + " cache manager time: " + (t3-t1) + " get rdd iterator: " + (t4-t3) + " mid: " + (t5-t4) + " put in Blockmanager: " + (t6-t5) + " last: " + (t7-t6))
+	  val t7 = System.currentTimeMillis()
+          //logWarning("xin, !!! " + context.stageId() + " taskId: " + context.taskAttemptId() + " cache manager time: " + (t3-t1) + " get rdd iterator: " + (t4-t3) + " mid: " + (t5-t4) + " put in Blockmanager: " + (t6-t5) + " last: " + (t7-t6))
 	  res
 
         } finally {
@@ -190,7 +190,7 @@ private[spark] class CacheManager(blockManager: BlockManager) extends Logging {
             blockManager.putArray(key, arr, level, tellMaster = true, effectiveStorageLevel)
           val res = arr.iterator.asInstanceOf[Iterator[T]]
 	    val t2 = System.currentTimeMillis()
-            logWarning("xin, !!! fit in memory store totally, unroll time: " + (t2-t1))
+            //logWarning("xin, !!! fit in memory store totally, unroll time: " + (t2-t1))
 	  res
         case Right(it) =>
           // There is not enough space to cache this partition in memory

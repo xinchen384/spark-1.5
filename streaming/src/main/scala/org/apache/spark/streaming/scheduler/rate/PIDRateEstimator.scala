@@ -261,6 +261,7 @@ private[streaming] class PIDRateEstimator(
 
         // handling scheduling delay 
         if ( proportional == 3.0 || proportional >= 4 ){
+        // set the predicted job to 0, if detected to be the checkpointing job
         if (checkpointId == 0){ 
           lastCpRate = jobNumRecords.toDouble * 1000/ (processingDelay*6) 
           if ( batchTimeStamp != -1 ){
@@ -270,6 +271,8 @@ private[streaming] class PIDRateEstimator(
           myNum = 0 
           lastEmpty = true 
         } 
+
+        // a threshold for the delay time of the next job
         val intervalM = 0.8 * batchIntervalMillis
         val nextDelay = schedulingDelay + processingDelay - batchIntervalMillis
         if (nextDelay >= intervalM && lastEmpty == false) {
@@ -277,13 +280,19 @@ private[streaming] class PIDRateEstimator(
             lastEmpty = true 
             //nextTimestamp = batchTimeStamp + 3000  
             nextTimestamp = (batchTimeStamp + schedulingDelay + processingDelay + batchIntervalMillis)/1000 * 1000
+            // move 1 step forward if the next job is the detected checkpointing job, by coincidence
             if ( ((nextTimestamp - batchTimeStamp)/1000 + checkpointId) % 10 == 0 )
               nextTimestamp = nextTimestamp + batchIntervalMillis 
+            // next time it does not check the next job
             if ( nextDelay >= 2*batchIntervalMillis )
               lastEmpty = false 
           }
           myNum = 0
         }
+
+        // this job is right after the checkpointing job
+        // set a maximum number as negative, because it accumulates the tuples
+        // that should be processed in the last job
         if (checkpointId == 1){
           if ( batchTimeStamp != -1 ){
             nextTimestamp = batchTimeStamp + 5000  

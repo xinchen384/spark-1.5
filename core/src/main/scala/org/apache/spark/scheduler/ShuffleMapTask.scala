@@ -66,21 +66,22 @@ private[spark] class ShuffleMapTask(
       ByteBuffer.wrap(taskBinary.value), Thread.currentThread.getContextClassLoader)
     _executorDeserializeTime = System.currentTimeMillis() - deserializeStartTime
 
-    	    val t1 = System.currentTimeMillis()
+    //val t1 = System.currentTimeMillis()
 
     metrics = Some(context.taskMetrics)
     var writer: ShuffleWriter[Any, Any] = null
     var status: MapStatus = null
-    	    var t2 = System.currentTimeMillis()
+    //var t2 = System.currentTimeMillis()
     try {
       val manager = SparkEnv.get.shuffleManager
       writer = manager.getWriter[Any, Any](dep.shuffleHandle, partitionId, context)
-      val iterator = rdd.iterator(partition, context)
-    	    t2 = System.currentTimeMillis()
-      writer.write(iterator.asInstanceOf[Iterator[_ <: Product2[Any, Any]]])
+      writer.write(rdd.iterator(partition, context).asInstanceOf[Iterator[_ <: Product2[Any, Any]]])
+      writer.stop(success = true).get
 
-      //writer.write(rdd.iterator(partition, context).asInstanceOf[Iterator[_ <: Product2[Any, Any]]])
-      status = writer.stop(success = true).get
+      //val iterator = rdd.iterator(partition, context)
+      //t2 = System.currentTimeMillis()
+      //writer.write(iterator.asInstanceOf[Iterator[_ <: Product2[Any, Any]]])
+      //status = writer.stop(success = true).get
     } catch {
       case e: Exception =>
         try {
@@ -93,9 +94,9 @@ private[spark] class ShuffleMapTask(
         }
         throw e
     }
-            val t3 = System.currentTimeMillis()
-            logWarning("xin shuffleTask stageId: " + stageId + " taskId: " + context.taskAttemptId() + " , deserialization: " + _executorDeserializeTime + " doing iterat time : " + (t2-t1) + "  writing time: " + (t3-t2))
-	    status
+    //val t3 = System.currentTimeMillis()
+    //logWarning("xin shuffleTask stageId: " + stageId + " taskId: " + context.taskAttemptId() + " , deserialization: " + _executorDeserializeTime + " doing iterat time : " + (t2-t1) + "  writing time: " + (t3-t2))
+    //status
   }
 
   override def preferredLocations: Seq[TaskLocation] = preferredLocs

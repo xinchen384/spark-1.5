@@ -277,7 +277,7 @@ private[spark] class Executor(
             serializedDirectResult
           }
         }
-
+        /*
 	logWarning("xin, !!! a general task's executor, task id: " + taskId +
 		" deserialization of A TaskObject: " + task.executorDeserializeTime + 
 		" deserialize RDD and func time: " + (taskStart - deserializeStartTime) + 
@@ -288,7 +288,7 @@ private[spark] class Executor(
         " TaskRunner finishing Timestamp: " + System.currentTimeMillis() +
         " starting: " + deserializeStartTime +  
         " serializedTask size: " + serializedTask.limit) 
-
+        */
         execBackend.statusUpdate(taskId, TaskState.FINISHED, serializedResult)
 
       } catch {

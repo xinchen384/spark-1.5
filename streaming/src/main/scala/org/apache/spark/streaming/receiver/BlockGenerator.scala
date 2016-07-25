@@ -300,7 +300,7 @@ private[streaming] class BlockGenerator(
             
           }
             val newSize = newBlock.buffer.length
-            xinLogInfo(s"xin BlockGenerator updateBuffer for time $time new Block size $newSize threshold: $maxNumBlock")
+            xinLogInfo(s"xin BlockGenerator receiverID $receiverId updateBuffer for time $time new Block size $newSize threshold: $maxNumBlock")
         }
       }
 

@@ -144,14 +144,14 @@ class CoGroupedRDD[K](@transient var rdds: Seq[RDD[_ <: Product2[K, _]]], part: 
 
       case shuffleDependency: ShuffleDependency[_, _, _] =>
         // Read map outputs of shuffle
-            val xxx = System.currentTimeMillis()
+        //val xxx = System.currentTimeMillis()
         val it = SparkEnv.get.shuffleManager
           .getReader(shuffleDependency.shuffleHandle, split.index, split.index + 1, context)
           .read()
         rddIterators += ((it, depNum))
-	    shuffleT = shuffleT + (System.currentTimeMillis()-xxx)
+	//shuffleT = shuffleT + (System.currentTimeMillis()-xxx)
     }
-            logWarning("xin, !!!!! " + context.stageId() + " taskId: " + context.taskAttemptId() + " cogroup shuffle read time: " + shuffleT)
+    //logWarning("xin, !!!!! " + context.stageId() + " taskId: " + context.taskAttemptId() + " cogroup shuffle read time: " + shuffleT)
 
     if (!externalSorting) {
       val map = new AppendOnlyMap[K, CoGroupCombiner]
@@ -170,8 +170,8 @@ class CoGroupedRDD[K](@transient var rdds: Seq[RDD[_ <: Product2[K, _]]], part: 
       val res = new InterruptibleIterator(context,
         map.iterator.asInstanceOf[Iterator[(K, Array[Iterable[_]])]])
 
-            val t2 = System.currentTimeMillis()
-            logWarning("xin, !!!! " + context.stageId() + " taskId: " + context.taskAttemptId() + "  cogroup 1 inMem time: " + (t2-t1))
+      //val t2 = System.currentTimeMillis()
+      //logWarning("xin, !!!! " + context.stageId() + " taskId: " + context.taskAttemptId() + "  cogroup 1 inMem time: " + (t2-t1))
       res
     } else {
       val map = createExternalMap(numRdds)
@@ -184,11 +184,12 @@ class CoGroupedRDD[K](@transient var rdds: Seq[RDD[_ <: Product2[K, _]]], part: 
         InternalAccumulator.PEAK_EXECUTION_MEMORY).add(map.peakMemoryUsedBytes)
       val res = new InterruptibleIterator(context,
         map.iterator.asInstanceOf[Iterator[(K, Array[Iterable[_]])]])
-
-            val t2 = System.currentTimeMillis()
-            logWarning("xin, !!! " + context.stageId() + " taskId: " + context.taskAttemptId() + 
+      /*
+      val t2 = System.currentTimeMillis()
+      logWarning("xin, !!! " + context.stageId() + " taskId: " + context.taskAttemptId() + 
                        " cogroup 1 external time: " + (t2-t1) +
                        " diskBytesSpilled " + map.diskBytesSpilled)
+      */
       res
     }
   }

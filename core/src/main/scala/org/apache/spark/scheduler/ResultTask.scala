@@ -65,16 +65,16 @@ private[spark] class ResultTask[T, U](
       ByteBuffer.wrap(taskBinary.value), Thread.currentThread.getContextClassLoader)
     _executorDeserializeTime = System.currentTimeMillis() - deserializeStartTime
 
-	    val t1 = System.currentTimeMillis()
+	    //val t1 = System.currentTimeMillis()
 
     metrics = Some(context.taskMetrics)
 	    val iterator = rdd.iterator(partition, context)
-	    val t2 = System.currentTimeMillis()
+	    //val t2 = System.currentTimeMillis()
             val res_U = func(context, iterator)
     //val res_U = func(context, rdd.iterator(partition, context))
 
-	    val t3 = System.currentTimeMillis()
-            logWarning("xin resultTask stageId: " + stageId + " taskId: " + context.taskAttemptId() + " deserialization time: " + _executorDeserializeTime + " doing iterating time : " + (t2-t1) + "  func time: " + (t3-t2))
+	    //val t3 = System.currentTimeMillis()
+            //logWarning("xin resultTask stageId: " + stageId + " taskId: " + context.taskAttemptId() + " deserialization time: " + _executorDeserializeTime + " doing iterating time : " + (t2-t1) + "  func time: " + (t3-t2))
     res_U
   }
 

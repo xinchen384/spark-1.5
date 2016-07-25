@@ -94,9 +94,9 @@ private[spark] class CoarseGrainedExecutorBackend(
         logError("Received LaunchTask command but executor was null")
         System.exit(1)
       } else {
-        val ttt = System.currentTimeMillis()
+        //val ttt = System.currentTimeMillis()
         val taskDesc = ser.deserialize[TaskDescription](data.value)
-          logWarning("xin, from Driver ready for deserialize: " + taskDesc.taskId + " data size: " + data.value.limit + " timestamp: " + ttt)
+        //logWarning("xin, from Driver ready for deserialize: " + taskDesc.taskId + " data size: " + data.value.limit + " timestamp: " + ttt)
         logInfo("Got assigned task " + taskDesc.taskId)
         executor.launchTask(this, taskId = taskDesc.taskId, attemptNumber = taskDesc.attemptNumber,
           taskDesc.name, taskDesc.serializedTask)
@@ -130,8 +130,8 @@ private[spark] class CoarseGrainedExecutorBackend(
     val msg = StatusUpdate(executorId, taskId, state, data)
     driver match {
       case Some(driverRef) => 
-        if (TaskState.isFinished(state))
-          logWarning("xin, going to Driver: " + taskId + " data size: " + data.limit + " timestamp: " + System.currentTimeMillis())
+        //if (TaskState.isFinished(state))
+        //  logWarning("xin, going to Driver: " + taskId + " data size: " + data.limit + " timestamp: " + System.currentTimeMillis())
         driverRef.send(msg)
       case None => logWarning(s"Drop $msg because has not yet connected to driver")
     }

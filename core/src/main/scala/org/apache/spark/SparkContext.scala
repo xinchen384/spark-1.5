@@ -1817,7 +1817,7 @@ class SparkContext(config: SparkConf) extends Logging with ExecutorAllocationCli
 	val t2 = System.currentTimeMillis()
     val res = rdd.doCheckpoint()
 	val t3 = System.currentTimeMillis()
-    //logWarning("xin, !!! running job time " + (t2-t1) + " doing checkpoint time: " + (t3-t2) + "  starting timestamp: " + t1 + " ending: " + t3)
+    logWarning("xin, !!! running job time " + (t2-t1) + " doing checkpoint time: " + (t3-t2) + "  starting timestamp: " + t1 + " ending: " + t3)
     //xinLogInfo("xin, !!! running job time " + (t2-t1) + " doing checkpoint time: " + (t3-t2) + "  starting timestamp: " + t1 + " ending: " + t3)
     res
   }

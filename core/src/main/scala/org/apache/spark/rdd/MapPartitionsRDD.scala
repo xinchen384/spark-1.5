@@ -36,7 +36,7 @@ private[spark] class MapPartitionsRDD[U: ClassTag, T: ClassTag](
 
   override def compute(split: Partition, context: TaskContext): Iterator[U] = {
 
-            var t1 = System.currentTimeMillis()
+    //var t1 = System.currentTimeMillis()
     val iter = f(context, split.index, firstParent[T].iterator(split, context))
     //logWarning("xin, !!!! " + context.stageId() + " taskId: " + context.taskAttemptId() + " mapPartitions time: " +(System.currentTimeMillis()-t1))
     iter
