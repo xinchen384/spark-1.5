@@ -1,8 +1,0 @@
-Spark Command: /usr/lib/jvm/java-1.7.0-openjdk-1.7.0.19.x86_64/jre/bin/java -cp /mnt/xin/spark-1.5.0/sbin/../conf/:/mnt/xin/spark-1.5.0/assembly/target/scala-2.10/spark-assembly-1.5.0-hadoop2.2.0.jar:/mnt/xin/spark-1.5.0/lib_managed/jars/datanucleus-api-jdo-3.2.6.jar:/mnt/xin/spark-1.5.0/lib_managed/jars/datanucleus-core-3.2.10.jar:/mnt/xin/spark-1.5.0/lib_managed/jars/datanucleus-rdbms-3.2.9.jar -Xms1g -Xmx1g -XX:MaxPermSize=256m org.apache.spark.deploy.worker.Worker --webui-port 8081 spark://130.207.110.170:7077
-========================================
-16/07/23 18:37:44 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
-16/07/23 18:37:45 INFO Slf4jLogger: Slf4jLogger started
-16/07/23 18:37:45 INFO Remoting: Starting remoting
-16/07/23 18:37:45 INFO Remoting: Remoting started; listening on addresses :[akka.tcp://sparkWorker@130.207.110.170:43465]
-16/07/23 18:51:31 WARN ReliableDeliverySupervisor: Association with remote system [akka.tcp://sparkExecutor@130.207.110.170:34075] has failed, address is now gated for [5000] ms. Reason: [Disassociated] 
-16/07/24 09:40:56 ERROR Worker: RECEIVED SIGNAL 15: SIGTERM

@@ -319,7 +319,7 @@ private[streaming] class PIDRateEstimator(
             """.stripMargin)
         
         //xinLogInfo(s"xin PIDRateEstimator \ntime = $time, #records = $numElements, " + s"processing time = $processingDelay, scheduling delay = $schedulingDelay, error = $error, myfeedRate = $feedRate, rate: $latestRate to $newRate ")
-        xinLogInfo(s"xin PIDRateEstimator time = $time, #records = $numElements, " + s"processing time = $processingDelay, scheduling delay = $schedulingDelay, processingRate = $processingRate, rate: $latestRate to $newRate $checkpointId Time $batchTimeStamp $jobNumRecords $tempRate $predictedRate")
+        xinLogInfo(s"xin PIDRateEstimator time = $time, #records = $numElements, " + s"processing time = $processingDelay, scheduling delay = $schedulingDelay, processingRate = $processingRate, rate: $latestRate to $newRate $checkpointId Time $batchTimeStamp $jobNumRecords $myNum $predictedRate")
 
         latestTime = time
         if (firstRun) {

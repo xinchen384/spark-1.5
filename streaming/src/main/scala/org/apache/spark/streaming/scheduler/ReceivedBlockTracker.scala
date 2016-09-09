@@ -144,11 +144,11 @@ private[streaming] class ReceivedBlockTracker(
       xinLogInfo(s"xin ReceivedBlockTracker myTimeQueue, Time: $batchTime NumBlocks: $qlen totalSize $queueNum")
       timeQueue(batchTime).dequeueAll(x => true)
     } else {
-      //val blockStr = getReceivedBlockQueue(streamId).map(_.numRecords.get).mkString(" ")
-      //val current = System.currentTimeMillis() 
-      //xinLogInfo(s"xin ReceivedBlockTracker allocate for batchTime $batchTime currentTime $current BlockLen $blockStr")
-      //getReceivedBlockQueue(streamId).dequeueAll(x => true)
-      takeFirstN(getReceivedBlockQueue(streamId), 5)
+      val blockStr = getReceivedBlockQueue(streamId).map(_.numRecords.get).mkString(" ")
+      val current = System.currentTimeMillis() 
+      xinLogInfo(s"xin ReceivedBlockTracker allocate for batchTime $batchTime currentTime $current BlockLen $blockStr")
+      getReceivedBlockQueue(streamId).dequeueAll(x => true)
+      //takeFirstN(getReceivedBlockQueue(streamId), 5)
     }
   }
   def takeFirstN(myqueue: mutable.Queue[ReceivedBlockInfo], n: Int): Seq[ReceivedBlockInfo] ={

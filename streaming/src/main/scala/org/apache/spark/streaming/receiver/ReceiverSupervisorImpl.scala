@@ -164,6 +164,7 @@ private[streaming] class ReceiverSupervisorImpl(
     if (metadataOption != None){
       blockInfo.setBatchTime(metadataOption.get.asInstanceOf[Number].longValue)
     }
+    //xinLogInfo(s"xin ReceiverSupervisorImpl pushBlock $streamId numRecords $numRecords")
     trackerEndpoint.askWithRetry[Boolean](AddBlock(blockInfo))
     logDebug(s"Reported block $blockId")
   }

@@ -275,7 +275,7 @@ private[streaming] class BlockGenerator(
               dequeueSign = true
               if ( time >= blockTime ){
                 currentRate = null 
-                xinLogInfo(s"xin BlockGenerator updateBuffer for time $time specifiedTime $blockTime")
+                xinLogInfo(s"xin BlockGenerator updateBuffer the specifiedTime $blockTime is out of date, < time $time")
               }
             } 
           }
@@ -297,10 +297,10 @@ private[streaming] class BlockGenerator(
               newBlock = new Block(blockId, newBlockBuffer, -1)
             } 
           } else {
-            
+            xinLogInfo(s"xin BlockGenerator receiverID $receiverId updateBuffer unhandled condition")
           }
-            val newSize = newBlock.buffer.length
-            xinLogInfo(s"xin BlockGenerator receiverID $receiverId updateBuffer for time $time new Block size $newSize threshold: $maxNumBlock")
+            //val newSize = newBlock.buffer.length
+            //xinLogInfo(s"xin BlockGenerator receiverID $receiverId updateBuffer for time $time new Block size $newSize threshold: $maxNumBlock")
         }
       }
 
