@@ -76,6 +76,8 @@ private[streaming] class ReceivedBlockTracker(
 
   //xin the number of records per second
   val emptyJobTimestamp = new mutable.ArrayBuffer[Long]()
+  // used to limit the max as the watermark
+  val maxJobTimestamp = new mutable.ArrayBuffer[Long]()
   val streamIdToRates = new mutable.HashMap[Int, Long]
   private case class BatchNum(jobTime: Long, numRecords: Long)
   private type TimeBlocksHashMap = mutable.HashMap[Long, ReceivedBlockQueue]
@@ -129,27 +131,47 @@ private[streaming] class ReceivedBlockTracker(
     getRateQueue(streamId) += batchNum 
   }
   def getBatchTimeBlocks(streamId: Int, batchTime: Long): Seq[ReceivedBlockInfo] = {
+    var buffer = mutable.ArrayBuffer[ReceivedBlockInfo]()
     if (emptyJobTimestamp.contains(batchTime)){
       emptyJobTimestamp.remove(emptyJobTimestamp.indexOf(batchTime))
-      val buffer = mutable.ArrayBuffer[ReceivedBlockInfo]()
       val mylen = emptyJobTimestamp.length
-      xinLogInfo(s"xin ReceivedBlockTracker zero element length: $mylen for time $batchTime")
+      xinLogInfo(s"xin ReceivedBlockTracker(getBatchTimeBlocks) zero element length: $mylen for time $batchTime")
       return buffer.toSeq 
     }
+
     val timeQueue = getIdTimeHashMap(streamId)
+    val cleans = timeQueue.keys.filter { _ < batchTime  }.toSeq
+    val oldLen = cleans.length
+    var cleanNum: Long = 0 
+    var oldTime: Long = 0 
+    for(ktime <- cleans){
+      oldTime = ktime
+      val num = timeQueue(ktime).map(_.numRecords.get).sum
+      cleanNum += num
+      if ( num > 0 ) buffer ++= timeQueue(ktime).dequeueAll(x => true) 
+    }
+    timeQueue --= cleans
+    if (oldLen > 0)
+      xinLogInfo(s"xin ReceivedBlockTracker(getBatchTimeBlocks) for time $oldTime #old jobs: $oldLen #tuples $cleanNum")
+
     if ( timeQueue.keySet.contains(batchTime ) ){
       //xin
       val qlen = timeQueue(batchTime).length
       val queueNum: Long = timeQueue(batchTime).map(_.numRecords.get).sum
-      xinLogInfo(s"xin ReceivedBlockTracker myTimeQueue, Time: $batchTime NumBlocks: $qlen totalSize $queueNum")
-      timeQueue(batchTime).dequeueAll(x => true)
+      xinLogInfo(s"xin ReceivedBlockTracker(getBatchTimeBlocks) in myTimeQueue, Time: $batchTime NumBlocks: $qlen totalSize $queueNum")
+      buffer ++= timeQueue(batchTime).dequeueAll(x => true)
+      timeQueue -= batchTime
+    } else if ( maxJobTimestamp.contains(batchTime) ){
+      maxJobTimestamp.remove(maxJobTimestamp.indexOf(batchTime))
+      buffer ++= takeFirstN(getReceivedBlockQueue(streamId), 5)
     } else {
       val blockStr = getReceivedBlockQueue(streamId).map(_.numRecords.get).mkString(" ")
       val current = System.currentTimeMillis() 
-      xinLogInfo(s"xin ReceivedBlockTracker allocate for batchTime $batchTime currentTime $current BlockLen $blockStr")
-      getReceivedBlockQueue(streamId).dequeueAll(x => true)
+      xinLogInfo(s"xin ReceivedBlockTracker(getBatchTimeBlocks) evict allBlocks batchTime $batchTime currentTime $current BlockLen $blockStr")
+      buffer ++= getReceivedBlockQueue(streamId).dequeueAll(x => true)
       //takeFirstN(getReceivedBlockQueue(streamId), 5)
     }
+    buffer.toSeq
   }
   def takeFirstN(myqueue: mutable.Queue[ReceivedBlockInfo], n: Int): Seq[ReceivedBlockInfo] ={
     if (n < 0 || myqueue.isEmpty)
@@ -252,7 +274,7 @@ private[streaming] class ReceivedBlockTracker(
   def cleanupOldBatches(cleanupThreshTime: Time, waitForCompletion: Boolean): Unit = synchronized {
     require(cleanupThreshTime.milliseconds < clock.getTimeMillis())
     //xin
-    streamIdTimeBlockQueues.foreach{ case (id, timeHashMap) => timeHashMap.keys.filter{_ < cleanupThreshTime.milliseconds} }
+    //streamIdTimeBlockQueues.foreach{ case (id, timeHashMap) => timeHashMap.keys.filter{_ < cleanupThreshTime.milliseconds} }
     val timesToCleanup = timeToAllocatedBlocks.keys.filter { _ < cleanupThreshTime }.toSeq
     logInfo("Deleting batches " + timesToCleanup)
     writeToLog(BatchCleanupEvent(timesToCleanup))

@@ -51,6 +51,8 @@ private[receiver] abstract class RateLimiter(conf: SparkConf) extends Logging {
   //xin
   case class BatchNum(jobTime: Long, var numRecords: Long, blockNum: Long)
   val rateQueue = new mutable.Queue[BatchNum]
+  val timestampRates = new mutable.HashMap[Long, Long]
+  //val maxS
   var maxNumBlock: Long = -1L
 
   /**
@@ -63,13 +65,18 @@ private[receiver] abstract class RateLimiter(conf: SparkConf) extends Logging {
     if (newRate > 0) {
       if (maxRateLimit > 0) {
         rateLimiter.setRate(newRate.min(maxRateLimit))
-      } else {
-        rateLimiter.setRate(newRate)
-      }
+      } 
+
       if (time > 0){
+        //if (num >= 0){
         if (num >= 0){
-          rateQueue.enqueue( new BatchNum(time, num, 0) ) 
-        } else{
+          //rateQueue.enqueue( new BatchNum(time, num, 0) ) 
+          if ( timestampRates.contains(time) ){
+            xinLogInfo(s"xin Ratelimiter UpdateTime: $time repeat the timestamp")
+          } else {
+            timestampRates(time) = num
+          } 
+        } else if (num < -1){
           maxNumBlock = num*(-1)
         }
         xinLogInfo(s"xin Ratelimiter UpdateTime: $time newRate $newRate number $num")

@@ -43,7 +43,7 @@
  #export SPARK_WORKER_DIR=$SPARK_HOME/testlog/work-`hostname`
  export SPARK_WORKER_DIR=/dev/shm/testlog/work-`hostname`
  #export SPARK_LOCAL_DIRS=/dev/shm/myspark
- export SPARK_LOCAL_DIRS=/tmp/myspark
+ export SPARK_LOCAL_DIRS=/mnt/xin/tmp-spark
 
  #xin
 

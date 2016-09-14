@@ -112,6 +112,7 @@ private[streaming] class BlockGenerator(
   @volatile private var state = Initialized
   //xin
   private var currentRate: BatchNum = null
+  
   def getNextBlockNum(): Option[BatchNum] = {
     if (currentRate == null && rateQueue.isEmpty){
       None
@@ -259,46 +260,52 @@ private[streaming] class BlockGenerator(
       synchronized {
         if (currentBuffer.nonEmpty) {
           //xin
-          val blockNum = getNextBlockNum()
-          var dequeueSign = false
-          if (blockNum != None){
-            val blockLen = blockNum.get.blockNum.min(blockNum.get.numRecords).toInt
-            val blockTime = blockNum.get.jobTime 
-            if ( (time+1000)/1000 == (blockTime/1000) && currentBuffer.length >= blockLen ){
-              val newBlockBuffer = currentBuffer.take(blockNum.get.blockNum.toInt)
-              currentBuffer.remove(0, blockNum.get.blockNum.toInt)
-              val blockId = StreamBlockId(receiverId, time - blockIntervalMs)
-              listener.onGenerateBlock(blockId)
-              newBlock = new Block(blockId, newBlockBuffer, blockTime)
-              deductOneRate() 
-            } else{
-              dequeueSign = true
-              if ( time >= blockTime ){
-                currentRate = null 
-                xinLogInfo(s"xin BlockGenerator updateBuffer the specifiedTime $blockTime is out of date, < time $time")
-              }
-            } 
-          }
-          if (blockNum == None || dequeueSign == true){ 
+          // if directly using the time, the ReceivedBlockTracker is not fast enough to catch up
+          // so prepare for the next second by adding one second forward
+          val currentTime = (time / 1000) * 1000 + 1000
+          if ( timestampRates.contains(currentTime) && timestampRates.get(currentTime).get != 0){
+            val slen = (timestampRates.get(currentTime).get / (1000/blockIntervalMs)).toInt
+            val blockLen = slen.min( currentBuffer.length )
+            val newBlockBuffer = currentBuffer.take(blockLen)
+            currentBuffer.remove(0, blockLen)
+            val blockId = StreamBlockId(receiverId, time - blockIntervalMs)
+            listener.onGenerateBlock(blockId)
+            newBlock = new Block(blockId, newBlockBuffer, currentTime)
+            if ( time + blockIntervalMs == currentTime + 1000 )
+              timestampRates -= currentTime
+            xinLogInfo(s"xin BlockGenerator updateBuffer SPECIFY time $time sSize $slen BufferSize $blockLen")
+          } else if ( timestampRates.contains(currentTime) && timestampRates.get(currentTime).get == 0) {
+             // does not generate block, leaving the tuples to the following jobs 
+             if ( time + blockIntervalMs == currentTime + 1000 )
+              timestampRates -= currentTime 
+          } else {
             if ( maxNumBlock > 0 && currentBuffer.length > maxNumBlock ){
               val newBlockBuffer = currentBuffer.take(maxNumBlock.toInt)
               currentBuffer.remove(0, maxNumBlock.toInt)
               val blockId = StreamBlockId(receiverId, time - blockIntervalMs)
               listener.onGenerateBlock(blockId)
               newBlock = new Block(blockId, newBlockBuffer, -1)
-            val current = System.currentTimeMillis()
-            val blocksize = currentBuffer.length
-            xinLogInfo(s"xin BlockGenerator updateBuffer for time $time currentTime $current leftsize $blocksize $maxNumBlock")
+              // print
+              val current = System.currentTimeMillis()
+              val blocksize = currentBuffer.length
+              xinLogInfo(s"xin BlockGenerator updateBuffer Watermark time $time at $current leftBufferSize $blocksize $maxNumBlock")
             } else {
               val newBlockBuffer = currentBuffer
               currentBuffer = new ArrayBuffer[Any]
               val blockId = StreamBlockId(receiverId, time - blockIntervalMs)
               listener.onGenerateBlock(blockId)
               newBlock = new Block(blockId, newBlockBuffer, -1)
-            } 
-          } else {
-            xinLogInfo(s"xin BlockGenerator receiverID $receiverId updateBuffer unhandled condition")
+            }
+          } 
+          val cleans = timestampRates.keys.filter { _ < currentTime  }.toSeq
+          val oldLen = cleans.length
+          if (oldLen > 0){
+            val ftime = cleans.head
+            val fnum = timestampRates.get(ftime)
+            xinLogInfo(s"xin BlockGenerator updateBuffer time $time #old jobs: $oldLen ($ftime, $fnum)")
           }
+          timestampRates --= cleans
+           
             //val newSize = newBlock.buffer.length
             //xinLogInfo(s"xin BlockGenerator receiverID $receiverId updateBuffer for time $time new Block size $newSize threshold: $maxNumBlock")
         }

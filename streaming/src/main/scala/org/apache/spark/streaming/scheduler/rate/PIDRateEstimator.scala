@@ -273,6 +273,7 @@ private[streaming] class PIDRateEstimator(
         } 
 
         // a threshold for the delay time of the next job
+        /*
         val intervalM = 0.8 * batchIntervalMillis
         val nextDelay = schedulingDelay + processingDelay - batchIntervalMillis
         if (nextDelay >= intervalM && lastEmpty == false) {
@@ -289,11 +290,12 @@ private[streaming] class PIDRateEstimator(
           }
           myNum = 0
         }
+        */
 
         // this job is right after the checkpointing job
         // set a maximum number as negative, because it accumulates the tuples
         // that should be processed in the last job
-        if (checkpointId == 1){
+        if (checkpointId >= 1 && checkpointId<=5){
           if ( batchTimeStamp != -1 ){
             nextTimestamp = batchTimeStamp + 5000  
           }
@@ -301,10 +303,12 @@ private[streaming] class PIDRateEstimator(
           //myNum = -1 * (predictedRate*1.5/5).toLong
           //myNum = -1 * (rateQueue.reduceLeft(_ max _)/5).toLong
           //myNum = -1 * (maxRate/5).toLong
-          if ( mQueue.isEmpty )
-            myNum = -1 * 5000 
+          if ( mQueue.isEmpty ){
+            //myNum = -1 * 5000 
+          }
           else
-            myNum = -1 * (mQueue.reduceLeft(_ max _)/5).toLong
+            //myNum = -1 * (mQueue.reduceLeft(_ max _)/5).toLong
+            myNum = (mQueue.reduceLeft(_ max _)).toLong
         }  
         if (lastJobId + 1 != checkpointId){
           lastEmpty = false

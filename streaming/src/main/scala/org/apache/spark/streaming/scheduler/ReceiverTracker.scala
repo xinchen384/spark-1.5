@@ -308,13 +308,16 @@ class ReceiverTracker(ssc: StreamingContext, skipReceiverLaunch: Boolean = false
     if (isTrackerStarted) {
       endpoint.send(UpdateReceiverRateLimit(streamUID, time, newRate, num))
       //xin
-      receivedBlockTracker.streamIdToRates.put(streamUID, newRate)
+      //receivedBlockTracker.streamIdToRates.put(streamUID, newRate)
       if (num == 0){
         if ( !receivedBlockTracker.emptyJobTimestamp.contains(time) ){
           //in the case of the missing signal
           for (i <- 1 to 6)
             receivedBlockTracker.emptyJobTimestamp.prepend(time)
         }
+      } else if (num < -1){
+          for (i <- 1 to 6)
+            receivedBlockTracker.maxJobTimestamp.prepend(time)
       }
     }
   }
