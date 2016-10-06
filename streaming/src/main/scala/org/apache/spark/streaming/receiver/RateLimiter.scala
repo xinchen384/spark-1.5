@@ -61,25 +61,27 @@ private[receiver] abstract class RateLimiter(conf: SparkConf) extends Logging {
    *
    * @param newRate A new rate in events per second. It has no effect if it's 0 or negative.
    */
-  private[receiver] def updateRate(time: Long, newRate: Long, num: Long): Unit = {
+  private[receiver] def updateRate(time: Long, newRate: Long, num: Long, len: Int): Unit = {
     if (newRate > 0) {
       if (maxRateLimit > 0) {
         rateLimiter.setRate(newRate.min(maxRateLimit))
       } 
 
       if (time > 0){
-        //if (num >= 0){
         if (num >= 0){
           //rateQueue.enqueue( new BatchNum(time, num, 0) ) 
-          if ( timestampRates.contains(time) ){
-            xinLogInfo(s"xin Ratelimiter UpdateTime: $time repeat the timestamp")
-          } else {
-            timestampRates(time) = num
-          } 
-        } else if (num < -1){
-          maxNumBlock = num*(-1)
-        }
-        xinLogInfo(s"xin Ratelimiter UpdateTime: $time newRate $newRate number $num")
+          var tempTime = time
+          for ( i <- 1 to len ){
+            if ( timestampRates.contains(tempTime) ){
+              xinLogInfo(s"xin Ratelimiter UpdateTime: $time repeat the timestamp")
+            } else {
+              timestampRates(tempTime) = num
+            } 
+            tempTime += 1000
+          }
+          if ( len > 1 ) maxNumBlock = num/5
+        } 
+        xinLogInfo(s"xin Ratelimiter UpdateTime: $time newRate $newRate number $num with Len: $len")
       }
     }
   }

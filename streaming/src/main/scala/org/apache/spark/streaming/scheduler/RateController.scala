@@ -25,6 +25,7 @@ import scala.concurrent.{ExecutionContext, Future}
 import org.apache.spark.SparkConf
 import org.apache.spark.streaming.scheduler.rate.RateEstimator
 import org.apache.spark.util.{ThreadUtils, Utils}
+import org.apache.spark.Logging
 
 /**
  * A StreamingListener that receives batch completion updates, and maintains
@@ -32,11 +33,11 @@ import org.apache.spark.util.{ThreadUtils, Utils}
  * given an estimate computation from a `RateEstimator`
  */
 private[streaming] abstract class RateController(val streamUID: Int, rateEstimator: RateEstimator)
-    extends StreamingListener with Serializable {
+    extends StreamingListener with Serializable with Logging {
 
   init()
 
-  protected def publish(time: Long, rate: Long, num: Long): Unit
+  protected def publish(time: Long, rate: Long, num: Long, len: Int): Unit
 
   @transient
   implicit private var executionContext: ExecutionContext = _
@@ -65,9 +66,9 @@ private[streaming] abstract class RateController(val streamUID: Int, rateEstimat
     Future[Unit] {
       //xin
       val newRate = rateEstimator.compute(time, elems, workDelay, waitDelay, num, totalEle, cpId)
-      newRate.foreach { case (time, s, num) =>
+      newRate.foreach { case (time, s, num, len) =>
         rateLimit.set(s.toLong)
-        publish(time, getLatestRate(), num)
+        publish(time, getLatestRate(), num, len)
       }
     }
 
@@ -77,12 +78,20 @@ private[streaming] abstract class RateController(val streamUID: Int, rateEstimat
     val elements = batchCompleted.batchInfo.streamIdToInputInfo
     val totalEle = batchCompleted.batchInfo.numRecords 
     
+    //val sss = elements.get(streamUID).map(_.numRecords)
+    //xinLogInfo(s"xin COMPUTEPUBLISH the number of records: $sss in receiver $streamUID")
     for {
       processingEnd <- batchCompleted.batchInfo.processingEndTime
       workDelay <- batchCompleted.batchInfo.processingDelay
       waitDelay <- batchCompleted.batchInfo.schedulingDelay
       elems <- elements.get(streamUID).map(_.numRecords)
-    } computeAndPublish(processingEnd, elems, workDelay, waitDelay, elements.size, totalEle, batchCompleted.batchInfo.checkpointId)
+    } { 
+      //xinLogInfo(s"xin COMPUTEPUBLISH the number of records: $sss in receiver $streamUID starting to compute and pushlish")
+      // centralized rate update
+      if ( streamUID == 0 )
+        computeAndPublish(processingEnd, totalEle, workDelay, waitDelay, elements.size, totalEle, batchCompleted.batchInfo.checkpointId)
+      //computeAndPublish(processingEnd, elems, workDelay, waitDelay, elements.size, totalEle, batchCompleted.batchInfo.checkpointId)
+    }
   }
 }
 

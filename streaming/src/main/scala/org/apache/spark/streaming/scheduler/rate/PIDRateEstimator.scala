@@ -21,6 +21,7 @@ import org.apache.spark.Logging
 import scala.collection.mutable.ListBuffer;
 import scala.collection.mutable.Queue;
 
+import util.control.Breaks._
 /**
  * Implements a proportional-integral-derivative (PID) controller which acts on
  * the speed of ingestion of elements into Spark Streaming. A PID controller works
@@ -60,13 +61,20 @@ private[streaming] class PIDRateEstimator(
   private var latestRate: Double = -1D
   private var latestError: Double = -1L
   //xin
-  private val cpLen = 10
+  private var myLatestRate: Double = -1D
+  private var cpLen = -1 
+  private var cpOffset = -1 
+  private var cpLenFixed: Boolean = false 
+  private var startPIDCollect: Boolean = false 
+  private var startPIDPredict: Boolean = false 
+
   private var checkpointId: Double = -1L 
   private var receiverNum: Double = -1L 
   private var jobNumRecords: Double = -1L 
   private var lastCpRate: Double = -1L 
   private var myMinRate: Double = -1L 
-  private var cplist = new ListBuffer[Ele]()
+  private val rNum:Double = 6
+  private var delayIntegral:Double = 0.2
 
   require(
     batchIntervalMillis > 0,
@@ -94,29 +102,17 @@ private[streaming] class PIDRateEstimator(
       num: Int,
       totalEle: Long,
       Id: Long
-    ): Option[(Long, Double, Long)] = {
+    ): Option[(Long, Double, Long, Int)] = {
       checkpointId = Id
+      if ( cpLenFixed == false && cpLen > 0 && checkpointId < cpLen - 1 ){ 
+        cpLenFixed = true 
+        cpOffset = cpLen / 2
+      }
+      else if ( cpLenFixed == false && checkpointId > cpLen - 1 ) 
+        cpLen = checkpointId.toInt + 1
       receiverNum = num
       jobNumRecords = totalEle
       compute(time, numElements, processingDelay, schedulingDelay)
-  }
-  class Ele(var delay: Long, var num_records: Long, var ptime: Long) extends Serializable{
-    var max_rate: Long = num_records/ptime * 1000
-    var min_rate: Long = num_records/ptime * 1000
-
-    def updateJob(mydelay: Long, mynum: Long, mytime: Long){
-      delay = mydelay
-      num_records = mynum
-      ptime = mytime
-      val proRate: Long = (mynum.toFloat/mytime.toFloat*1000).toLong
-      if (ptime < batchIntervalMillis && proRate > max_rate){
-        max_rate = proRate 
-      }
-      if (proRate < min_rate){
-        min_rate = proRate 
-      }
-    }
-    override def toString(): String = "(" + delay + ", " + num_records + ", " + ptime + ")";
   }
 
   def linearRegression(xlist: Seq[Double], ylist: Seq[Double]): (Double, Double)={
@@ -127,23 +123,406 @@ private[streaming] class PIDRateEstimator(
     val beta1 = xy_bar/xx_bar
     return (beta1, ybar-beta1*xbar)
   }
+  //
+  // the arrays start with the checkpointing job on 0
+  // the first element corresponds to the checkpointId 5 
+  val numTupleQueue = new Queue[Double]
+  val processTimeQueue = new Queue[Double]
+  val numCPQueue = new Queue[Double]
+  val timeCPQueue = new Queue[Double]
+  val delayTimeQueue = new Queue[Double]
+
+  val stableDelay = new ListBuffer[Double]
+  val lastDelay = new ListBuffer[Double]
+
+  val actualDelay = new ListBuffer[Double]
+  val expectedDelay = new ListBuffer[Double]
+  val actualTime = new ListBuffer[Double] 
+  val expectedTime = new ListBuffer[Double]
+  val numTuplesJobs = new ListBuffer[Double]
+  // the number of actual elements collected
+  val actualNum = new ListBuffer[Double]
+
+  val historySize = 30
+  val sampleProportion = 0.5
+  // do the prediction of the delay and the reduction every 3 circles
+  val delayPredictInterval = 1 
+  var emptyJobTime:Double = 600
+  
+  // the number of "NUM" for the following jobs 
+  var numLen = 0 
+  // the last num set by the job, used to check the actual num
+  var lastSetNum: Double = -1
+  var lowJobNum: Double = 0
+  var initCount: Double = 0
+  val minNum: Double = 5
+  var sumTime: Double = 1000 
+
   var lastEmpty = false
   var lastJobId: Double = -1D
-  val xQueue = new Queue[Double]
-  val yQueue = new Queue[Double]
   val mQueue = new Queue[Double]
-  val queueSize = 10
+  //if true, it represents the decreasing, going to reduce the delay with NUM
+  //otherwise, the delay is high or increasing, going to adjust the rate 
+  var delayTrend: Boolean = true 
+
+  def listMean(list: ListBuffer[Double]): Double = {
+    list.reduceLeft(_ + _) / list.size.toDouble
+  }
+  def listStd(list: ListBuffer[Double]): Double = {
+    //val data = list.sorted
+    var sum: Double = 0.0
+    val mean = listMean(list)
+    for (ele <- list){
+      sum += math.pow( (ele-mean), 2 )
+    }
+    math.sqrt(sum/list.size.toDouble)
+  }
+
+  def updateActualHistory(time: Double, delay: Double, id: Double){
+      val myId = (id.toInt - cpOffset + cpLen)%cpLen
+      actualTime(myId) += time
+      actualDelay(myId) += delay
+      actualNum(myId) += 1
+  }
+  def clearActual() = {
+    for (i <- 1 to cpLen)
+        actualTime(i-1) = 0
+    for (i <- 1 to cpLen)
+        actualDelay(i-1) = 0
+    for (i <- 1 to cpLen)
+        actualNum(i-1) = 0
+  }
+  def updatePIDHistory(num: Double, time: Double, delay: Double, id: Double){
+    // start to collect the delay and processing time
+    // at the first round directly set num to 0 
+    
+    // enqueue elements and dequeue for a good size
+    if (id == cpOffset){
+      numCPQueue.enqueue(num)
+      timeCPQueue.enqueue(time)
+    }else{
+      numTupleQueue.enqueue(num)
+      processTimeQueue.enqueue(time)
+    }
+    delayTimeQueue.enqueue(delay) 
+    if ( delayTimeQueue.length > historySize ){
+      delayTimeQueue.dequeue()
+    }
+    if (id == cpOffset && numCPQueue.length > historySize){
+      numCPQueue.dequeue()
+      timeCPQueue.dequeue()
+    } 
+    if (id != cpOffset && numTupleQueue.length > historySize){
+      numTupleQueue.dequeue()
+      processTimeQueue.dequeue()
+    }
+
+  }
+
+  def initializeList(){
+    if (stableDelay.length == 0){
+      for (i <- 1 to cpLen)
+        stableDelay += 0
+    }
+    if (lastDelay.length == 0)
+      for (i <- 1 to cpLen)
+        lastDelay += 0
+
+    if (actualNum.length == 0)
+      for (i <- 1 to cpLen)
+        actualNum += 0
+    if (actualDelay.length == 0)
+      for (i <- 1 to cpLen)
+        actualDelay += 0
+    if (expectedDelay.length == 0)
+      for (i <- 1 to cpLen)
+        expectedDelay += 0
+    if (actualTime.length == 0)
+      for (i <- 1 to cpLen)
+        actualTime += 0
+    if (expectedTime.length == 0)
+      for (i <- 1 to cpLen)
+        expectedTime += batchIntervalMillis 
+
+    if (numTuplesJobs.length == 0)
+      for (i <- 1 to cpLen)
+        numTuplesJobs += -1
+  }
+
+  // used to detect the pattern of the job
+  def getStableDelay(tempDelay: ListBuffer[Double]): Double = {
+    val meanDelay = listMean(tempDelay)
+    val stdDelay = listStd(tempDelay) 
+    val minDelay = tempDelay.min
+    // to be conservative
+    return minDelay
+    if (stdDelay <= meanDelay * 0.1){
+      return meanDelay.max(minDelay)
+    }else{
+      return minDelay 
+    }
+  }
+
+  // used to detect the trend 
+  // if it rises, need to lower the rate
+  // it it decreases, need to raise the rate
+  def getDelayTrend(tempDelay: ListBuffer[Double]): (Double, Double) = {
+    var xlist = new ListBuffer[Double]
+    for (i <- 1 to tempDelay.length){
+      xlist += i 
+    }
+    //println(s" trend xarray $xlist")
+    //println(s" trend yarray $tempDelay")
+    val (beta1, beta0) = linearRegression(xlist, tempDelay)
+    val lowDelay = beta1 + beta0
+    val highDelay = beta1 * tempDelay.length + beta0
+    return (lowDelay, (highDelay-lowDelay))
+  }
+
+  // the id starts from cp job at index 0
+  def handleJobDelay(id: Double): Boolean = {
+    val currentId = id.toInt
+    val lastId = (currentId - 1 + cpLen)%cpLen
+
+    if (numTuplesJobs(lastId) != minNum){
+      if (lastId == 0){
+        expectedDelay(0) = 0
+        numTuplesJobs(0) = minNum 
+        lowJobNum = 1
+        // useless
+        expectedTime(0) = batchIntervalMillis + emptyJobTime
+      }
+      // lets try this first
+      return true
+    }
+
+    // num tuple of last index is 0
+    // input is: (expectedDelay, Time, Num) and (the actualDelay, Time)
+    var avgDelay:Double = 0
+    var estimatedNum:Double = 0
+    var previousNum = numTuplesJobs(currentId)
+    if ( actualDelay(currentId) > batchIntervalMillis*0.1 ){
+      //if (expectedDelay(currentId) > 0){
+      //  avgDelay = (expectedDelay(currentId)+actualDelay(currentId))/2
+      //}else
+      //  avgDelay = actualDelay(currentId) 
+      //expectedDelay(currentId) = actualDelay(currentId)
+      avgDelay = actualDelay(currentId) 
+    }
+
+    val leftTime = batchIntervalMillis - avgDelay 
+    if ( leftTime <= emptyJobTime ){
+      if (leftTime > 0)
+        expectedTime(currentId) = leftTime  
+      else 
+        // the delay is too much
+        expectedTime(currentId) = 0  
+      estimatedNum = minNum 
+      numTuplesJobs(currentId) = minNum 
+      lowJobNum = currentId + 1
+    }
+    else {
+      expectedTime(currentId) = leftTime  
+      estimatedNum = getJobNum(currentId)
+      numTuplesJobs(currentId) = estimatedNum
+    } 
+    var res = false 
+    if (estimatedNum != previousNum){
+      // two cases here: one is that this is the first setting
+      // the other is the updated case
+      // if it's num to zero, this is good to try out
+      // it it's num to num, this is the last step
+      // if it's zero to num, reset the following to normal 
+      res = true
+    }
+    if ( previousNum == minNum && estimatedNum > minNum ){
+      for (i <- (currentId+1) to cpLen-1 ){
+        expectedTime(i) = batchIntervalMillis
+        expectedDelay(i) = 0
+        numTuplesJobs(i) = -1
+      } 
+    }
+    if ( previousNum == 0 ){
+    } else if (previousNum > 0){
+    }
+    
+    // after setting with 0 num, not sure about the processing time of the empty job
+    // might including the cp job
+    // for the other jobs, the calculation based on error should be more accurate
+    //if ( lastId == 0 || expectedTime(lastId) == -1 )
+
+    // since the num of the previous job is 0, the delay would not change 
+    //expectedDelay(currentId) = actualDelay(currentId)
+    // actually, the expected and the actual delay should be the same here
+    // check it ???
+    //expectedDelay(currentId) = actualDelay(lastId) + actualTime(lastId) - batchIntervalMillis 
+
+    // the delay would not change
+    return res 
+  }
+  
+  def delayReduction() = {
+
+   xinLogInfo(s"xin PPIDRateEstimator Before expectedTime $expectedTime expectedDelay: $expectedDelay actualTime $actualTime actualDelay: $actualDelay numTuplesJObs $numTuplesJobs")
+    var id = 1 
+    while (  handleJobDelay(id) == false ){
+      id += 1
+    } 
+   xinLogInfo(s"xin PPIDRateEstimator after expectedTime $expectedTime expectedDelay: $expectedDelay actualTime $actualTime actualDelay: $actualDelay numTuplesJObs $numTuplesJobs")
+    
+  }
+  // when the average delay is large enough  
+  // update the expected processing time
+  // 1. only reduce the time of the first job
+  // 2. remember the zero input of the first jobs
+  // 3. how to minimal time for a job
+  def loadErrorStableDelay() = {
+    if ( historySize % cpLen != 0 ){
+      //return null
+    }
+    val mylen = historySize / cpLen
+    var tempDelay = new ListBuffer[Double]
+    for (i <- 1 to mylen)
+      tempDelay += 0
+
+    breakable {
+    for (i <- 0 to cpLen-1){
+      //for (j <- 0 to mylen-1)
+      //  tempDelay(j) = delayTimeQueue(i+j*cpLen)
+      val lastId = (i + cpLen - 1)%cpLen
+      if ( getStableDelay(tempDelay) >= 0.1*batchIntervalMillis ){
+        //stableDelay only stores the delay time in current circle
+        stableDelay(i) = getStableDelay(tempDelay) 
+        if (numTuplesJobs(lastId) != 0){
+          expectedTime(lastId) = expectedTime(lastId) - stableDelay(i) 
+          val cpId = (lastId + cpOffset + cpLen)%cpLen
+          val jobNum = getJobNum(cpId)
+          if ( jobNum < 0 ) numTuplesJobs(lastId) = 0
+          else numTuplesJobs(lastId) = jobNum 
+
+          val currentDelay = stableDelay(i)
+          val etime = expectedTime(lastId) 
+          val numJob = numTuplesJobs(lastId)
+          xinLogInfo(s"xin PPIDRateEstimator Important update job $lastId reduce $currentDelay ($tempDelay) to $etime with $numJob")
+          break
+        }
+      }
+      //previousDelay = stableDelay(i)
+    }
+    }
+  }
+  def getDelayList(): ListBuffer[Double] = {
+    //initializeList()
+    //myDelay.clear()
+    var myDelay = new ListBuffer[Double]
+    for (i <- 1 to cpLen){
+      if ( i-1 >= lowJobNum ){
+        myDelay += actualDelay(i-1)
+      }
+    }
+    myDelay
+  }
+  // assume the historical delay time is already 
+  // updated into delay TimeQueue
+  def loadDelay() = {
+    if ( historySize % cpLen != 0 ){
+      //return null
+    }
+    //initializeList()
+    for (i <- 1 to cpLen){
+      if ( i-1 < lowJobNum ){
+        lastDelay(i-1) = 0
+      } else {
+        lastDelay(i-1) = actualDelay(i-1)
+      } 
+    }
+  }
+  
+  def desiredLine(xlist: Seq[Double], ylist: Seq[Double], mytime: Double): (Double, Double)={
+    val oneDuration = 100
+    var filteredX = new ListBuffer[Double]
+    var filteredY = new ListBuffer[Double]
+    //val midTime = mytime - oneDuration
+    val midTime = mytime 
+    for (i <- 0 to ylist.length-1){
+      if (ylist(i) >= midTime-oneDuration && ylist(i) <= midTime+oneDuration){
+        filteredX += xlist(i)
+        filteredY += ylist(i)
+      }
+    }
+    //xinLogInfo(s"xin PPIDRateEstimator desiredLine filteredX $filteredX filteredY $filteredY")
+
+    //if ( filteredX.length == 0 )
+    //  return (0, 0) 
+    //if ( filteredX.length < sampleProportion * xlist.length ){
+    if ( filteredX.length <= 1 ){
+      linearRegression(xlist, ylist)
+    }
+    else{
+      linearRegression(filteredX, filteredY)  
+    }
+  }
+
+  // used to set the num of job for a specific job
+  def getJobNum(cpId: Int): Double = {
+    // every cpLen interval, the expectedTime should be updated 
+    // by calling loadDelay()
+    val id = (cpId)%cpLen
+    if (cpId < 0 || cpId >= cpLen) return -1 
+    val ytime = expectedTime(id)
+    if ( ytime < emptyJobTime ) return minNum 
+    if (id == 0){
+      getNewNumber( numCPQueue, timeCPQueue, ytime, 0, 0 )
+    } else
+      getNewNumber( numTupleQueue, processTimeQueue, ytime, 0, 0 ) 
+  }
+  // used to predict the new rate(Num of tuples)
+  // xlist, ylist are the historical records for (num, processTime)
+  // mytime is the expected processing time (1000ms)
+  // xNum and yTime is the actual ( num of tuples, the processTim )
+  // when xNum and yTime is zero, just return the desired num for specific Num
+  // if not, need to consider the current execution 
+  def getNewNumber(xlist: Seq[Double], ylist: Seq[Double], midtime: Double, xNum: Double, yTime: Double): Double={
+    val oneDuration = 100
+    //val mytime = midtime - oneDuration
+    val mytime = midtime 
+    val (beta1, beta0) = desiredLine(xlist, ylist, mytime)
+
+    if (beta1 == 0 && beta0 == 0 && xNum == 0 && yTime == 0) return minNum 
+    if (beta1 == 0 && beta0 == 0) return xNum*1000/yTime
+    // the range is [mytime-100, mytime+100]
+    val lowY = mytime-oneDuration
+    val lowX = (lowY - beta0)/beta1 
+    val highY = mytime+oneDuration
+    val highX = (highY - beta0)/beta1 
+
+    val maxLen = (highX - lowX)/2
+    val desiredX = (mytime - beta0)/beta1
+    //xinLogInfo(s"xin PPIDRateEstimator getNewNumber for specified time $mytime, lowX $lowX, highX $highX, detectedX $desiredX")
+
+    if (xNum > 0 && yTime > 0){
+      val suppX = (yTime - beta0)/beta1
+      val errorX = math.abs(suppX - xNum) 
+      var k = 0.0
+      if ( errorX >= maxLen ) k = 1
+      else k = errorX / maxLen 
+      return desiredX - k * errorX
+    } else 
+      return desiredX
+  }
+  //
+  
   def updateLinearQueue(x: Double, y: Double){
-    xQueue.enqueue(x)
-    yQueue.enqueue(y)
-    assert( xQueue.length == yQueue.length )
-    if ( xQueue.length > queueSize ){
-      xQueue.dequeue()
-      yQueue.dequeue()
+    numTupleQueue.enqueue(x)
+    processTimeQueue.enqueue(y)
+    assert( numTupleQueue.length == processTimeQueue.length )
+    if ( numTupleQueue.length > historySize ){
+      numTupleQueue.dequeue()
+      processTimeQueue.dequeue()
     }
   }
   def getLR(): (Double, Double)={
-    linearRegression(xQueue.toSeq, yQueue.toSeq)
+    linearRegression(numTupleQueue.toSeq, processTimeQueue.toSeq)
   }
  
   def compute(
@@ -151,7 +530,7 @@ private[streaming] class PIDRateEstimator(
       numElements: Long,
       processingDelay: Long, // in milliseconds
       schedulingDelay: Long // in milliseconds
-    ): Option[(Long, Double, Long)] = {
+    ): Option[(Long, Double, Long, Int)] = {
     //xinLogInfo(s"xin PIDRateEstimator \ntime = $time, # records = $numElements, " + s"processing time = $processingDelay, scheduling delay = $schedulingDelay")
     logTrace(s"\ntime = $time, # records = $numElements, " +
       s"processing time = $processingDelay, scheduling delay = $schedulingDelay")
@@ -186,41 +565,14 @@ private[streaming] class PIDRateEstimator(
         val dError = (error - latestError) / delaySinceUpdate
 
         // xin
-        
         //val actualRate = numElements.toDouble / batchIntervalMillis * 1000
         //var myNewRate = minRate
         val diff = (processingDelay.toDouble + schedulingDelay.toDouble - batchIntervalMillis) / batchIntervalMillis 
-        //if ( schedulingDelay.toDouble == 0 ){
-        //  if ( diff <= 0 ){
-        //    if (diff < -0.2){
-        //      if (myMinRate < processingRate)
-        //        myMinRate = processingRate
-        //      myNewRate = processingRate.max(myMinRate)
-        //    } else{
-        //      myNewRate = actualRate
-        //    }
-        //  }else{
-        //    if (diff < 0.1) myNewRate = myMinRate.min(actualRate).max(minRate) 
-        //    else myNewRate = minRate 
-        //  }
-        //}else{
-        //  if (diff <= 0){
-        //    if ( diff < -0.2 ){
-        //      myNewRate = (latestRate - diff * processingRate).max(processingRate).max(minRate)
-        //    }else{
-        //      myNewRate = processingRate
-        //    }
-        //  } else{
-        //    // directly going to minimal because we think it's caused by CP 
-        //    myNewRate = minRate
-        //  } 
-        //}
-        //val newRate = myNewRate
-
+        
         var feedRate = diff * processingRate
         //var newRate = (latestRate - proportional * error - feedRate -
         var newRate = (latestRate - error -
-                                    integral * historicalError -
+                                    delayIntegral * historicalError -
                                     derivative * dError).max(minRate)
         var batchTimeStamp: Long = -1
         var nextTimestamp: Long = -1
@@ -231,36 +583,180 @@ private[streaming] class PIDRateEstimator(
         var predictedRate: Double = 0
         var tempRate: Double = 0
 
-        // modification starts
-        if ( proportional > 1.0 ){
+        val myProcessingRate = (jobNumRecords.toDouble / processingDelay * 1000)
+        val myError = myLatestRate - myProcessingRate 
+        val myHistoricalError = schedulingDelay.toDouble * myProcessingRate / batchIntervalMillis
+        if (proportional == 6.0){
+          newRate = (myLatestRate - myError - delayIntegral * myHistoricalError).max(minRate)
+          newRate = newRate/receiverNum
+        }
 
+        //xinLogInfo(s"xin in PIDController, start PID estimation!!! in 1")
+        // xinPID   1
+        if ( proportional == 6.0 && cpLenFixed == true && checkpointId == cpOffset && startPIDCollect == false){
+          startPIDCollect = true  
+          initializeList() 
+        }
+        if (startPIDCollect == true){
+          if ( checkpointId >= lowJobNum ){
+            updatePIDHistory(jobNumRecords.toDouble, processingDelay.toDouble, schedulingDelay.toDouble, checkpointId)  
+          }
+          updateActualHistory( processingDelay.toDouble, schedulingDelay.toDouble, checkpointId )
+          initCount += 1
+        }
+        // finish the collection of historical records
+        // also at the end of one circle
+        if (startPIDCollect == true && startPIDPredict == false && initCount >= 60 && checkpointId+1 == cpOffset){
+          startPIDPredict = true
+        }
+
+        //xinLogInfo(s"xin PID controller 2 !!!")
+        // xinPID  2 
+        // finish one circle, check the trend to adjust the long-term rate 
+        var avgRate:Double = -1
+        val goodNum = getNewNumber(numTupleQueue, processTimeQueue, batchIntervalMillis, 0, 0) 
+        avgRate = (cpLen - lowJobNum)/cpLen * goodNum / receiverNum
+
+        // these jobs are set with low input size: minNum
+        // so the rate can not be updated 
+        val arrayId = (checkpointId - cpOffset + cpLen)%cpLen
+        if (startPIDPredict == true && arrayId <= lowJobNum){
+          if (avgRate > newRate){
+            newRate = avgRate
+            xinLogInfo(s"xin PPIDRateEstimator ignore rate for job $checkpointId, smaller $lowJobNum from $newRate to $avgRate ")
+          }
+        }
+
+        // for the delay array, one circle ends
+        if (startPIDPredict == true && checkpointId + 1 == cpOffset){
+          //if ( midDelay > 0.1 * batchIntervalMillis ) 
+          //loadDelay()
+          val myDelay = getDelayList() 
+          val (lowDelay, highDelay) = getDelayTrend(myDelay)
+          val midDelay = (lowDelay+highDelay)/2
+          xinLogInfo(s"xin PPIDRateEstimator expectedTime $expectedTime lastDelay: $myDelay lowDelay: $lowDelay highDelay: $highDelay andMid $midDelay")
+
+          var sumDelay: Double = 0
+          for (i <- 1 to cpLen){
+             sumDelay += actualDelay(i-1) 
+          }
+          sumDelay = sumDelay/cpLen
+          sumTime = 0
+          for (i <- 1 to cpLen){
+             sumTime += actualTime(i-1) 
+          }   
+          sumTime = sumTime/cpLen
+          xinLogInfo(s"xin PPIDRateEstimator actualTime $actualTime avgTime $sumTime actualDelay $actualDelay avgDelay $sumDelay avgRate $avgRate")
+
+          if ( highDelay > 1.1*lowDelay || sumDelay > batchIntervalMillis){
+             delayIntegral += 0.1 
+             delayTrend = true
+             xinLogInfo(s"xin PPIDRateEstimator delay are increasing the delayIntegral $delayIntegral ")
+          }else{
+             delayTrend = false
+          }
+
+          if ( lowDelay > 1.1*highDelay && delayIntegral > 0.2 && sumDelay < batchIntervalMillis ) delayIntegral -= 0.1
+          
+          clearActual() 
+        }
+        if ( sumTime < batchIntervalMillis ){
+           if ( avgRate > newRate ){ 
+             xinLogInfo(s"xin PPIDRateEstimator raising the rate from $newRate to $avgRate with goodNum $goodNum lowJobNum $lowJobNum")
+             newRate = avgRate
+           }
+        }
+        // xinPID  3 
+        // xinLogInfo(s"xin PID controller 3 !!!")
+        // in the mid of the circle, check the delay of the front jobs to set the Num 
+        if (startPIDPredict == true && checkpointId + 1 == cpLen){
+          //reductionId += 1 
+          //reductionId = reductionId % delayPredictInterval 
+          //if ( reductionId == 0 )
+          if ( delayTrend == false )
+            delayReduction()
+        }
+
+        // xinPID  4 
+        // xinLogInfo(s"xin PID controller 4 !!!")
+        if (startPIDPredict == true){
+          // the jobId is ( the array starts at 5, plus the cpOffset )
+          val jobId = checkpointId.toInt
+
+          // in the real configuration
+          // when the num is zero, directly check in the numTuplesJobs
+          // otherwise need to calculate the num according to the expected time
+          var jobNum:Double = -1D
+          if (numTuplesJobs( jobId ) == minNum) jobNum = minNum 
+          else jobNum = getJobNum( jobId )
+          xinLogInfo(s"xin PID controller potential num of the job: $jobNum goodNum $goodNum")
+          if ( jobNum != goodNum ) {
+            xinLogInfo(s"xin PID controller check the source Tuples: $numTupleQueue, Time: $processTimeQueue ")
+          }
+          val rate = getNewNumber(numTupleQueue, processTimeQueue, expectedTime(checkpointId.toInt), numElements.toDouble, processingDelay.toDouble)/receiverNum
+          // note the rate is for the whole job. Need to divide rate by the number of receiver
+          if (checkpointId >= 0 && checkpointId < cpOffset){
+            if (jobNum >= minNum){
+              if ( jobNum == minNum ) myNum = minNum.toLong
+              else myNum = jobNum.toLong/6 
+              val startTime = (time - processingDelay - schedulingDelay)/100
+                batchTimeStamp = startTime * 100 
+                nextTimestamp = batchTimeStamp + 5000
+              if (startTime % 10 != 0){
+                xinLogInfo(s"xin PID controller the starting Timestamp might be wrong: $startTime")
+              }
+              if (checkpointId + 1 == cpOffset) lastSetNum = jobNum
+              //if (checkpointId == 0 && jobNumRecords.toDouble > lastSetNum * 1.1) delayIntegral += 0.1
+
+              // set the number of NUM for mutliple jobs
+              if (checkpointId == 0 || myNum == minNum) numLen = 1
+              else if ( expectedTime(checkpointId.toInt) < batchIntervalMillis ){
+                numLen = 1
+              }
+              else if ( expectedTime(checkpointId.toInt) == batchIntervalMillis && myNum > minNum && numLen == 1){
+                numLen = cpLen - checkpointId.toInt - 1 - 4
+              } else if ( numLen > 1 ){
+                numLen = 0
+              } 
+            }
+          } 
+          if (checkpointId == cpLen-1 && delayIntegral > 0.2 && jobNumRecords.toDouble < 0.9*lastSetNum){
+            //delayIntegral -= 0.1
+          }
+          xinLogInfo(s"xin PPIDRateEstimator expectedTime: $expectedTime jobID $jobId Num: $jobNum currentNewRate $rate actualRate $newRate integral $delayIntegral $numLen #receivers $receiverNum")
+        }
+        // xinLogInfo(s"xin PID controller the end of estimation !!!")
+        // xinPID
+
+        // modification starts
+        if ( proportional > 1.0 && proportional < 5 ){
+           
 	tempRate = newRate 
 	//tempRate = newRate * proportional 
         // using the total number of records per job
         updateLinearQueue(jobNumRecords.toDouble, processingDelay.toDouble)
         val (beta1, beta0) = getLR()
         //y=x*beta1 + beta0
-        if ( beta0 > 0 && xQueue.length >= queueSize){
+        if ( beta0 > 0 && numTupleQueue.length >= historySize){
           predictedRate = (1000-beta0)/beta1
           predictedRate = predictedRate / receiverNum
           //predictedRate = predictedRate - integral * historicalError
 
           //handling throughput
-          if ( proportional == 2.0 || proportional >= 4)newRate = predictedRate
+          if ( proportional == 2.0 || proportional == 4)newRate = predictedRate
 
           mQueue.enqueue( newRate )
-          if ( mQueue.length > queueSize )
+          if ( mQueue.length > historySize )
             mQueue.dequeue()
         }
         
-
         val startTime = (time - processingDelay - schedulingDelay)/100
         if (startTime % 10 == 0){
           batchTimeStamp = startTime * 100 
         } 
 
         // handling scheduling delay 
-        if ( proportional == 3.0 || proportional >= 4 ){
+        if ( proportional == 3.0 || proportional == 4 ){
         // set the predicted job to 0, if detected to be the checkpointing job
         if (checkpointId == 0){ 
           lastCpRate = jobNumRecords.toDouble * 1000/ (processingDelay*6) 
@@ -295,7 +791,7 @@ private[streaming] class PIDRateEstimator(
         // this job is right after the checkpointing job
         // set a maximum number as negative, because it accumulates the tuples
         // that should be processed in the last job
-        if (checkpointId >= 1 && checkpointId<=5){
+        if (checkpointId >= 1 && checkpointId<=4){
           if ( batchTimeStamp != -1 ){
             nextTimestamp = batchTimeStamp + 5000  
           }
@@ -314,8 +810,8 @@ private[streaming] class PIDRateEstimator(
           lastEmpty = false
         } 
         } 
-        
         }
+
         logTrace(s"""
             | latestRate = $latestRate, error = $error
             | latestError = $latestError, historicalError = $historicalError
@@ -327,24 +823,23 @@ private[streaming] class PIDRateEstimator(
 
         latestTime = time
         if (firstRun) {
-          for ( i <- 1 to cpLen){
-            cplist += new Ele(-1, 10, 1)
-          }
+          
           latestRate = processingRate
+          myLatestRate = myProcessingRate
           latestError = 0D
           firstRun = false
           lastJobId = checkpointId 
           logTrace("First run, rate estimation skipped")
           None
         } else {
-          cplist.lift(checkpointId.toInt).get.updateJob(schedulingDelay, numElements, processingDelay)
           latestRate = newRate
           latestError = error
           logTrace(s"New rate = $newRate")
-          Some((nextTimestamp, newRate, myNum))
+          Some((nextTimestamp, newRate, myNum, numLen))
         }
       } else {
         logTrace("Rate estimation skipped")
+        xinLogInfo(s"xin in PIDController, rate estimation skipped")
         None
       }
     }

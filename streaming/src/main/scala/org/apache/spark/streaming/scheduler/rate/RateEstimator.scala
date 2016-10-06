@@ -30,7 +30,7 @@ private[streaming] trait RateEstimator extends Serializable {
       elements: Long,
       processingDelay: Long,
       schedulingDelay: Long
-      ): Option[(Long, Double, Long)]
+      ): Option[(Long, Double, Long, Int)]
 
   /**
    * Computes the number of elements the stream attached to this `RateEstimator`
@@ -49,7 +49,7 @@ private[streaming] trait RateEstimator extends Serializable {
       schedulingDelay: Long,
       num: Int,
       totalEle: Long,
-      checkpointId: Long): Option[(Long, Double, Long)]
+      checkpointId: Long): Option[(Long, Double, Long, Int)]
 }
 
 object RateEstimator {

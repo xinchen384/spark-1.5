@@ -89,11 +89,11 @@ private[streaming] class ConstantEstimator(@volatile private var rate: Long)
       schedulingDelay: Long,
       num: Int,
       totalEle: Long,
-      checkpointId: Long): Option[(Long, Double, Long)] = Some(-1, rate, rate.toLong)
+      checkpointId: Long): Option[(Long, Double, Long, Int)] = Some(-1, rate, rate.toLong, 1)
 
   def compute(
       time: Long,
       elements: Long,
       processingDelay: Long,
-      schedulingDelay: Long): Option[(Long, Double, Long)] = Some(-1, rate, rate.toLong)
+      schedulingDelay: Long): Option[(Long, Double, Long, Int)] = Some(-1, rate, rate.toLong, 1)
 }

@@ -86,7 +86,7 @@ private[streaming] case object StopAllReceivers extends ReceiverTrackerLocalMess
  */
 private[streaming] case object AllReceiverIds extends ReceiverTrackerLocalMessage
 
-private[streaming] case class UpdateReceiverRateLimit(streamUID: Int, time: Long, newRate: Long, num: Long)
+private[streaming] case class UpdateReceiverRateLimit(streamUID: Int, time: Long, newRate: Long, num: Long, len: Int)
   extends ReceiverTrackerLocalMessage
 
 /**
@@ -304,11 +304,16 @@ class ReceiverTracker(ssc: StreamingContext, skipReceiverLaunch: Boolean = false
   }
 
   /** Update a receiver's maximum ingestion rate */
-  def sendRateUpdate(streamUID: Int, time: Long, newRate: Long, num: Long): Unit = synchronized {
+  def sendRateUpdate(streamUID: Int, time: Long, newRate: Long, num: Long, len: Int): Unit = synchronized {
     if (isTrackerStarted) {
-      endpoint.send(UpdateReceiverRateLimit(streamUID, time, newRate, num))
       //xin
       //receivedBlockTracker.streamIdToRates.put(streamUID, newRate)
+      //endpoint.send(UpdateReceiverRateLimit(streamUID, time, newRate, num, len))
+      //centralized rate update
+      for (i <- 1 to 6)
+        endpoint.send(UpdateReceiverRateLimit(i-1, time, newRate, num, len))
+      xinLogInfo(s"xin ReceiverTracker sendRateUpdate ($streamUID, $time, $newRate, $num, $len)")
+      /* 
       if (num == 0){
         if ( !receivedBlockTracker.emptyJobTimestamp.contains(time) ){
           //in the case of the missing signal
@@ -319,6 +324,7 @@ class ReceiverTracker(ssc: StreamingContext, skipReceiverLaunch: Boolean = false
           for (i <- 1 to 6)
             receivedBlockTracker.maxJobTimestamp.prepend(time)
       }
+      */
     }
   }
 
@@ -475,9 +481,9 @@ class ReceiverTracker(ssc: StreamingContext, skipReceiverLaunch: Boolean = false
         startReceiver(receiver, scheduledExecutors)
       case c: CleanupOldBlocks =>
         receiverTrackingInfos.values.flatMap(_.endpoint).foreach(_.send(c))
-      case UpdateReceiverRateLimit(streamUID, time, newRate, num) =>
+      case UpdateReceiverRateLimit(streamUID, time, newRate, num, len) =>
         for (info <- receiverTrackingInfos.get(streamUID); eP <- info.endpoint) {
-          eP.send(UpdateRateLimit(time, newRate, num))
+          eP.send(UpdateRateLimit(time, newRate, num, len))
         }
       // Remote messages
       case ReportError(streamId, message, error) =>

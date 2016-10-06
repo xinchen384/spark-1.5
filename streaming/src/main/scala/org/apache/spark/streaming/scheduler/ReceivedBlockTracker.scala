@@ -157,8 +157,9 @@ private[streaming] class ReceivedBlockTracker(
     if ( timeQueue.keySet.contains(batchTime ) ){
       //xin
       val qlen = timeQueue(batchTime).length
+      val blockStr = timeQueue(batchTime).map(_.numRecords.get).mkString(" ")
       val queueNum: Long = timeQueue(batchTime).map(_.numRecords.get).sum
-      xinLogInfo(s"xin ReceivedBlockTracker(getBatchTimeBlocks) in myTimeQueue, Time: $batchTime NumBlocks: $qlen totalSize $queueNum")
+      xinLogInfo(s"xin ReceivedBlockTracker(getBatchTimeBlocks) in myTimeQueue, Time: $batchTime NumBlocks: $qlen blockStr $blockStr totalSize $queueNum")
       buffer ++= timeQueue(batchTime).dequeueAll(x => true)
       timeQueue -= batchTime
     } else if ( maxJobTimestamp.contains(batchTime) ){

@@ -262,7 +262,10 @@ private[streaming] class BlockGenerator(
           //xin
           // if directly using the time, the ReceivedBlockTracker is not fast enough to catch up
           // so prepare for the next second by adding one second forward
+          // if the num of the job (currentTime) is set to 0, do not generate block to the receivedBlockTracker
+          // leave to the queue for next job
           val currentTime = (time / 1000) * 1000 + 1000
+          val physicalTime = System.currentTimeMillis() 
           if ( timestampRates.contains(currentTime) && timestampRates.get(currentTime).get != 0){
             val slen = (timestampRates.get(currentTime).get / (1000/blockIntervalMs)).toInt
             val blockLen = slen.min( currentBuffer.length )
@@ -271,12 +274,14 @@ private[streaming] class BlockGenerator(
             val blockId = StreamBlockId(receiverId, time - blockIntervalMs)
             listener.onGenerateBlock(blockId)
             newBlock = new Block(blockId, newBlockBuffer, currentTime)
-            if ( time + blockIntervalMs == currentTime + 1000 )
+            if ( time + blockIntervalMs == currentTime  ){
               timestampRates -= currentTime
-            xinLogInfo(s"xin BlockGenerator updateBuffer SPECIFY time $time sSize $slen BufferSize $blockLen")
+              xinLogInfo(s"xin BlockGenerator updateBuffer clear out the timestamp: $currentTime at physicalTime $physicalTime")
+            }
+            xinLogInfo(s"xin BlockGenerator updateBuffer SPECIFY time $time sSize $slen BufferSize $blockLen forwardTime $currentTime at $physicalTime")
           } else if ( timestampRates.contains(currentTime) && timestampRates.get(currentTime).get == 0) {
              // does not generate block, leaving the tuples to the following jobs 
-             if ( time + blockIntervalMs == currentTime + 1000 )
+             if ( time + blockIntervalMs == currentTime )
               timestampRates -= currentTime 
           } else {
             if ( maxNumBlock > 0 && currentBuffer.length > maxNumBlock ){
@@ -294,6 +299,7 @@ private[streaming] class BlockGenerator(
               currentBuffer = new ArrayBuffer[Any]
               val blockId = StreamBlockId(receiverId, time - blockIntervalMs)
               listener.onGenerateBlock(blockId)
+              xinLogInfo(s"xin BlockGenerator updateBuffer evict all with no timestamp: $currentTime at physicalTime $physicalTime")
               newBlock = new Block(blockId, newBlockBuffer, -1)
             }
           } 
