@@ -77,6 +77,7 @@ private[streaming] abstract class RateController(val streamUID: Int, rateEstimat
   override def onBatchCompleted(batchCompleted: StreamingListenerBatchCompleted) {
     val elements = batchCompleted.batchInfo.streamIdToInputInfo
     val totalEle = batchCompleted.batchInfo.numRecords 
+    val rNum = elements.values.filter {_.numRecords > 0}.toSeq.length
     
     //val sss = elements.get(streamUID).map(_.numRecords)
     //xinLogInfo(s"xin COMPUTEPUBLISH the number of records: $sss in receiver $streamUID")
@@ -89,7 +90,7 @@ private[streaming] abstract class RateController(val streamUID: Int, rateEstimat
       //xinLogInfo(s"xin COMPUTEPUBLISH the number of records: $sss in receiver $streamUID starting to compute and pushlish")
       // centralized rate update
       if ( streamUID == 0 )
-        computeAndPublish(processingEnd, totalEle, workDelay, waitDelay, elements.size, totalEle, batchCompleted.batchInfo.checkpointId)
+        computeAndPublish(processingEnd, totalEle, workDelay, waitDelay, rNum, totalEle, batchCompleted.batchInfo.checkpointId)
       //computeAndPublish(processingEnd, elems, workDelay, waitDelay, elements.size, totalEle, batchCompleted.batchInfo.checkpointId)
     }
   }
