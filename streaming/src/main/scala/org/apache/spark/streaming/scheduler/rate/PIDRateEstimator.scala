@@ -157,7 +157,7 @@ private[streaming] class PIDRateEstimator(
   var lowJobNum: Double = 0
   var initCount: Double = 0
   val minNum: Double = 5
-  var sumTime: Double = 1000 
+  var avgTime: Double = 1000 
   var avgRate:Double = -1
   var startDelay: Double = 0
   var goodNum: Double = 0
@@ -673,20 +673,24 @@ private[streaming] class PIDRateEstimator(
              sumDelay += actualDelay(i-1) 
           }
           sumDelay = sumDelay/cpLen
-          sumTime = 0
-          for (i <- 1 to cpLen){
-             sumTime += actualTime(i-1) 
+          avgTime = 0
+          for (i <- lowJobNum.toInt to cpLen-1){
+             if (actualTime(i) <= batchIntervalMillis)
+               avgTime += actualTime(i) 
+             else 
+               avgTime += batchIntervalMillis 
           }   
-          sumTime = sumTime/cpLen
+          avgTime = avgTime/(cpLen-lowJobNum)
+          var incP = batchIntervalMillis/avgTime
           // the start delay of next circle
           startDelay = processingDelay.toDouble + schedulingDelay.toDouble - batchIntervalMillis
           if (startDelay < 0) startDelay = 0
           val delayNum = startDelay / batchIntervalMillis
           if (receiverNum == -1) receiverNum = rNum 
           goodNum = getNewNumber(numTupleQueue, processTimeQueue, batchIntervalMillis, 0, 0) 
-          xinLogInfo(s"xin PID controller calculating the goodNum, Tuples: $numTupleQueue, Time: $processTimeQueue goodNum: $goodNum lowJobNum $lowJobNum")
-          avgRate = (cpLen - lowJobNum - delayNum)/cpLen * goodNum / receiverNum
-          xinLogInfo(s"xin PPIDRateEstimator actualTime $actualTime avgTime $sumTime actualDelay $actualDelay avgDelay $sumDelay startDelay $startDelay delayNum $delayNum avgRate $avgRate")
+          xinLogInfo(s"xin PID controller calculating the goodNum, Tuples: $numTupleQueue, Time: $processTimeQueue goodNum: $goodNum lowJobNum $lowJobNum incP $incP")
+          avgRate = (cpLen - lowJobNum - delayNum)/cpLen * goodNum * incP / receiverNum
+          xinLogInfo(s"xin PPIDRateEstimator actualTime $actualTime avgTime $avgTime actualDelay $actualDelay avgDelay $sumDelay startDelay $startDelay delayNum $delayNum avgRate $avgRate")
 
           if ( highDelay > 1.1*lowDelay || sumDelay > batchIntervalMillis){
              if (delayIntegral <= 0.4) delayIntegral += 0.1 
