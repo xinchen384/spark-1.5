@@ -88,10 +88,10 @@ private[streaming] abstract class RateController(val streamUID: Int, rateEstimat
       elems <- elements.get(streamUID).map(_.numRecords)
     } { 
       //xinLogInfo(s"xin COMPUTEPUBLISH the number of records: $sss in receiver $streamUID starting to compute and pushlish")
+      computeAndPublish(processingEnd, elems, workDelay, waitDelay, elements.size, totalEle, batchCompleted.batchInfo.checkpointId)
       // centralized rate update
-      if ( streamUID == 0 )
-        computeAndPublish(processingEnd, totalEle, workDelay, waitDelay, rNum, totalEle, batchCompleted.batchInfo.checkpointId)
-      //computeAndPublish(processingEnd, elems, workDelay, waitDelay, elements.size, totalEle, batchCompleted.batchInfo.checkpointId)
+      //if ( streamUID == 0 )
+      //  computeAndPublish(processingEnd, totalEle, workDelay, waitDelay, rNum, totalEle, batchCompleted.batchInfo.checkpointId)
     }
   }
 }

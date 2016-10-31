@@ -69,10 +69,11 @@ private[streaming] class PIDRateEstimator(
   private var startPIDPredict: Boolean = false 
 
   private var checkpointId: Double = -1L 
-  private var receiverNum: Double = -1L 
   private var jobNumRecords: Double = -1L 
   private var lastCpRate: Double = -1L 
   private var myMinRate: Double = -1L 
+  private var receiverNum: Double = -1L 
+  private var lastRNum: Double = -1L 
   private val rNum:Double = 6
   private var delayIntegral:Double = 0.2
 
@@ -123,7 +124,7 @@ private[streaming] class PIDRateEstimator(
     val beta1 = xy_bar/xx_bar
     return (beta1, ybar-beta1*xbar)
   }
-  //
+
   // the arrays start with the checkpointing job on 0
   // the first element corresponds to the checkpointId 5 
   val numTupleQueue = new Queue[Double]
@@ -149,6 +150,10 @@ private[streaming] class PIDRateEstimator(
   // do the prediction of the delay and the reduction every 3 circles
   val delayPredictInterval = 1 
   var emptyJobTime:Double = 600
+  val smallJobTime = new Queue[Double]
+  val cpDelayTime = new Queue[Double]
+  val smallLen = 10
+  var currentRegionDelay: Double = 0
   
   // the number of "NUM" for the following jobs 
   var numLen = 0 
@@ -182,11 +187,44 @@ private[streaming] class PIDRateEstimator(
     math.sqrt(sum/list.size.toDouble)
   }
 
-  def updateActualHistory(time: Double, delay: Double, id: Double){
+  def updateActualHistory(time: Double, delay: Double, id: Double, num: Double){
       val myId = (id.toInt - cpOffset + cpLen)%cpLen
       actualTime(myId) += time
       actualDelay(myId) += delay
       actualNum(myId) += 1
+      if (myId != 0 && num == minNum*rNum && time < batchIntervalMillis){
+        smallJobTime.enqueue(time)
+        if (smallJobTime.length > smallLen) 
+          smallJobTime.dequeue()
+      } 
+      if (myId == 0 && num == minNum*rNum){
+        cpDelayTime.enqueue(time-batchIntervalMillis)
+        if (cpDelayTime.length > smallLen) 
+          cpDelayTime.dequeue()
+      }
+  }
+  def getSmallJobTime(): Double = {
+    xinLogInfo(s"xin PID controller smallJobTime Array: $smallJobTime")
+    if (smallJobTime.length <= 2){
+      emptyJobTime 
+    }
+    else {
+      (smallJobTime.sum - smallJobTime.max - smallJobTime.min)/(smallJobTime.length - 2)
+    }
+  }
+  def getCpDelayTime(): Double = {
+    xinLogInfo(s"xin PID controller CPdelay Array: $cpDelayTime")
+    if (cpDelayTime.length <= 2){
+      batchIntervalMillis - emptyJobTime 
+    }
+    else {
+      (cpDelayTime.sum - cpDelayTime.max - cpDelayTime.min)/(cpDelayTime.length - 2)
+    }
+  }
+  def getFullJobNum(): Double = {
+    if (goodNum == 0)
+        goodNum = getNewNumber(numTupleQueue, processTimeQueue, batchIntervalMillis, 0, 0)
+    goodNum
   }
   def clearActual() = {
     for (i <- 1 to cpLen)
@@ -288,6 +326,38 @@ private[streaming] class PIDRateEstimator(
     return (lowDelay, (highDelay-lowDelay))
   }
 
+  def calculateMinNum(id: Double, ptime: Double, delay: Double) = {
+    val currentId = id.toInt
+    var previousNum = numTuplesJobs(currentId)
+    if (currentId == 0){
+      numTuplesJobs(currentId) = minNum
+      if (previousNum != minNum) 
+        lowJobNum = 1
+    }
+    val pDelay = noStartDelay(currentId) + delay 
+    //we do not consider the start delay of the next job 
+    //this delay time only needs to be reduced once for the region
+    //val nextJobDelay = delay + ptime - batchIntervalMillis 
+    val selfTime = batchIntervalMillis - pDelay 
+    val nDelay = noStartDelay(currentId+1) 
+    val leftTime = selfTime - nDelay
+    if (pDelay + nDelay > batchIntervalMillis*0.1){
+      if (leftTime >= emptyJobTime) {
+        expectedTime(currentId) = leftTime
+      } else if (selfTime > emptyJobTime){
+      } else {
+        numTuplesJobs(currentId) = minNum
+        if (leftTime > 0)
+          expectedTime(currentId) = leftTime 
+        else 
+          expectedTime(currentId) = 0 
+        if (previousNum != minNum){ 
+          lowJobNum = currentId + 1 
+        } 
+      }
+
+    }
+  }
   // the id starts from cp job at index 0
   def handleJobDelay(id: Double): Boolean = {
     val currentId = id.toInt
@@ -304,7 +374,6 @@ private[streaming] class PIDRateEstimator(
       // lets try this first
       return true
     }
-
      
     // num tuple of last index is 0
     // input is: (expectedDelay, Time, Num) and (the actualDelay, Time)
@@ -507,9 +576,21 @@ private[streaming] class PIDRateEstimator(
   // when xNum and yTime is zero, just return the desired num for specific Num
   // if not, need to consider the current execution 
   def getNewNumber(xlist: Seq[Double], ylist: Seq[Double], midtime: Double, xNum: Double, yTime: Double): Double={
+    var i = 0
+    var avg: Double = 0
+    var count = 0
+    for (y <- ylist){
+      val t = xlist(i) * 1000/ ylist(i)
+      if (y < 1500){
+        avg += t 
+        count += 1
+      }
+      i += 1
+    }
+    return avg/count
     val oneDuration = 100
-    val mytime = midtime - oneDuration
-    //val mytime = midtime 
+    //val mytime = midtime - oneDuration
+    val mytime = midtime 
     //val (beta1, beta0) = desiredLine(xlist, ylist, mytime)
     val (beta1, beta0) = linearRegression(xlist, ylist)
     val avgX = xlist.sum / xlist.length 
@@ -634,7 +715,7 @@ private[streaming] class PIDRateEstimator(
           if ( arrayId > lowJobNum ){
             updatePIDHistory(jobNumRecords.toDouble, processingDelay.toDouble, schedulingDelay.toDouble, checkpointId)  
           }
-          updateActualHistory( processingDelay.toDouble, schedulingDelay.toDouble, checkpointId )
+          updateActualHistory( processingDelay.toDouble, schedulingDelay.toDouble, checkpointId, jobNumRecords.toDouble )
           initCount += 1
         }
         // finish the collection of historical records
@@ -689,7 +770,9 @@ private[streaming] class PIDRateEstimator(
           if (receiverNum == -1) receiverNum = rNum 
           goodNum = getNewNumber(numTupleQueue, processTimeQueue, batchIntervalMillis, 0, 0) 
           xinLogInfo(s"xin PID controller calculating the goodNum, Tuples: $numTupleQueue, Time: $processTimeQueue goodNum: $goodNum lowJobNum $lowJobNum incP $incP")
-          avgRate = (cpLen - lowJobNum - delayNum)/cpLen * goodNum * incP / receiverNum
+          lastRNum = receiverNum
+          //avgRate = (cpLen - lowJobNum - delayNum)/cpLen * goodNum * incP / receiverNum
+          avgRate = (cpLen - lowJobNum - delayNum)/cpLen * goodNum / receiverNum
           xinLogInfo(s"xin PPIDRateEstimator actualTime $actualTime avgTime $avgTime actualDelay $actualDelay avgDelay $sumDelay startDelay $startDelay delayNum $delayNum avgRate $avgRate")
 
           if ( highDelay > 1.1*lowDelay || sumDelay > batchIntervalMillis){
@@ -704,20 +787,10 @@ private[streaming] class PIDRateEstimator(
           
           clearActual() 
         }
-        // these jobs are set with low input size: minNum
-        // so the rate can not be updated 
-        //if (startPIDPredict == true && arrayId <= lowJobNum){
-        //  if (avgRate > newRate){
-        //    newRate = avgRate
-        //    xinLogInfo(s"xin PPIDRateEstimator ignore rate for job $checkpointId, smaller $lowJobNum from $newRate to $avgRate ")
-        //  }
-        //}
-        //if ( sumTime < batchIntervalMillis ){
-        //   if ( avgRate > newRate ){ 
-        //     xinLogInfo(s"xin PPIDRateEstimator raising the rate from $newRate to $avgRate with goodNum $goodNum lowJobNum $lowJobNum")
-        //     newRate = avgRate
-        //   }
-        //}
+        if ( receiverNum < lastRNum ){
+          avgRate = avgRate * lastRNum / receiverNum
+        }
+        
         
         if ( avgRate != -1 ){
            newRate = avgRate 
@@ -733,14 +806,45 @@ private[streaming] class PIDRateEstimator(
           // when the num is zero, directly check in the numTuplesJobs
           // otherwise need to calculate the num according to the expected time
           var jobNum:Double = -1D
-          if (numTuplesJobs( jobId ) == minNum) jobNum = minNum 
-          else jobNum = getJobNum( jobId )
-          val etime = expectedTime( jobId )
-          xinLogInfo(s"xin PID controller potential num of the job: $jobNum the time $etime, goodNum $goodNum numReciever $receiverNum")
-          if ( jobNum != goodNum ) {
-            xinLogInfo(s"xin PID controller check the source Tuples: $numTupleQueue, Time: $processTimeQueue ")
+          if (checkpointId >= 0 && checkpointId < cpOffset){
+            val cpDelay = getCpDelayTime()
+            if (checkpointId == 0){
+              currentRegionDelay = cpDelay + schedulingDelay.toDouble 
+              lowJobNum = 0
+            }
+            else if (currentRegionDelay != -1)
+              currentRegionDelay += (processingDelay.toDouble - batchIntervalMillis)
+            val smallTime = getSmallJobTime()
+            val freeTime = batchIntervalMillis - smallTime 
+            if (currentRegionDelay >= freeTime || checkpointId == 0){
+              jobNum = minNum
+              currentRegionDelay -= freeTime
+              if (currentRegionDelay < 0) currentRegionDelay = -1
+              lowJobNum += 1
+              numLen = 1
+            } else if (currentRegionDelay == 0 || currentRegionDelay == -1) {
+              jobNum = getFullJobNum() 
+              if ( numLen > 1) numLen = 0
+              else numLen = 2 
+              //else numLen = cpLen - checkpointId.toInt - 1 - 4
+              currentRegionDelay = -1
+            } else {
+              val ytime = batchIntervalMillis - currentRegionDelay
+              jobNum = ytime/batchIntervalMillis * getFullJobNum() 
+              currentRegionDelay = -1
+              numLen = 1
+            }
+            // set the number of NUM for mutliple jobs with numLen
+            xinLogInfo(s"xin PID controller set the small job, CPdelay $cpDelay, smallTime $smallTime, freeTime $freeTime, totalDelay $currentRegionDelay, jobNum $jobNum, goodNum $goodNum")
           }
-          val rate = getNewNumber(numTupleQueue, processTimeQueue, expectedTime(checkpointId.toInt), numElements.toDouble, processingDelay.toDouble)/receiverNum
+          //if (numTuplesJobs( jobId ) == minNum) jobNum = minNum 
+          //else jobNum = getJobNum( jobId )
+          //val etime = expectedTime( jobId )
+          //xinLogInfo(s"xin PID controller potential num of the job: $jobNum the time $etime, goodNum $goodNum numReciever $receiverNum")
+          if ( jobNum != goodNum ) {
+            xinLogInfo(s"xin PID controller check the source Tuples: $numTupleQueue, Time: $processTimeQueue, jobNum $jobNum, goodNum $goodNum")
+          }
+          // val rate = getNewNumber(numTupleQueue, processTimeQueue, expectedTime(checkpointId.toInt), numElements.toDouble, processingDelay.toDouble)/receiverNum
           // note the rate is for the whole job. Need to divide rate by the number of receiver
           if (checkpointId >= 0 && checkpointId < cpOffset){
             if (jobNum >= minNum){
@@ -752,25 +856,12 @@ private[streaming] class PIDRateEstimator(
               if (startTime % 10 != 0){
                 xinLogInfo(s"xin PID controller the starting Timestamp might be wrong: $startTime")
               }
-              if (checkpointId + 1 == cpOffset) lastSetNum = jobNum
+              //if (checkpointId + 1 == cpOffset) lastSetNum = jobNum
               //if (checkpointId == 0 && jobNumRecords.toDouble > lastSetNum * 1.1) delayIntegral += 0.1
-
-              // set the number of NUM for mutliple jobs
-              if (checkpointId == 0 || myNum == minNum) numLen = 1
-              else if ( expectedTime(checkpointId.toInt) < batchIntervalMillis ){
-                numLen = 1
-              }
-              else if ( expectedTime(checkpointId.toInt) == batchIntervalMillis && myNum > minNum && numLen == 1){
-                numLen = cpLen - checkpointId.toInt - 1 - 4
-              } else if ( numLen > 1 ){
-                numLen = 0
-              } 
             }
           } 
-          if (checkpointId == cpLen-1 && delayIntegral > 0.2 && jobNumRecords.toDouble < 0.9*lastSetNum){
-            //delayIntegral -= 0.1
-          }
-          xinLogInfo(s"xin PPIDRateEstimator expectedTime: $expectedTime jobID $jobId Num: $jobNum currentNewRate $rate actualRate $newRate integral $delayIntegral $numLen #receivers $receiverNum")
+          
+          xinLogInfo(s"xin PPIDRateEstimator expectedTime: $expectedTime jobID $jobId Num: $jobNum actualRate $newRate integral $delayIntegral $numLen #receivers $receiverNum")
         }
         // xinLogInfo(s"xin PID controller the end of estimation !!!")
         // xinPID
