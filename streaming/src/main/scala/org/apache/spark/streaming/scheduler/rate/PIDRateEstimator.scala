@@ -865,6 +865,30 @@ private[streaming] class PIDRateEstimator(
         }
         // xinLogInfo(s"xin PID controller the end of estimation !!!")
         // xinPID
+        if ( proportional == 7.0 && cpLenFixed == true )
+        {
+          if (initCount >= 60){
+            if (checkpointId == 3) newRate = 10 
+            else newRate = 10000
+          } else 
+            initCount += 1
+        }
+        if ( proportional == 8.0 && cpLenFixed == true )
+        {
+          if (initCount >= 60){
+            if (checkpointId == 3) newRate = 10 
+            else newRate = 12000
+          } else 
+            initCount += 1
+        }
+        if ( proportional == 9.0 && cpLenFixed == true )
+        {
+          if (initCount >= 60){
+            if (checkpointId == 4) newRate = 10 
+            else newRate = 10000
+          } else 
+            initCount += 1
+        }
 
         // modification starts
         if ( proportional > 1.0 && proportional < 5 ){

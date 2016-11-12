@@ -307,11 +307,13 @@ class ReceiverTracker(ssc: StreamingContext, skipReceiverLaunch: Boolean = false
   def sendRateUpdate(streamUID: Int, time: Long, newRate: Long, num: Long, len: Int): Unit = synchronized {
     if (isTrackerStarted) {
       //receivedBlockTracker.streamIdToRates.put(streamUID, newRate)
+
       //xin
-      endpoint.send(UpdateReceiverRateLimit(streamUID, time, newRate, num, len))
+      //endpoint.send(UpdateReceiverRateLimit(streamUID, time, newRate, num, len))
       //centralized rate update
-      //for (i <- 1 to 6)
-      //  endpoint.send(UpdateReceiverRateLimit(i-1, time, newRate, num, len))
+      for (i <- 1 to 6)
+        endpoint.send(UpdateReceiverRateLimit(i-1, time, newRate, num, len))
+
       xinLogInfo(s"xin ReceiverTracker sendRateUpdate ($streamUID, $time, $newRate, $num, $len)")
       /* 
       if (num == 0){
